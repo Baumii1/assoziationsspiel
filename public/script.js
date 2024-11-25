@@ -10,7 +10,7 @@ document.getElementById('joinLobby').onclick = () => {
 };
 
 socket.on('lobbyCreated', (lobbyCode) => {
-    alert(`Lobby erstellt! URL: https://deinbenutzername.github.io/assoziationsspiel/${lobbyCode}`);
+    alert(`Lobby erstellt! URL: https://baumii1.github.io/assoziationsspiel/${lobbyCode}`);
     window.location.href = `/${lobbyCode}`; // Weiterleitung zur Lobby-URL
 });
 
