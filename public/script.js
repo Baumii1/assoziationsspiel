@@ -1,4 +1,4 @@
-const socket = io(); // Verbindung zum Server herstellen
+const socket = io('https://assoziationsspiel-backend.herokuapp.com'); // Verbindung zum Server herstellen
 
 document.getElementById('createLobby').onclick = () => {
     socket.emit('createLobby'); // Lobby erstellen
