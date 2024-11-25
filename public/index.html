@@ -8,20 +8,19 @@
 </head>
 <body>
     <div id="lobby">
-        <h1>Assoziationsspiel</h1>
+        <button id="createLobby">Lobby Erstellen</button>
         <input type="text" id="lobbyCode" placeholder="Lobby-Code">
-        <button id="joinLobby">Lobby beitreten</button>
-        <button id="createLobby">Lobby erstellen</button>
+        <button id="joinLobby">Lobby Beitreten</button>
     </div>
     <div id="game" style="display: none;">
-        <h2 id="category"></h2>
-        <input type="text" id="userInput" placeholder="Dein Begriff">
-        <button id="reveal">Reveal</button>
+        <h1 id="currentWord"></h1>
+        <input type="text" id="associationInput" placeholder="Was assoziierst du?">
+        <button id="revealButton">Reveal</button>
         <div id="results"></div>
-        <button id="next">Weiter</button>
-        <div id="loading" style="display: none;">Lädt...</div>
+        <button id="nextWordButton" style="display: none;">Nächster Begriff</button>
     </div>
-    <script src="/socket.io/socket.io.js"></script>
+    <script src="/socket.io/socket ```html
+.io.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

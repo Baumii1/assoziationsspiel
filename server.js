@@ -1,60 +1,70 @@
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
-const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-let lobbies = {};
+let lobbies = {}; // Speichert die Lobbys und ihre Spieler
 
-// Statische Dateien bereitstellen
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public')); // Statische Dateien (HTML, CSS, JS)
 
-// WebSocket-Verbindung
 io.on('connection', (socket) => {
-    console.log('Ein Benutzer hat sich verbunden:', socket.id);
+    console.log('Ein Spieler hat sich verbunden: ' + socket.id);
 
     socket.on('createLobby', () => {
-        const lobbyCode = Math.random().toString(36).substring(2, 8);
-        lobbies[lobbyCode] = { players: [], currentCategory: 'Oberbegriff' };
+        const lobbyCode = Math.random().toString(36).substring(2, 8); // Generiere einen Lobby-Code
+        lobbies[lobbyCode] = { players: [], host: socket.id, currentWord: '', streak: 0 };
         socket.join(lobbyCode);
-        socket.emit('lobbyCreated', lobbyCode); // Sende die Lobby-ID zurück
+        socket.emit('lobbyCreated', lobbyCode);
     });
 
-    socket.on('joinLobby', (code) => {
-        if (lobbies[code]) {
-            socket.join(code);
-            socket.emit('lobbyJoined', lobbies[code].currentCategory);
+    socket.on('joinLobby', (lobbyCode) => {
+        if (lobbies[lobbyCode] && lobbies[lobbyCode].players.length < 4) {
+            lobbies[lobbyCode].players.push(socket.id);
+            socket.join(lobbyCode);
+            io.to(lobbyCode).emit('playerJoined', lobbies[lobbyCode].players);
         } else {
-            socket.emit('lobbyError', 'Lobby nicht gefunden');
+            socket.emit('lobbyFull');
         }
     });
 
-    socket.on('reveal', (input) => {
-        const lobby = Object.keys(lobbies).find(code => socket.rooms[code]);
-        if (lobby) {
-            lobbies[lobby].players.push(input);
-            io.to(lobby).emit('showResults', lobbies[lobby].players);
+    socket.on('startGame', (lobbyCode) => {
+        if (lobbies[lobbyCode].players.length >= 2) {
+            lobbies[lobbyCode].currentWord = generateWord(); // Funktion zum Generieren des Überbegriffs
+            io.to(lobbyCode).emit('gameStarted', lobbies[lobbyCode].currentWord);
         }
     });
 
-    socket.on('nextRound', () => {
-        const lobby = Object.keys(lobbies).find(code => socket.rooms[code]);
-        if (lobby) {
-            lobbies[lobby].players = [];
+    socket.on('reveal', (lobbyCode, association) => {
+        lobbies[lobbyCode].players.forEach(playerId => {
+            io.to(playerId).emit('revealAssociation', association);
+        });
+    });
+
+    socket.on('checkAnswer', (lobbyCode, answer) => {
+        const correctAnswer = lobbies[lobbyCode].currentWord; // Hier könnte die Logik zum Überprüfen der Antworten implementiert werden
+        if (answer === correctAnswer) {
+            lobbies[lobbyCode].streak++;
+            io.to(lobbyCode).emit('answerResult', 'correct', lobbies[lobbyCode].streak);
+        } else {
+            lobbies[lobbyCode].streak = 0;
+            io.to(lobbyCode).emit('answerResult', 'incorrect', lobbies[lobbyCode].streak);
         }
+    });
+
+    socket.on('nextWord', (lobbyCode) => {
+        lobbies[lobbyCode].currentWord = generateWord(); // Nächsten Überbegriff generieren
+        io.to(lobbyCode).emit('nextWord', lobbies[lobbyCode].currentWord);
     });
 });
 
-// Route für Lobbys
-app.get('/:lobbyCode', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+function generateWord() {
+    const words = ['Natur', 'Technologie', 'Essen', 'Sport']; // Beispielüberbegriffe
+    return words[Math.floor(Math.random() * words.length)];
+}
 
-// Server starten
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-    console.log(`Server läuft auf http://localhost:${PORT}`);
+server.listen(3000, () => {
+    console.log('Server läuft auf http://localhost:3000');
 });
