@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assoziationsspiel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="lobby">
+        <h1>Assoziationsspiel</h1>
+        <input type="text" id="lobbyCode" placeholder="Lobby-Code">
+        <button id="joinLobby">Lobby beitreten</button>
+        <button id="createLobby">Lobby erstellen</button>
+    </div>
+    <div id="game" style="display: none;">
+        <h2 id="category"></h2>
+        <input type="text" id="userInput" placeholder="Dein Begriff">
+        <button id="reveal">Reveal</button>
+        <div id="results"></div>
+        <button id="next">Weiter</button>
+        <div id="loading" style="display: none;">Lädt...</div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
