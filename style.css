@@ -1,323 +1,253 @@
 /* Globale Stile */
-*,
-:before,
-:after {
+* {
     box-sizing: border-box;
-    border-width: 0;
-    border-style: solid;
-    border-color: var(--un-default-border-color, #e5e7eb);
 }
 
-:before,
-:after {
-    --un-content: "";
-}
-
-html,
-:host {
-    line-height: 1.5;
-    -webkit-text-size-adjust: 100%;
-    -moz-tab-size: 4;
-    tab-size: 4;
-    font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol, "Noto Color Emoji";
-    font-feature-settings: normal;
-    font-variation-settings: normal;
-    -webkit-tap-highlight-color: transparent;
-}
-
-body {
+html, body {
+    height: 100%;
     margin: 0;
-    line-height: inherit;
-    background-color: #1F2833;
-    color: #C5C6C7;
-}
-
-/* Header-Stil */
-header {
-    background: #0B0C10;
-    color: #C5C6C7;
-    padding: 20px;
+    font-family: 'Arial', sans-serif;
+    background-color: #0a0a2a; /* Dunkler Hintergrund */
+    color: #ffffff; /* Weißer Text */
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
 }
 
-header img {
-    width: 150px; /* Logo-Größe anpassen */
-}
-
-/* Navigation */
-nav ul {
-    list-style: none;
-    padding: 0;
-    display: flex;
-}
-
-nav ul li {
-    margin-right: 20px;
-}
-
-nav ul li a {
-    color: #66FCF1;
-    text-decoration: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    transition: background 0.3s, transform 0.2s;
-}
-
-nav ul li a:hover {
-    background: #45A29E;
-    transform: scale(1.05);
-}
-
-/* Hauptinhalt */
-main {
-    padding: 20px;
-}
-
-/* Überschriften */
-h1 {
-    color: #66FCF1;
-    text-align: center;
-}
-
-h2 {
-    color: #66FCF1;
-}
-
-/* Startseite */
-#start-screen {
+/* Bildschirmcontainer */
+.screen {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    height: 100%;
+    padding: 20px;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
 }
 
+/* Überschriften */
+h1, h2 {
+    margin: 20px 0;
+    text-align: center;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Button-Stile */
 button {
-    background: #66FCF1;
-    color: #0B0C10;
+    padding: 15px 30px;
+    margin: 10px 0;
     border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
+    border-radius: 10px;
+    background-color: #3a3a6a; /* Dunkelgrauer Hintergrund */
+    color: #ffffff;
+    font-size: 16px;
     cursor: pointer;
-    transition: background 0.3s, transform 0.2s;
-    margin: 10px;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 button:hover {
-    background: #45A29E;
-    transform: scale(1.05);
+    background-color: #555; /* Hellerer Hintergrund bei Hover */
+    transform: scale(1.05); /* Leichtes Vergrößern bei Hover */
 }
 
-/* Spielbereich */
-#game-screen {
-    display: none; /* Standardmäßig versteckt */
-    padding: 20px;
+/* Eingabefeld-Stile */
+input[type="text"] {
+    padding: 10px;
+    margin: 10px 0;
+    border: 2px solid #3a3a6a; /* Dunkelgraue Umrandung */
+    border-radius: 5px;
+    width: 100%; /* Volle Breite */
+    max-width: 300px; /* Maximale Breite */
+    font-size: 16px;
+    transition: border-color 0.3s;
 }
 
-#current-word {
-    font-size: 2rem;
-    margin-bottom: 20px;
+input[type="text"]::placeholder {
+    color: #9ca3af; /* Hellgraue Platzhalterfarbe */
 }
 
-/* Ergebnisbereich */
-#result-screen {
-    display: none; /* Standardmäßig versteckt */
-    padding: 20px;
-}
-
+/* Ergebnisse */
 #results {
     margin-top: 20px;
-    background: #1F2833;
-    padding: 10px;
-    border-radius: 5px;
+    font-size: 18px;
+    text-align: center;
+}
+
+/* Ladeanzeige */
+#loading {
+    display: none;
+    margin-top: 10px;
+    font-size: 16px;
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
-    header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    nav ul {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
+@media (max-width: 600px) {
     button {
-        width: 100%;
+        width: 90%; /* Button auf mobilen Geräten breiter machen */
+        font-size: 14px;
+    }
+
+    input[type="text"] {
+        width: 90%; /* Eingabefeld auf mobilen Geräten breiter machen */
     }
 }
 
-/* Loader */
-.loader {
-    display: none; /* Standardmäßig versteckt */
-    justify-content: center; /* Zentrieren */
-    align-items: center; /* Vertikal zentrieren */
-    height: 100%; /* Höhe auf 100% setzen, um den Platz im Container zu füllen */
-    text-align: center; /* Zentriert den Inhalt */
-}
-
-.loader-spinner {
-    width: 60px; /* Spinner-Größe */
-    height: 60px; /* Spinner-Größe */
-    border: 6px solid #E8F5E9; /* Spinner-Farbe */
-    border-top: 6px solid #379683; /* Spinner-Farbe */
-    border-radius: 50%;
-    animation: spin 1s linear infinite; /* Spinner-Animation */
-}
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-/* Streak Anzeige */
-.streak {
-    font-size: 1.5rem;
-    color: #66FCF1;
-    text-align: center;
-    margin-top: 20px;
-}
-
-/* Fehler- und Erfolgsmeldungen */
-.error-message {
-    color: #FF3D00; /* Rot für Fehler */
-    text-align: center;
-    margin-top: 10px;
-}
-
-.success-message {
-    color: #00C853; /* Grün für Erfolg */
-    text-align: center;
-    margin-top: 10px;
-}
-
-/* Eingabefelder */
-.input-field {
-    width: 100%;
-    padding: 10px;
-    border: 2px solid #66FCF1;
-    border-radius: 5px;
-    background: #1F2833;
-    color: #C5C6C7;
-    margin-bottom: 20px;
-}
-
-.input-field:focus {
-    outline: none;
-    border-color: #45A29E;
-}
-
-/* Footer */
-footer {
-    background: #0B0C10;
-    color: #C5C6C7;
-    text-align: center;
+/* Zusätzliche Stile für die Bildschirme */
+#start-screen, #game-screen, #result-screen {
+    background-color: rgba(255, 255, 255, 0.1); /* Leicht transparenter Hintergrund */
+    border-radius: 10px;
     padding: 20px;
-    position: relative;
-    bottom: 0;
-    width: 100%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s;
 }
 
 /* Animationen */
-.fade-in {
-    animation: fadeIn 0.5s ease-in-out;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-/* Tooltip */
-.tooltip {
-    position: relative;
-    display: inline-block;
-}
-
-.tooltip .tooltiptext {
-    visibility: hidden;
-    width: 120px;
-    background-color: #555;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px 0;
-    position: absolute;
-    z-index: 1;
-    bottom: 125%; /* Position über dem Tooltip */
-    left: 50%;
-    margin-left: -60px;
+.screen {
     opacity: 0;
-    transition: opacity 0.3s;
+    transform: translateY(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.tooltip:hover .tooltiptext {
-    visibility: visible;
+.screen.show {
     opacity: 1;
+    transform: translateY(0);
 }
 
-/* Kartenstil für Spielergebnisse */
-.card {
-    background: #1F2833;
-    border-radius: 10px;
-    padding: 15px;
-    margin: 10px 0;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+/* Stile für den aktuellen Begriff */
+#current-word {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 20px 0;
 }
 
-/* Fortschrittsbalken */
-.progress {
+/* Spielerbereich */
+#players {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 100%;
-    background-color: #e0e0e0;
-    border-radius: 5px;
-    overflow: hidden;
 }
 
-.progress-bar {
-    height: 20px;
-    background-color: #66FCF1;
-    width: 0; /* Dynamisch setzen */
-    transition: width 0.5s;
+/* Ergebnisbereich */
+#results {
+    margin-top: 20px;
+    font-size: 20px;
 }
 
-/* Weitere Anpassungen */
-.custom-button {
-    background: #66FCF1;
-    border: none;
-    color: #0B0C10;
+/* Button-Stile für Ergebnisse */
+#correct, #incorrect, #next {
+    background-color: #3a3a6a; /* Dunkelgrauer Hintergrund */
+    color: #ffffff;
     padding: 10px 20px;
     border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s;
+    margin: 5px;
+    transition: background-color 0.3s;
 }
 
-.custom-button:hover {
-    background: #45A29E;
+#correct:hover, #incorrect:hover, #next:hover {
+    background-color: #555; /* Hellerer Hintergrund bei Hover */
+}
+
+/* Stile für den Ladebereich */
+#loading {
+    font-size: 18px;
+    color: #ffffff;
+}
+
+/* Zusätzliche Animationen für den Ladebereich */
+@keyframes loadingAnimation {
+    0% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.5;
+    }
+}
+
+#loading {
+    animation: loadingAnimation 1.5s infinite;
+}
+
+/* Stile für den Raum-ID-Bereich */
+#room-id {
+    margin-top: 20px;
+    font-size: 18px;
+    text-align: center;
+    color: #ffffff;
+}
+
+/* Stile für den Streak-Bereich */
+#streak {
+    margin-top: 10px;
+    font-size: 18px;
+    color: #ffffff;
+}
+
+/* Stile für die Eingabe */
+input[type="text"] {
+    padding: 10px;
+    margin: 10px 0;
+    border: 2px solid #3a3a6a;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 300px;
+    font-size: 16px;
+}
+
+/* Zusätzliche Stile für Schaltflächen */
+.btn {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 10px;
+    background-color: #3a3a6a;
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn:hover {
+    background-color: #555;
+    transform: scale(1.05);
+}
+
+/* Stile für den Text */
+.text-center {
+    text-align: center;
+}
+
+/* Flexbox für Layouts */
+.flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Schatteneffekte */
+.shadow {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Zusätzliche Übergänge */
+.transition {
+    transition: all 0.3s ease;
 }
 
 /* Responsive Anpassungen */
-@media (max-width: 480px) {
-    h1 {
-        font-size: 1.5rem;
-    }
-
-    .input-field {
-        font-size: 1rem;
+@media (max-width: 600px) {
+    .screen {
+        padding: 10px;
     }
 
     button {
-        padding: 8px 12px;
+        width: 90%;
+    }
+
+    input[type="text"] {
+        width: 90%;
     }
 }
