@@ -33,7 +33,7 @@ h1, h2 {
 }
 
 /* Button-Stile */
-button {
+.btn {
     padding: 15px 30px;
     margin: 10px 0;
     border: none;
@@ -44,9 +44,11 @@ button {
     cursor: pointer;
     transition: background-color 0.3s, transform 0.2s;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    width: 100%; /* Volle Breite */
+    max-width: 300px; /* Maximale Breite */
 }
 
-button:hover {
+.btn:hover {
     background-color: #555; /* Hellerer Hintergrund bei Hover */
     transform: scale(1.05); /* Leichtes Vergrößern bei Hover */
 }
@@ -83,7 +85,7 @@ input[type="text"]::placeholder {
 
 /* Responsive Design */
 @media (max-width: 600px) {
-    button {
+    .btn {
         width: 90%; /* Button auf mobilen Geräten breiter machen */
         font-size: 14px;
     }
@@ -135,20 +137,6 @@ input[type="text"]::placeholder {
     font-size: 20px;
 }
 
-/* Button-Stile für Ergebnisse */
-#correct, #incorrect, #next {
-    background-color: #3a3a6a; /* Dunkelgrauer Hintergrund */
-    color: #ffffff;
-    padding: 10px 20px;
-    border-radius: 5px;
-    margin: 5px;
-    transition: background-color 0.3s;
-}
-
-#correct:hover, #incorrect:hover, #next:hover {
-    background-color: #555; /* Hellerer Hintergrund bei Hover */
-}
-
 /* Stile für den Ladebereich */
 #loading {
     font-size: 18px;
@@ -187,67 +175,12 @@ input[type="text"]::placeholder {
     color: #ffffff;
 }
 
-/* Stile für die Eingabe */
-input[type="text"] {
-    padding: 10px;
-    margin: 10px 0;
-    border: 2px solid #3a3a6a;
-    border-radius: 5px;
-    width: 100%;
-    max-width: 300px;
-    font-size: 16px;
-}
-
-/* Zusätzliche Stile für Schaltflächen */
-.btn {
-    padding: 15px 30px;
-    border: none;
-    border-radius: 10px;
-    background-color: #3a3a6a;
-    color: #ffffff;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-}
-
-.btn:hover {
-    background-color: #555;
-    transform: scale(1.05);
-}
-
-/* Stile für den Text */
-.text-center {
-    text-align: center;
-}
-
-/* Flexbox für Layouts */
-.flex {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Schatteneffekte */
-.shadow {
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
-
 /* Zusätzliche Übergänge */
 .transition {
     transition: all 0.3s ease;
 }
 
-/* Responsive Anpassungen */
-@media (max-width: 600px) {
-    .screen {
-        padding: 10px;
-    }
-
-    button {
-        width: 90%;
-    }
-
-    input[type="text"] {
-        width: 90%;
-    }
+/* Schatteneffekte */
+.shadow {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
