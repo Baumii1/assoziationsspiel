@@ -32,6 +32,13 @@ h1, h2 {
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
+/* Farbverlauf für den Text */
+.gradient-text {
+    background: linear-gradient(90deg, #ff6a00, #ee0979);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
 /* Button-Stile */
 .btn {
     padding: 15px 30px;
@@ -183,4 +190,105 @@ input[type="text"]::placeholder {
 /* Schatteneffekte */
 .shadow {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Zusätzliche Stile für den Button */
+.btn {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 10px;
+    background-color: #3a3a6a;
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    width: 100%; /* Volle Breite */
+}
+
+.btn:hover {
+    background-color: #555; /* Hellerer Hintergrund bei Hover */
+}
+
+/* Stile für den Spielerbereich */
+#players {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #ffffff;
+}
+
+/* Stile für den Ergebnisbereich */
+#results {
+    margin-top: 20px;
+    font-size: 20px;
+}
+
+/* Stile für den Ladebereich */
+#loading {
+    font-size: 18px;
+    color: #ffffff;
+}
+
+/* Zusätzliche Animationen für den Ladebereich */
+@keyframes loadingAnimation {
+    0% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.5;
+    }
+}
+
+#loading {
+    animation: loadingAnimation 1.5s infinite;
+}
+
+/* Stile für den Raum-ID-Bereich */
+#room-id {
+    margin-top: 20px;
+    font-size: 18px;
+    text-align: center;
+    color: #ffffff;
+}
+
+/* Stile für den Streak-Bereich */
+#streak {
+    margin-top: 10px;
+    font-size: 18px;
+    color: #ffffff;
+}
+
+/* Stile für das Ergebnis-Feedback */
+.feedback {
+    margin-top: 20px;
+    font-size: 18px;
+    text-align: center;
+    color: #ffcc00; /* Goldene Farbe für positives Feedback */
+}
+
+/* Fehleranzeige */
+.error {
+    color: #ff0000; /* Rote Farbe für Fehler */
+    font-size: 16px;
+}
+
+/* Animationen für die Buttons */
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:active {
+    transform: scale(0.95); /* Verkleinern bei Klick */
+}
+
+/* Zusätzliche Stile für den Übergang zwischen Bildschirmen */
+.screen {
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.screen.show {
+    opacity: 1;
 }
