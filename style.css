@@ -1,41 +1,254 @@
-* {
-    box-sizing: border-box;
-}
-
-body, html {
-    height: 100%;
+/* Grundlegende Stile */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f0f0;
+    text-align: center;
     margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #0a0a2a; /* Dunkler Hintergrund */
-    color: white; /* Weißer Text */
+    padding: 0;
+    overflow: hidden; /* Verhindert Scrollen */
 }
 
-#lobby, #game {
-    margin: 20px auto;
-    padding: 20px;
+h1, h2 {
+    color: #2c3e50;
+    transition: color 0.3s ease;
+}
+
+h1:hover, h2:hover {
+    color: #3498db; /* Farbe ändern bei Hover */
+}
+
+/* Bildschirm-Container */
+.screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Vollbildhöhe */
+    transition: opacity 0.5s ease;
+}
+
+/* Startbildschirm */
+#start-screen {
+    background-color: #ecf0f1;
     border-radius: 10px;
-    background-color: rgba(255, 255, 255, 0.1); /* Leicht transparenter Hintergrund */
-    max-width: 600px; /* Maximale Breite */
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 1s; /* Fade-In-Animation */
 }
 
+/* Spielbildschirm */
+#game-screen {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 1s;
+}
+
+/* Ergebnisbildschirm */
+#result-screen {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 1s;
+}
+
+/* Buttons */
 button {
     padding: 10px 20px;
     margin: 10px;
+    cursor: pointer;
     border: none;
     border-radius: 5px;
-    background-color: #3a3a6a; /* Button Hintergrund */
+    background-color: #3498db;
     color: white;
-    cursor: pointer;
-    transition: background-color 0.3s;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 button:hover {
-    background-color: #555; /* Button Hover-Effekt */
+    background-color: #2980b9;
+    transform: translateY(-2px); /* Hebt den Button leicht an */
 }
 
-.input {
+button:active {
+    transform: translateY(0); /* Setzt den Button zurück */
+}
+
+/* Spieleranzeige */
+#players {
+    margin: 20px 0;
     padding: 10px;
-    border: 1px solid #ccc;
+    background-color: #ecf0f1;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Ergebnisse */
+#results {
+    margin: 20px 0;
+    padding: 10px;
+    background-color: #ecf0f1;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Animationen */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    button {
+        width: 80%; /* Button-Breite auf mobilen Geräten */
+    }
+
+    h1 {
+        font-size: 24px; /* Kleinere Schriftgröße für Titel */
+    }
+
+    h2 {
+        font-size: 20px; /* Kleinere Schriftgröße für Untertitel */
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 20px; /* Noch kleinere Schriftgröße */
+    }
+
+    h2 {
+        font-size: 18px; /* Noch kleinere Schriftgröße */
+    }
+}
+
+/* Zusätzliche Stile für Hover-Effekte */
+button:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Größerer Schatten bei Hover */
+}
+
+/* Spieler- und Ergebnislisten */
+.player, .result {
+    background-color: #ffffff;
     border-radius: 5px;
-    width: calc(100% - 22px); /* Breite anpassen */
+    padding: 10px;
+    margin: 5px 0;
+    transition: background-color 0.3s ease;
+}
+
+.player:hover, .result:hover {
+    background-color: #dfe6e9; /* Hintergrundfarbe bei Hover */
+}
+
+/* Animation für Spieler- und Ergebnislisten */
+@keyframes slideIn {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Anwendung der Animation auf Spieler- und Ergebnislisten */
+.player, .result {
+    animation: slideIn 0.5s ease forwards; /* Slide-In-Animation */
+}
+
+/* Übergangseffekte für den Bildschirmwechsel */
+.screen {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.screen.active {
+    opacity: 1; /* Sichtbar machen */
+}
+
+/* Zusätzliche Stile für den Spielbildschirm */
+#game-screen {
+    background-image: linear-gradient(to right, #74ebd5, #acb6e5); /* Farbverlauf */
+    color: #2c3e50;
+}
+
+/* Stile für den Ergebnisbildschirm */
+#result-screen {
+    background-image: linear-gradient(to right, #ffafbd, #ffc3a0); /* Farbverlauf */
+    color: #2c3e50;
+}
+
+/* Stile für den Startbildschirm */
+#start-screen {
+    background-image: linear-gradient(to right, #ff7e5f, #feb47b); /* Farbverlauf */
+    color: #ffffff;
+}
+
+/* Zusätzliche Animationen für Buttons */
+button {
+    position: relative;
+    overflow: hidden;
+}
+
+button::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300%;
+    height: 300%;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.5s ease;
+    z-index: 0;
+}
+
+button:hover::after {
+    transform: translate(-50%, -50%) scale(1); /* Wellen-Effekt */
+}
+
+button span {
+    position: relative;
+    z-index: 1; /* Text über dem Wellen-Effekt */
+}
+
+/* Stile für den Ladebildschirm (optional) */
+.loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.loading h2 {
+    color: #3498db;
+    animation: pulse 1.5s infinite; /* Pulsierende Animation */
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
 }
