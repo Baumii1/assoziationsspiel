@@ -8,25 +8,27 @@
 </head>
 <body>
     <div id="start-screen" class="screen">
-        <h1>Assoziationsspiel</h1>
-        <button id="create-lobby">Neue Lobby erstellen</button>
-        <button id="join-lobby">Lobby beitreten</button>
+        <h1>Das große ASSOZIATIONS Spiel</h1>
+        <input type="text" id="lobbyCode" placeholder="Room ID">
+        <button id="create-lobby" class="btn">Erstellen</button>
+        <button id="join-lobby" class="btn">Beitreten</button>
     </div>
 
     <div id="game-screen" class="screen" style="display: none;">
         <h2 id="current-word">Überbegriff: </h2>
         <div id="players"></div>
-        <button id="reveal">Reveal</button>
+        <button id="reveal" class="btn">Reveal</button>
     </div>
 
     <div id="result-screen" class="screen" style="display: none;">
         <h2>Ergebnisse</h2>
         <div id="results"></div>
-        <button id="correct">Richtig</button>
-        <button id="incorrect">Falsch</button>
-        <button id="next">Weiter</button>
+        <button id="correct" class="btn">Richtig</button>
+        <button id="incorrect" class="btn">Falsch</button>
+        <button id="next" class="btn">Weiter</button>
     </div>
 
+    <script src="/socket.io/socket.io.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
