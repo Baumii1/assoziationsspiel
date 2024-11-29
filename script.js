@@ -6,7 +6,7 @@ const resultScreen = document.getElementById('result-screen');
 const playersDiv = document.getElementById('players');
 const currentWordDisplay = document.getElementById('current-word');
 const resultsDiv = document.getElementById('results');
-const socket = io(); // Socket.io instance
+const socket = io("https://assoziationsspiel-backend-dcf85e77dc96.herokuapp.com/"); // Socket.io instance
 
 let lobbyCode;
 let players = [];
