@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const lobbyCodeDisplay = document.getElementById('lobbyCode'); // Das P-Element für den Lobby-Code
     const copyButton = document.getElementById('copy-button'); // Der Copy-Button
     const errorMessageDiv = document.getElementById('error-message');
+    const popupMessage = document.getElementById('popup-message'); // Das Popup-Element
 
     // Lobby-Code aus der URL abrufen
     const lobbyCode = new URLSearchParams(window.location.search).get('lobbyCode');
@@ -17,7 +18,16 @@ document.addEventListener('DOMContentLoaded', () => {
         window.getSelection().removeAllRanges(); // Entferne vorherige Auswahl
         window.getSelection().addRange(range); // Füge die neue Auswahl hinzu
         document.execCommand('copy'); // Kopiere den ausgewählten Text
-        alert('Lobby-Code kopiert: ' + lobbyCodeDisplay.textContent); // Bestätigungsnachricht
+        
+        // Popup anzeigen
+        popupMessage.textContent = 'Lobby-Code kopiert: ' + lobbyCodeDisplay.textContent; // Text setzen
+        popupMessage.style.display = 'block'; // Popup anzeigen
+
+        // Popup nach 3 Sekunden ausblenden
+        setTimeout(() => {
+            popupMessage.style.display = 'none'; // Popup ausblenden
+        }, 3000);
+
         window.getSelection().removeAllRanges(); // Auswahl zurücksetzen
     });
 
