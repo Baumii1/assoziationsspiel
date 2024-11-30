@@ -1,8 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const createLobbyButton = document.getElementById('create-lobby');
-    const joinLobbyButton = document.getElementById('join-lobby');
-    const errorMessageDiv = document.getElementById('error-message');
     const socket = io("https://assoziationsspiel-backend-dcf85e77dc96.herokuapp.com/");
+    const lobbyCodeInput = document.getElementById('lobbyCode'); // Das Textfeld für den Lobby-Code
+    const createLobbyButton = document.getElementById('create-lobby'); // Der Erstellen-Button
+    const joinLobbyButton = document.getElementById('join-lobby'); // Der Beitreten-Button
+    const messageDiv = document.getElementById('message'); // Das Nachrichtenelement
 
     // Lobby erstellen
     createLobbyButton.addEventListener('click', () => {
@@ -11,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Lobby beitreten
     joinLobbyButton.addEventListener('click', () => {
-        const lobbyCode = prompt('Gib den Lobby-Code ein:');
+        const lobbyCode = lobbyCodeInput.value.trim();
         if (lobbyCode) {
             socket.emit('joinLobby', lobbyCode);
         }
@@ -24,11 +25,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     socket.on('error', (errorMessage) => {
-        showErrorMessage(errorMessage);
+        messageDiv.textContent = errorMessage;
+        messageDiv.classList.remove('hidden');
     });
 
-    // Funktion zur Anzeige von Fehlermeldungen
-    function showErrorMessage(message) {
-        errorMessageDiv.textContent = message;
-    }
+    // Aktivierung des Beitreten-Buttons, wenn ein Lobby-Code eingegeben wird
+    lobbyCodeInput.addEventListener('input', function() {
+        joinLobbyButton.disabled = this.value.trim() === ''; // Beitreten-Button aktivieren/deaktivieren
+    });
 });
