@@ -2,55 +2,65 @@ document.addEventListener('DOMContentLoaded', () => {
     const socket = io("https://assoziationsspiel-backend-dcf85e77dc96.herokuapp.com/");
     const playersDiv = document.getElementById('players');
     const startGameButton = document.getElementById('start-game');
-    const lobbyCodeDisplay = document.getElementById('lobbyCode'); // Das P-Element für den Lobby-Code
-    const copyButton = document.getElementById('copy-button'); // Der Copy-Button
+    const lobbyCodeDisplay = document.getElementById('lobbyCode');
+    const copyButton = document.getElementById('copy-button');
     const errorMessageDiv = document.getElementById('error-message');
-    const popupMessage = document.getElementById('popup-message'); // Das Popup-Element
+    const popupMessage = document.getElementById('popup-message');
 
     // Lobby-Code aus der URL abrufen
     const lobbyCode = new URLSearchParams(window.location.search).get('lobbyCode');
-    lobbyCodeDisplay.textContent = lobbyCode; // Lobby-Code anzeigen
+    lobbyCodeDisplay.textContent = lobbyCode;
 
     // Spieler der Lobby beitreten
-    socket.emit('joinLobby', lobbyCode); // Spieler der Lobby beitreten
-
-    // Weiterleitung zur Lobby-Seite
-    //socket.on('redirect', (url) => {
-    //    window.location.href = url; // Weiterleitung zur Lobby-Seite
-    //});
+    socket.emit('joinLobby', lobbyCode);
 
     // Event-Listener für den Copy-Button
     copyButton.addEventListener('click', function() {
         const range = document.createRange();
-        range.selectNode(lobbyCodeDisplay); // Wähle den Lobby-Code im P-Element aus
-        window.getSelection().removeAllRanges(); // Entferne vorherige Auswahl
-        window.getSelection().addRange(range); // Füge die neue Auswahl hinzu
-        document.execCommand('copy'); // Kopiere den ausgewählten Text
-        
-        // Popup anzeigen
-        popupMessage.textContent = 'Lobby-Code kopiert: ' + lobbyCodeDisplay.textContent; // Text setzen
-        popupMessage.style.display = 'block'; // Popup anzeigen
+        range.selectNode(lobbyCodeDisplay);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+        document.execCommand('copy');
 
-        // Popup nach 3 Sekunden ausblenden
+        popupMessage.textContent = 'Lobby-Code kopiert: ' + lobbyCodeDisplay.textContent;
+        popupMessage.style.display = 'block';
+
         setTimeout(() => {
-            popupMessage.style.display = 'none'; // Popup ausblenden
+            popupMessage.style.display = 'none';
         }, 3000);
 
-        window.getSelection().removeAllRanges(); // Auswahl zurücksetzen
+        window.getSelection().removeAllRanges();
     });
 
     // Spielerliste aktualisieren
     socket.on('playerJoined', (playersList) => {
-        playersDiv.innerHTML = ''; // Vorherige Liste leeren
+        playersDiv.innerHTML = '';
         playersList.forEach(player => {
             const playerElement = document.createElement('div');
-            playerElement.textContent = player;
+            playerElement.classList.add('player');
+            playerElement.textContent = player.name; // Spielername anzeigen
+
+            // Kick-Button für den Host
+            if (player.isHost) {
+                const hostBadge = document.createElement('span');
+                hostBadge.classList.add('host-badge');
+                hostBadge.textContent = 'Host';
+                playerElement.appendChild(hostBadge);
+            }
+
+            const kickButton = document.createElement('button');
+            kickButton.classList.add('kick-button');
+            kickButton.innerHTML = '<img src="kick-icon.png" alt="Kick" class="kick-icon" />';
+            kickButton.onclick = () => {
+                socket.emit('kickPlayer', player.id); // Kick-Event an den Server senden
+            };
+            playerElement.appendChild(kickButton);
             playersDiv.appendChild(playerElement);
         });
 
         // Überprüfen, ob der Spieler der Host ist
-        const isHost = playersList[0] === socket.id; // Annahme: Der erste Spieler ist der Host
-        startGameButton.style.display = isHost ? 'block' : 'none'; // Start-Button nur für den Host anzeigen
+        const isHost = playersList[0].id === socket.id;
+        startGameButton.style.display = isHost ? 'block' : 'none';
     });
 
     // Fehlerbehandlung
@@ -60,17 +70,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Spiel starten
     startGameButton.addEventListener('click', () => {
-        socket.emit('startGame', lobbyCode); // Spielstart an den Server senden
+        socket.emit('startGame', lobbyCode);
         console.log('Spiel wird gestartet...');
     });
 
     // Funktion zur Anzeige von Fehlermeldungen
     function showErrorMessage(message) {
-        const errorMessageDiv = document.getElementById('error-message');
-        if (errorMessageDiv) { // Überprüfen, ob das Element existiert
-            errorMessageDiv.textContent = message;
-        } else {
-            console.error('Fehlermeldungselement nicht gefunden:', message);
-        }
+        errorMessageDiv.textContent = message;
     }
 });
