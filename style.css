@@ -29,7 +29,6 @@ html, body {
 h1, h2 {
     margin: 20px 0;
     text-align: center;
-    /*text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);*/
     font-weight: 400;
 }
 
@@ -40,6 +39,7 @@ h1, h2 {
     background-clip: text;
     -webkit-text-fill-color: transparent;
     font-weight: bold;
+    font-size: 4em;
 }
 
 /* Button-Stile */
@@ -82,7 +82,7 @@ input[type="text"]::placeholder {
 /* Ergebnisse */
 #results {
     margin-top: 20px;
-    font-size: 18px;
+    font-size: 20px;
     text-align: center;
 }
 
@@ -107,11 +107,8 @@ input[type="text"]::placeholder {
 
 /* Zusätzliche Stile für die Bildschirme */
 #start-screen, #game-screen, #result-screen {
-    /*background-color: rgba(255, 255, 255, 0.1); /* Leicht transparenter Hintergrund */
     border-radius: 10px;
     padding: 20px;
-    /*box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);*/
-    transition: transform 0.3s;
 }
 
 /* Animationen */
@@ -193,74 +190,6 @@ input[type="text"]::placeholder {
 /* Schatteneffekte */
 .shadow {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
-
-/* Zusätzliche Stile für den Button */
-.btn {
-    padding: 15px 30px;
-    border: none;
-    border-radius: 10px;
-    background-color: #3a3a6a;
-    color: #ffffff;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-    width: 100%; /* Volle Breite */
-}
-
-.btn:hover {
-    background-color: #555; /* Hellerer Hintergrund bei Hover */
-}
-
-/* Stile für den Spielerbereich */
-#players {
-    margin-top: 20px;
-    font-size: 18px;
-    color: #ffffff;
-}
-
-/* Stile für den Ergebnisbereich */
-#results {
-    margin-top: 20px;
-    font-size: 20px;
-}
-
-/* Stile für den Ladebereich */
-#loading {
-    font-size: 18px;
-    color: #ffffff;
-}
-
-/* Zusätzliche Animationen für den Ladebereich */
-@keyframes loadingAnimation {
-    0% {
-        opacity: 0.5;
-    }
-    50% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0.5;
-    }
-}
-
-#loading {
-    animation: loadingAnimation 1.5s infinite;
-}
-
-/* Stile für den Raum-ID-Bereich */
-#room-id {
-    margin-top: 20px;
-    font-size: 18px;
-    text-align: center;
-    color: #ffffff;
-}
-
-/* Stile für den Streak-Bereich */
-#streak {
-    margin-top: 10px;
-    font-size: 18px;
-    color: #ffffff;
 }
 
 /* Stile für das Ergebnis-Feedback */
