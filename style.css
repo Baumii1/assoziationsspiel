@@ -105,10 +105,10 @@ input[type="text"]::placeholder {
 
 /* Zusätzliche Stile für die Bildschirme */
 #start-screen, #game-screen, #result-screen {
-    background-color: rgba(255, 255, 255, 0.1); /* Leicht transparenter Hintergrund */
+    /*background-color: rgba(255, 255, 255, 0.1); /* Leicht transparenter Hintergrund */
     border-radius: 10px;
     padding: 20px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    /*box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);*/
     transition: transform 0.3s;
 }
 
