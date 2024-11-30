@@ -41,22 +41,18 @@ io.on('connection', (socket) => {
     });
 
     // Lobby beitreten
-    socket.on('joinLobby', (lobbyCode) => {
-        const nickname = getCookie('nickname'); // Nickname aus Cookies abrufen
+    socket.on('joinLobby', ({ lobbyCode, nickname }) => { // Nickname als Teil des Objekts empfangen
         if (!nickname) {
             socket.emit('error', 'Sie müssen einen Nicknamen haben, um einer Lobby beizutreten.');
             return; // Beende die Funktion, wenn kein Nickname vorhanden ist
         }
-    
+
         if (lobbies[lobbyCode]) {
-            // Spieler der Lobby beitreten
             if (lobbies[lobbyCode].players.length < 4) {
                 if (!lobbies[lobbyCode].players.find(player => player.id === socket.id)) {
-                    // Füge den Spieler zur Lobby hinzu
                     lobbies[lobbyCode].players.push({ id: socket.id, name: nickname }); // Speichere den Nicknamen
                     socket.join(lobbyCode);
                     socket.emit('lobbyJoined', lobbyCode);
-                    // Sende die aktualisierte Spieler-Liste an alle in der Lobby
                     io.to(lobbyCode).emit('playerJoined', lobbies[lobbyCode].players.map(player => ({ id: player.id, name: player.name, isHost: player.id === lobbies[lobbyCode].hostId })));
                     console.log(`Spieler ${nickname} (ID: ${socket.id}) ist der Lobby ${lobbyCode} beigetreten.`);
                 } else {
