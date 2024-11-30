@@ -60,7 +60,6 @@ h1, h2 {
     font-weight: bold; /* Fettschrift */
     cursor: pointer;
     transition: background 0.3s, transform 0.2s;
-    margin-top: 15px; /* Abstand nach oben zu den Buttons */
 }
 
 .btn:disabled {
@@ -88,7 +87,7 @@ input[type="text"] {
     width: 100%; /* Breiteres Eingabefeld */
     font-size: 24px; /* Größere Schriftgröße */
     transition: border-color 0.3s;
-    background-color: #ffffff; /* Weißer Hintergrund */
+    background-color: #1a1a4a; /* Weißer Hintergrund */
 }
 
 input[type="text"]:focus {
