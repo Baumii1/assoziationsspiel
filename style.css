@@ -25,6 +25,63 @@ html, body {
     transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
 }
 
+/* Spieler-Liste */
+.player-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Abstand zwischen den Spielern */
+    width: 100%; /* Breite der Spieler-Liste */
+}
+
+.player {
+    display: flex;
+    justify-content: space-between; /* Platz zwischen Name und Kick-Button */
+    align-items: center; /* Vertikale Zentrierung */
+    padding: 10px; /* Innenabstand für jeden Spieler */
+    background-color: #2a2a6a; /* Hintergrundfarbe für Spieler */
+    border-radius: 8px; /* Abgerundete Ecken */
+}
+
+.host-badge {
+    background-color: #ffcc00; /* Hintergrundfarbe für den Host-Badge */
+    color: #000; /* Schriftfarbe für den Host */
+    padding: 5px 10px; /* Innenabstand */
+    border-radius: 15px; /* Stärker abgerundete Ecken */
+    font-weight: bold; /* Fett für bessere Sichtbarkeit */
+}
+
+.kick-button {
+    background: none; /* Kein Hintergrund */
+    border: none; /* Kein Rahmen */
+    cursor: pointer; /* Zeiger bei Hover */
+}
+
+.kick-icon {
+    width: 24px; /* Größe des Icons */
+    height: 24px; /* Größe des Icons */
+    filter: invert(1); /* Invertiere die Farben für das Icon */
+}
+
+.kick-button:hover .kick-icon {
+    filter: brightness(0.8); /* Heller bei Hover */
+}
+
+/* Popup-Nachricht */
+#popup-message {
+    background-color: #d4edda; /* Heller Hintergrund für das Popup */
+    border: 1px solid #c3e6cb; /* Border-Farbe */
+    padding: 30px;
+    border-radius: 5px;
+    transition: opacity 0.5 s ease; /* Übergangseffekt */
+}
+
+/* Fehleranzeige */
+.error-message {
+    color: red; /* Rote Schriftfarbe für Fehler */
+    font-weight: bold; /* Fettschrift */
+    margin: 10px 0; /* Abstand oben und unten */
+}
+
 /* Überschriften */
 h1, h2 {
     margin: 20px 0;
@@ -55,7 +112,7 @@ h1, h2 {
     border: none;
     border-radius: 10px; /* Abgerundete Ecken */
     background-color: #ffffff; /* Button Hintergrundfarbe */
-    color: #0B0C10; /* Schriftfarbe */
+    color: #0a0a2a; /* Schriftfarbe */
     font-size: 24px; /* Größere Schriftgröße */
     font-weight: bold; /* Fettschrift */
     cursor: pointer;
@@ -139,14 +196,6 @@ input[type="text"]:focus {
     filter: invert(1); /* Invertiere die Farben, um das Icon weiß zu machen */
 }
 
-#popup-message {
-    background-color: #d4edda; /* Heller Hintergrund für das Popup */
-    border: 1px solid #c3e6cb; /* Border-Farbe */
-    padding: 10px;
-    border-radius: 5px;
-    transition: opacity 0.5s ease; /* Übergangseffekt */
-}
-
 /* Ergebnisse */
 #results {
     margin-top: 20px;
@@ -181,11 +230,6 @@ input[type="text"]:focus {
 }
 
 /* Animationen */
-.screen {
-    opacity: 1;
-    transform: translateY(-20px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-}
 
 .screen.show {
     opacity: 1;
@@ -269,12 +313,6 @@ input[type="text"]:focus {
     color: #ffcc00; /* Goldene Farbe für positives Feedback */
 }
 
-/* Fehleranzeige */
-.error-message {
-    color: red; /* Rote Schriftfarbe für Fehler */
-    font-weight: bold; /* Fettschrift */
-    margin: 10px 0; /* Abstand oben und unten */
-}
 
 /* Animationen für die Buttons */
 .btn {

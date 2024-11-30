@@ -15,6 +15,8 @@ const io = socketIo(server, {
     pingInterval: 25000 // Häufigkeit, mit der der Server Pings sendet
 });
 
+const DISCONNECT_DELAY = 5000; // 5 Sekunden Delay
+
 let lobbies = {}; // Speichert die Lobbys und Spieler
 
 app.use(cors());
@@ -32,7 +34,7 @@ io.on('connection', (socket) => {
     // Lobby erstellen
     socket.on('createLobby', () => {
         const lobbyCode = generateLobbyCode();
-        lobbies[lobbyCode] = { players: [] };
+        lobbies[lobbyCode] = { players: [], hostId: socket.id }; // Host-ID speichern
         socket.join(lobbyCode);
         socket.emit('lobbyCreated', lobbyCode);
         console.log(`Lobby ${lobbyCode} wurde erstellt.`);
@@ -46,10 +48,9 @@ io.on('connection', (socket) => {
                 if (!lobbies[lobbyCode].players.includes(socket.id)) {
                     lobbies[lobbyCode].players.push(socket.id);
                     socket.join(lobbyCode);
-                    socket.emit('lobbyJoined', lobbyCode)
-                    io.to(lobbyCode).emit('playerJoined', lobbies[lobbyCode].players);
+                    socket.emit('lobbyJoined', lobbyCode);
+                    io.to(lobbyCode).emit('playerJoined', lobbies[lobbyCode].players.map(id => ({ id, isHost: id === lobbies[lobbyCode].hostId }))); // Gebe auch an, wer der Host ist
                     console.log(`Spieler ${socket.id} ist der Lobby ${lobbyCode} beigetreten.`);
-                    //socket.emit('redirect', `lobby.html?lobbyCode=${lobbyCode}`);
                 } else {
                     socket.emit('error', 'Du bist bereits in dieser Lobby.');
                 }
@@ -61,6 +62,24 @@ io.on('connection', (socket) => {
         }
     });
 
+    // Kick-Player-Event
+    socket.on('kickPlayer', (playerId) => {
+        const lobbyCode = Object.keys(lobbies).find(code => lobbies[code].players.includes(socket.id)); // Finde die Lobby des Hosts
+        if (lobbyCode && socket.id === lobbies[lobbyCode].hostId) { // Überprüfe, ob der Sender der Host ist
+            const index = lobbies[lobbyCode].players.indexOf(playerId);
+            if (index !== -1) {
+                lobbies[lobbyCode].players.splice(index, 1); // Spieler entfernen
+                io.to(lobbyCode).emit('playerJoined', lobbies[lobbyCode].players.map(id => ({ id, isHost: id === lobbies[lobbyCode].hostId }))); // Aktualisiere die Spieler-Liste
+                const playerSocket = io.sockets.sockets.get(playerId);
+                if (playerSocket) {
+                    playerSocket.emit('redirectToHome'); // Sende Nachricht an den gekickten Spieler
+                    playerSocket.disconnect(); // Trenne den Spieler
+                }
+                console.log(`Spieler ${playerId} wurde von ${socket.id} gekickt.`);
+            }
+        }
+    });
+
     // Spieler trennt die Verbindung
     socket.on('disconnect', () => {
         console.log('Ein Spieler hat sich getrennt:', socket.id);
@@ -68,11 +87,16 @@ io.on('connection', (socket) => {
             const index = lobbies[lobbyCode].players.indexOf(socket.id);
             if (index !== -1) {
                 lobbies[lobbyCode].players.splice(index, 1);
-                io.to(lobbyCode).emit('playerJoined', lobbies[lobbyCode].players);
+                io.to(lobbyCode).emit('playerJoined', lobbies[lobbyCode].players.map(id => ({ id, isHost: id === lobbies[lobbyCode].hostId }))); // Aktualisiere die Spieler-Liste
                 // Lobby schließen, wenn keine Spieler mehr vorhanden sind
                 if (lobbies[lobbyCode].players.length === 0) {
-                    delete lobbies[lobbyCode];
-                    console.log(`Lobby ${lobbyCode} wurde entfernt, da sie leer ist.`);
+                    // Setze einen Timer, um die Lobby nach einem Delay zu schließen
+                    setTimeout(() => {
+                        if (lobbies[lobbyCode].players.length === 0) {
+                            delete lobbies[lobbyCode];
+                            console.log(`Lobby ${lobbyCode} wurde entfernt, da sie leer ist.`);
+                        }
+                    }, DISCONNECT_DELAY);
                 }
                 break;
             }
