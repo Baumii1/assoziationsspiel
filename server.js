@@ -12,7 +12,7 @@ let lobbies = {}; // Stores the lobbies and players
 app.use(express.static('public'));
 
 app.use(cors({
-    origin: 'https://baumii1.github.io/', // Ersetze dies mit deiner Frontend-Domain
+    origin: 'https://baumii1.github.io/assoziationsspiel', // Ersetze dies mit deiner Frontend-Domain
     methods: ['GET', 'POST'], // Erlaubte HTTP-Methoden
     credentials: true
 }));
