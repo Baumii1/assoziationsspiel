@@ -44,12 +44,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    socket.on('lobbyJoined', (lobbyCode) => {
+        // Weiterleitung zur Lobby-Seite
+        window.location.href = `lobby.html?lobbyCode=${lobbyCode}`;
+    });
+
+    // Socket.io Ereignisse
+    socket.on('lobbyCreated', (lobbyCode) => {
+        // Weiterleitung zur Lobby-Seite
+        window.location.href = `lobby.html?lobbyCode=${lobbyCode}`;
+    });
+
     // Aktivierung des Beitreten-Buttons, wenn ein Lobby-Code eingegeben wird
     lobbyCodeInput.addEventListener('input', function() {
         updateButtons(); // Überprüfe die Schaltflächen
     });
 
-    // Funktion um die Buttons zu aktiv ieren oder zu deaktivieren
+    // Funktion um die Buttons zu aktivieren oder zu deaktivieren
     function updateButtons() {
         const nickname = nicknameInput.value.trim();
         const lobbyCode = lobbyCodeInput.value.trim();
