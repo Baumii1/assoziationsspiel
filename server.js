@@ -4,7 +4,13 @@ const socketIo = require('socket.io');
 const app = express();
 const server = http.createServer(app);
 const cors = require('cors');
-const io = socketIo(server);
+const io = socketIo(server, {
+    cors: {
+        origin: 'https://baumii1.github.io',
+        methods: ['GET', 'POST'],
+        credentials: true
+    }
+});
 
 let lobbies = {}; // Stores the lobbies and players
 
@@ -12,8 +18,8 @@ let lobbies = {}; // Stores the lobbies and players
 app.use(express.static('public'));
 
 app.use(cors({
-    origin: 'https://baumii1.github.io/assoziationsspiel', // Ersetze dies mit deiner Frontend-Domain
-    methods: ['GET', 'POST'], // Erlaubte HTTP-Methoden
+    origin: 'https://baumii1.github.io',
+    methods: ['GET', 'POST'],
     credentials: true
 }));
 
