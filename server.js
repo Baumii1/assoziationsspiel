@@ -3,6 +3,7 @@ const http = require('http');
 const socketIo = require('socket.io');
 const app = express();
 const server = http.createServer(app);
+const cors = require('cors');
 const io = socketIo(server);
 
 let lobbies = {}; // Stores the lobbies and players
@@ -12,12 +13,12 @@ app.use(express.static('public'));
 
 const cors = require('cors');
 app.use(cors({
-    origin: 'https://baumii1.github.io/assoziationsspiel/' // Ersetze dies mit deiner Frontend-Domain
+    origin: 'https://baumii1.github.io/' // Ersetze dies mit deiner Frontend-Domain
 }));
 
 const PORT = process.env.PORT || 3000; // Verwende den Port von Heroku oder 3000 für lokale Entwicklung
 server.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on PORT ${PORT}`);
 });
 
 // Socket.io connection
