@@ -10,11 +10,12 @@ document.addEventListener('DOMContentLoaded', () => {
     lobbyCodeDisplay.textContent = lobbyCode; // Lobby-Code anzeigen
 
     // Funktion zum Kopieren des Lobby-Codes in die Zwischenablage
-    copyButton.addEventListener('click', () => {
+    copyButton.addEventListener('click', function() {
+        const lobbyCode = document.getElementById('lobby-code').textContent;
         navigator.clipboard.writeText(lobbyCode).then(() => {
-            showErrorMessage('Lobby-Code kopiert!'); // Bestätigung, dass der Code kopiert wurde
+            alert('Lobby-Code kopiert: ' + lobbyCode); // Optional: Benutzerfeedback
         }).catch(err => {
-            showErrorMessage('Fehler beim Kopieren: ' + err);
+            console.error('Fehler beim Kopieren: ', err);
         });
     });
 
@@ -45,4 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function showErrorMessage(message) {
         errorMessageDiv.textContent = message;
     }
+
+    
 });
