@@ -224,3 +224,39 @@ input[type="text"]::placeholder {
 .screen.show {
     opacity: 1;
 }
+
+
+
+
+/* Stil für den Lobby-Code Kasten */
+.lobby-code-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #1ABC9C;
+    border-radius: 5px;
+    background-color: #E8F5E9;
+}
+.lobby-code {
+    flex: 1;
+    font-size: 1.2em;
+    color: #1ABC9C;
+}
+.copy-button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    background-color: #1ABC9C;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.copy-button:hover {
+    background-color: #16A085;
+}
+.error-message {
+    color: red;
+    margin-top: 10px;
+}

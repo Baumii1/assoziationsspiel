@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const createLobbyButton = document.getElementById('create-lobby');
     const joinLobbyButton = document.getElementById('join-lobby');
+    const errorMessageDiv = document.getElementById('error-message');
     const socket = io("https://assoziationsspiel-backend-dcf85e77dc96.herokuapp.com/");
 
     // Lobby erstellen
@@ -18,15 +19,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Socket.io Ereignisse
     socket.on('lobbyCreated', (lobbyCode) => {
-        alert(`Lobby erstellt! Code: ${lobbyCode}`);
-        window.location.href = `lobby.html?lobbyCode=${lobbyCode}`; // Weiterleitung zur Lobby-Seite
+        // Weiterleitung zur Lobby-Seite
+        window.location.href = `lobby.html?lobbyCode=${lobbyCode}`;
     });
 
-    socket.on('playerJoined', (playersList) => {
-        console.log('Aktuelle Spieler:', playersList);
+    socket.on('error', (errorMessage) => {
+        showErrorMessage(errorMessage);
     });
 
-    socket.on('error ', (errorMessage) => {
-        alert(errorMessage);
-    });
+    // Funktion zur Anzeige von Fehlermeldungen
+    function showErrorMessage(message) {
+        errorMessageDiv.textContent = message;
+    }
 });
