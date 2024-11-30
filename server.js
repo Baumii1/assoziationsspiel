@@ -10,6 +10,11 @@ let lobbies = {}; // Stores the lobbies and players
 // Middleware for static files
 app.use(express.static('public'));
 
+const cors = require('cors');
+app.use(cors({
+    origin: 'https://baumii1.github.io/assoziationsspiel/' // Ersetze dies mit deiner Frontend-Domain
+}));
+
 const PORT = process.env.PORT || 3000; // Verwende den Port von Heroku oder 3000 für lokale Entwicklung
 server.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
