@@ -49,15 +49,17 @@ h1, h2 {
 }
 
 .btn {
+    width: 100%; /* Button auf volle Breite */
     padding: 20px; /* Größeres Padding */
     border: none;
-    border-radius: 5px;
-    background-color: #ffffff; /* Weißer Hintergrund */
-    color: #1a1a4a; /* Textfarbe passend zum Hintergrund */
+    border-radius: 10px; /* Abgerundete Ecken */
+    background-color: #ffffff; /* Button Hintergrundfarbe */
+    color: #0B0C10; /* Schriftfarbe */
     font-size: 24px; /* Größere Schriftgröße */
+    font-weight: bold; /* Fettschrift */
     cursor: pointer;
-    width: 100%; /* Volle Breite */
-    transition: background-color 0.3s; /* Nur Hintergrundfarbe bei Hover */
+    transition: background 0.3s, transform 0.2s;
+    margin-top: 15px; /* Abstand nach oben zu den Buttons */
 }
 
 .btn:disabled {
@@ -81,8 +83,8 @@ input[type="text"] {
     padding: 20px; /* Größeres Padding */
     margin: 10px 0;
     border: 3px solid #3a3a6a; /* Dickere Umrandung */
-    border-radius: 5px;
-    width: 350px; /* Breiteres Eingabefeld */
+    border-radius: 10px; /* Abgerundete Ecken */
+    width: 100%; /* Breiteres Eingabefeld */
     font-size: 24px; /* Größere Schriftgröße */
     transition: border-color 0.3s;
     background-color: #ffffff; /* Weißer Hintergrund */
