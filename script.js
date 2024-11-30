@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultScreen = document.getElementById('result-screen');
     const playersDiv = document.getElementById('players');
     const currentWordDisplay = document.getElementById('current-word');
-    const resultsDiv = document.getElementById('results');
     const socket = io("https://assoziationsspiel-backend-dcf85e77dc96.herokuapp.com/"); // Socket.io instance
 
     let lobbyCode;
@@ -58,9 +57,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to start the game
     function startGame() {
-        startScreen.style.display = 'none';
-        gameScreen.style.display = 'block';
-        socket.emit('startGame', lobbyCode);
+        if (startScreen && gameScreen) {
+            startScreen.style.display = 'none';
+            gameScreen.style.display = 'block';
+            socket.emit('startGame', lobbyCode);
+        } else {
+            console.error('Start- oder Spielbildschirm nicht gefunden.');
+        }
     }
 
     // Socket.io event: Game started
