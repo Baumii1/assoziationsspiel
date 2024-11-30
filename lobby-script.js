@@ -66,6 +66,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Funktion zur Anzeige von Fehlermeldungen
     function showErrorMessage(message) {
-        errorMessageDiv.textContent = message;
+        const errorMessageDiv = document.getElementById('error-message');
+        if (errorMessageDiv) { // Überprüfen, ob das Element existiert
+            errorMessageDiv.textContent = message;
+        } else {
+            console.error('Fehlermeldungselement nicht gefunden:', message);
+        }
     }
 });
