@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="start-screen" class="screen">
+    <div id="start-screen" class="screen" style="display: block;">
         <h1>Das große <span class="gradient-text">ASSOZIATIONS</span> Spiel</h1>
         <input type="text" id="lobbyCode" placeholder="Room ID">
         <button id="create-lobby" class="btn">Erstellen</button>
@@ -15,12 +15,14 @@
     </div>
 
     <div id="game-screen" class="screen" style="display: none;">
+        <h1>Das große <span class="gradient-text">ASSOZIATIONS</span> Spiel</h1>
         <h2 id="current-word">Überbegriff: </h2>
         <div id="players"></div>
         <button id="reveal" class="btn">Reveal</button>
     </div>
 
     <div id="result-screen" class="screen" style="display: none;">
+        <h1>Das große <span class="gradient-text">ASSOZIATIONS</span> Spiel</h1>
         <h2>Ergebnisse</h2>
         <div id="results"></div>
         <button id="correct" class="btn">Richtig</button>
