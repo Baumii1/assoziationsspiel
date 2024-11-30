@@ -11,9 +11,10 @@ let lobbies = {}; // Stores the lobbies and players
 // Middleware for static files
 app.use(express.static('public'));
 
-const cors = require('cors');
 app.use(cors({
-    origin: 'https://baumii1.github.io/' // Ersetze dies mit deiner Frontend-Domain
+    origin: 'https://baumii1.github.io/', // Ersetze dies mit deiner Frontend-Domain
+    methods: ['GET', 'POST'], // Erlaubte HTTP-Methoden
+    credentials: true
 }));
 
 const PORT = process.env.PORT || 3000; // Verwende den Port von Heroku oder 3000 für lokale Entwicklung
