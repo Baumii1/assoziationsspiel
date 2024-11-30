@@ -5,7 +5,15 @@ const cors = require('cors');
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server, { cors: { origin: '*' } });
+const io = socketIo(server, {
+    cors: {
+        origin: '*', // Erlaube alle Ursprünge
+        methods: ['GET', 'POST'],
+        credentials: true
+    },
+    pingTimeout: 60000, // Zeit, bis der Server die Verbindung trennt
+    pingInterval: 25000 // Häufigkeit, mit der der Server Pings sendet
+});
 
 let lobbies = {}; // Speichert die Lobbys und Spieler
 
@@ -41,6 +49,7 @@ io.on('connection', (socket) => {
                     socket.emit('lobbyJoined', lobbyCode)
                     io.to(lobbyCode).emit('playerJoined', lobbies[lobbyCode].players);
                     console.log(`Spieler ${socket.id} ist der Lobby ${lobbyCode} beigetreten.`);
+                    //socket.emit('redirect', `lobby.html?lobbyCode=${lobbyCode}`);
                 } else {
                     socket.emit('error', 'Du bist bereits in dieser Lobby.');
                 }

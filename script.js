@@ -24,10 +24,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Socket.io Ereignisse
-    /*socket.on('lobbyCreated', (lobbyCode) => {
+    socket.on('lobbyCreated', (lobbyCode) => {
         // Weiterleitung zur Lobby-Seite
         window.location.href = `lobby.html?lobbyCode=${lobbyCode}`;
-    });*/
+    });
 
     socket.on('error', (errorMessage) => {
         messageDiv.textContent = errorMessage;
