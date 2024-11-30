@@ -46,6 +46,7 @@ h1, h2 {
     display: flex; /* Buttons nebeneinander anordnen */
     gap: 10px; /* Abstand zwischen den Buttons */
     margin-top: 10px; /* Abstand zum Textfeld */
+    width: 500px;
 }
 
 .btn {
@@ -113,7 +114,7 @@ input[type="text"]:focus {
 .lobby-code {
     flex: 1;
     font-size: 1.5em; /* Größere Schriftgröße */
-    color: #ffffff; /* Textfarbe für Lobby-Code */
+    color: #3a3a6a; /* Textfarbe für Lobby-Code */
 }
 
 .copy-button {
