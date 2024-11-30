@@ -7,15 +7,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorMessageDiv = document.getElementById('error-message');
     const lobbyCodeInput = document.getElementById('lobbyCode'); // Das Input-Feld für den Lobby-Code
 
+    // Überprüfen, ob die Elemente existieren
+    if (!lobbyCodeDisplay || !lobbyCodeInput || !copyButton || !playersDiv || !startGameButton || !errorMessageDiv) {
+        console.error('Eines oder mehrere Elemente konnten nicht gefunden werden.');
+        return; // Stoppe die Ausführung, wenn ein Element fehlt
+    }
+
     // Lobby-Code aus der URL abrufen
     const lobbyCode = new URLSearchParams(window.location.search).get('lobbyCode');
     lobbyCodeDisplay.textContent = lobbyCode; // Lobby-Code anzeigen
     lobbyCodeInput.value = lobbyCode; // Lobby-Code ins Input-Feld einfügen
-
-    // Funktion zum Setzen des Lobby-Codes in das Eingabefeld
-    function setLobbyCode() {
-        lobbyCodeInput.value = lobbyCode; // Setze den aktuellen Lobby-Code
-    }
 
     // Event-Listener für den Copy-Button
     copyButton.addEventListener('click', function() {
@@ -43,7 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Spiel starten
     startGameButton.addEventListener('click', () => {
-        // Logik zum Starten des Spiels
         console.log('Spiel wird gestartet...');
     });
 
@@ -51,7 +51,4 @@ document.addEventListener('DOMContentLoaded', () => {
     function showErrorMessage(message) {
         errorMessageDiv.textContent = message;
     }
-
-    // Setze den Lobby-Code beim Laden der Seite
-    window.onload = setLobbyCode; // Dies ist redundant, da der Lobby-Code bereits gesetzt wurde
 });
