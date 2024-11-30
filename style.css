@@ -48,35 +48,77 @@ h1, h2 {
     margin: 10px 0;
     border: none;
     border-radius: 10px;
-    background-color: #3a3a6a; /* Dunkelgrauer Hintergrund */
-    color: #ffffff;
-    font-size: 16px;
+    background-color: #ffffff; /* Weißer Hintergrund */
+    color: #1a1a4a; /* Textfarbe passend zum Hintergrund */
+    font-size: 18px; /* Größere Schriftgröße */
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s, transform 0.2s, opacity 0.3s;
     width: 100%; /* Volle Breite */
-    max-width: 300px; /* Maximale Breite */
+    max-width: 400px; /* Maximale Breite */
+}
+
+.btn:disabled {
+    opacity: 0.5; /* Leicht transparent bei deaktiviertem Zustand */
+    cursor: not-allowed; /* Zeiger nicht erlaubt */
 }
 
 .btn:hover {
-    background-color: #555; /* Hellerer Hintergrund bei Hover */
+    background-color: #f0f0f0; /* Hellerer Hintergrund bei Hover */
     transform: scale(1.05); /* Leichtes Vergrößern bei Hover */
 }
 
 /* Eingabefeld-Stile */
 input[type="text"] {
-    padding: 10px;
+    padding: 15px; /* Größeres Padding */
     margin: 10px 0;
-    border: 2px solid #3a3a6a; /* Dunkelgraue Umrandung */
+    border: 3px solid #3a3a6a; /* Dickere Umrandung */
     border-radius: 5px;
     width: 100%; /* Volle Breite */
-    max-width: 300px; /* Maximale Breite */
-    font-size: 16px;
+    max-width: 400px; /* Maximale Breite */
+    font-size: 18px; /* Größere Schriftgröße */
     transition: border-color 0.3s;
+    background-color: #1a1a4a; /* Hintergrundfarbe für Textfelder */
+    color: #ffffff; /* Textfarbe */
 }
 
 input[type="text"]::placeholder {
     color: #9ca3af; /* Hellgraue Platzhalterfarbe */
+}
+
+/* Lobby-Code Feld */
+.lobby-code-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 3px solid #3a3a6a; /* Dicke Umrandung */
+    border-radius: 5px;
+    background-color: #1a1a4a; /* Hintergrundfarbe für Lobby-Code */
+}
+
+.lobby-code {
+    flex: 1;
+    font-size: 1.5em; /* Größere Schriftgröße */
+    color: #ffffff; /* Textfarbe für Lobby-Code */
+}
+
+.copy-button {
+    margin-left: 10px;
+    padding: 5px; /* Padding anpassen */
+    background-color: transparent; /* Hintergrund transparent */
+    border: none; /* Kein Rahmen */
+    cursor: pointer; /* Zeiger bei Hover */
+    transition: background-color 0.3s; /* Übergangseffekt */
+}
+
+.copy-button:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Leichter Hintergrund bei Hover */
+}
+
+.copy-icon {
+    width: 24px; /* Größe des Icons */
+    height: 24px; /* Größe des Icons */
+    filter: invert(1); /* Invertiere die Farben, um das Icon weiß zu machen */
 }
 
 /* Ergebnisse */
@@ -97,11 +139,12 @@ input[type="text"]::placeholder {
 @media (max-width: 600px) {
     .btn {
         width: 90%; /* Button auf mobilen Geräten breiter machen */
-        font-size: 14px;
+        font-size: 16px; /* Schriftgröße anpassen */
     }
 
     input[type="text"] {
         width: 90%; /* Eingabefeld auf mobilen Geräten breiter machen */
+        font-size: 16px; /* Schriftgröße anpassen */
     }
 }
 
@@ -223,40 +266,4 @@ input[type="text"]::placeholder {
 
 .screen.show {
     opacity: 1;
-}
-
-
-
-
-/* Stil für den Lobby-Code Kasten */
-.lobby-code-container {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid #1ABC9C;
-    border-radius: 5px;
-    background-color: #E8F5E9;
-}
-.lobby-code {
-    flex: 1;
-    font-size: 1.2em;
-    color: #1ABC9C;
-}
-.copy-button {
-    margin-left: 10px;
-    padding: 5px 10px;
-    background-color: #1ABC9C;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-.copy-button:hover {
-    background-color: #16A085;
-}
-.error-message {
-    color: red;
-    margin-top: 10px;
 }

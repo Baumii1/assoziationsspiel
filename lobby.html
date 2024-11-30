@@ -8,8 +8,10 @@
 </head>
 <body>
     <div class="lobby-code-container">
-        <span class="lobby-code" id="lobby-code-display"></span>
-        <button class="copy-button" id="copy-button">Kopieren</button>
+        <div class="lobby-code" id="lobby-code">Lobby-Code: RXYHU9</div>
+        <button class="copy-button" id="copy-button">
+            <img src="Bilder/copy-icon.png" alt="Copy" class="copy-icon" />
+        </button>
     </div>
     <div class="error-message" id="error-message"></div> <!-- Fehlernachricht -->
     <div id="game-screen" class="screen">
@@ -17,7 +19,7 @@
         <div id="players"></div>
         <button id="start-game" class="btn">Spiel starten</button>
     </div>
-    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
     <script src="lobby-script.js"></script>
 </body>
 </html>
