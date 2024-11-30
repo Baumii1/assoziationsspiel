@@ -41,6 +41,10 @@ document.addEventListener('DOMContentLoaded', () => {
             playerElement.textContent = player;
             playersDiv.appendChild(playerElement);
         });
+
+        // Überprüfen, ob der Spieler der Host ist
+        const isHost = playersList[0] === socket.id; // Annahme: Der erste Spieler ist der Host
+        startGameButton.style.display = isHost ? 'block' : 'none'; // Start-Button nur für den Host anzeigen
     });
 
     // Fehlerbehandlung
@@ -50,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Spiel starten
     startGameButton.addEventListener('click', () => {
+        socket.emit('startGame', lobbyCode); // Spielstart an den Server senden
         console.log('Spiel wird gestartet...');
     });
 
