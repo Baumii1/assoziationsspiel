@@ -2,27 +2,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const socket = io("https://assoziationsspiel-backend-dcf85e77dc96.herokuapp.com/");
     const playersDiv = document.getElementById('players');
     const startGameButton = document.getElementById('start-game');
-    const lobbyCodeDisplay = document.getElementById('lobby-code-display');
-    const copyButton = document.getElementById('copy-button');
+    const lobbyCodeDisplay = document.getElementById('lobbyCode'); // Das P-Element für den Lobby-Code
+    const copyButton = document.getElementById('copy-button'); // Der Copy-Button
     const errorMessageDiv = document.getElementById('error-message');
-    const lobbyCodeInput = document.getElementById('lobbyCode'); // Das Input-Feld für den Lobby-Code
-
-    // Überprüfen, ob die Elemente existieren
-    if (!lobbyCodeDisplay || !lobbyCodeInput || !copyButton || !playersDiv || !startGameButton || !errorMessageDiv) {
-        console.error('Eines oder mehrere Elemente konnten nicht gefunden werden.');
-        return; // Stoppe die Ausführung, wenn ein Element fehlt
-    }
 
     // Lobby-Code aus der URL abrufen
     const lobbyCode = new URLSearchParams(window.location.search).get('lobbyCode');
     lobbyCodeDisplay.textContent = lobbyCode; // Lobby-Code anzeigen
-    lobbyCodeInput.value = lobbyCode; // Lobby-Code ins Input-Feld einfügen
 
     // Event-Listener für den Copy-Button
     copyButton.addEventListener('click', function() {
-        lobbyCodeInput.select(); // Wähle den Lobby-Code im Input-Feld aus
+        const range = document.createRange();
+        range.selectNode(lobbyCodeDisplay); // Wähle den Lobby-Code im P-Element aus
+        window.getSelection().removeAllRanges(); // Entferne vorherige Auswahl
+        window.getSelection().addRange(range); // Füge die neue Auswahl hinzu
         document.execCommand('copy'); // Kopiere den ausgewählten Text
-        alert('Lobby-Code kopiert: ' + lobbyCodeInput.value); // Bestätigungsnachricht
+        alert('Lobby-Code kopiert: ' + lobbyCodeDisplay.textContent); // Bestätigungsnachricht
+        window.getSelection().removeAllRanges(); // Auswahl zurücksetzen
     });
 
     socket.emit('joinLobby', lobbyCode); // Spieler der Lobby beitreten
