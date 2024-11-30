@@ -33,6 +33,7 @@ io.on('connection', (socket) => {
     // Lobby beitreten
     socket.on('joinLobby', (lobbyCode) => {
         if (lobbies[lobbyCode]) {
+            // Spieler der Lobby beitreten
             if (lobbies[lobbyCode].players.length < 4) {
                 if (!lobbies[lobbyCode].players.includes(socket.id)) {
                     lobbies[lobbyCode].players.push(socket.id);
