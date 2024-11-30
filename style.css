@@ -70,7 +70,8 @@ html, body {
 #popup-message {
     background-color: #d4edda; /* Heller Hintergrund für das Popup */
     border: 1px solid #c3e6cb; /* Border-Farbe */
-    padding: 30px;
+    padding: 10px;
+    margin-top: 20px;
     border-radius: 5px;
     transition: opacity 0.5 s ease; /* Übergangseffekt */
 }

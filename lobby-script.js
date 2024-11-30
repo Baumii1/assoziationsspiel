@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Spielerliste aktualisieren
     socket.on('playerJoined', (playersList) => {
-        playersDiv.innerHTML = '';
+        playersDiv.innerHTML = ''; // Vorherige Spieler-Liste leeren
         playersList.forEach(player => {
             const playerElement = document.createElement('div');
             playerElement.classList.add('player');
@@ -55,12 +55,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 socket.emit('kickPlayer', player.id); // Kick-Event an den Server senden
             };
             playerElement.appendChild(kickButton);
-            playersDiv.appendChild(playerElement);
+            playersDiv.appendChild(playerElement); // Spieler-Element zur Liste hinzufügen
         });
 
         // Überprüfen, ob der Spieler der Host ist
-        const isHost = playersList[0].id === socket.id;
-        startGameButton.style.display = isHost ? 'block' : 'none';
+        const isHost = playersList.some(player => player.id === socket.id && player.isHost);
+        startGameButton.style.display = isHost ? 'block' : 'none'; // Spiel starten Button anzeigen, wenn Host
     });
 
     // Fehlerbehandlung
@@ -77,5 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Funktion zur Anzeige von Fehlermeldungen
     function showErrorMessage(message) {
         errorMessageDiv.textContent = message;
+        errorMessageDiv.classList.remove('hidden'); // Fehleranzeige sichtbar machen
     }
 });
