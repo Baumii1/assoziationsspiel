@@ -42,24 +42,33 @@ h1, h2 {
     font-size: 1.5em;
 }
 
-/* Button-Stile */
+.button-container {
+    display: flex; /* Buttons nebeneinander anordnen */
+    gap: 10px; /* Abstand zwischen den Buttons */
+    margin-top: 10px; /* Abstand zum Textfeld */
+}
+
 .btn {
-    padding: 20px 40px; /* Größeres Padding */
-    margin: 10px 0;
+    padding: 20px; /* Größeres Padding */
     border: none;
-    border-radius: 10px;
+    border-radius: 5px;
     background-color: #ffffff; /* Weißer Hintergrund */
     color: #1a1a4a; /* Textfarbe passend zum Hintergrund */
     font-size: 24px; /* Größere Schriftgröße */
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s, opacity 0.3s;
     width: 100%; /* Volle Breite */
-    max-width: 400px; /* Maximale Breite */
+    transition: background-color 0.3s; /* Nur Hintergrundfarbe bei Hover */
 }
 
-.btn:disabled, .copy-button:disabled {
+.btn:disabled {
     opacity: 0.5; /* Leicht transparent bei deaktiviertem Zustand */
     cursor: not-allowed; /* Zeiger nicht erlaubt */
+    pointer-events: none; /* Keine Interaktionen */
+}
+
+button:disabled:hover,
+button:disabled:active {
+    background-color: #ffffff; /* Keine Hintergrundfarbe beim Hover oder Drücken */
 }
 
 .btn:hover, .copy-button:hover {
@@ -73,8 +82,7 @@ input[type="text"] {
     margin: 10px 0;
     border: 3px solid #3a3a6a; /* Dickere Umrandung */
     border-radius: 5px;
-    width: 100%; /* Volle Breite */
-    max-width: 400px; /* Maximale Breite */
+    width: 350px; /* Breiteres Eingabefeld */
     font-size: 24px; /* Größere Schriftgröße */
     transition: border-color 0.3s;
     background-color: #ffffff; /* Weißer Hintergrund */
