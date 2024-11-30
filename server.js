@@ -38,9 +38,9 @@ io.on('connection', (socket) => {
                 if (!lobbies[lobbyCode].players.includes(socket.id)) {
                     lobbies[lobbyCode].players.push(socket.id);
                     socket.join(lobbyCode);
+                    socket.emit('lobbyJoined', lobbyCode)
                     io.to(lobbyCode).emit('playerJoined', lobbies[lobbyCode].players);
                     console.log(`Spieler ${socket.id} ist der Lobby ${lobbyCode} beigetreten.`);
-                    socket.emit('redirect', `lobby.html?lobbyCode=${lobbyCode}`);
                 } else {
                     socket.emit('error', 'Du bist bereits in dieser Lobby.');
                 }
