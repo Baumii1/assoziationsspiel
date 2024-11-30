@@ -40,14 +40,22 @@ io.on('connection', (socket) => {
         socket.emit('lobbyCreated', lobbyCode);
     });
 
-    // Join a lobby
+    // Improved error handling for joining a lobby
     socket.on('joinLobby', (lobbyCode) => {
+        if (!lobbyCode) {
+            socket.emit('error', 'Lobby code is required.');
+            return;
+        }
         if (lobbies[lobbyCode]) {
             if (lobbies[lobbyCode].players.length < 4) {
-                lobbies[lobbyCode].players.push(socket.id);
-                socket.join(lobbyCode);
-                io.to(lobbyCode).emit('playerJoined', lobbies[lobbyCode].players);
-                checkPlayerCount(lobbyCode);
+                if (!lobbies[lobbyCode].players.includes(socket.id)) {
+                    lobbies[lobbyCode].players.push(socket.id);
+                    socket.join(lobbyCode);
+                    io.to(lobbyCode).emit('playerJoined', lobbies[lobbyCode].players);
+                    checkPlayerCount(lobbyCode);
+                } else {
+                    socket.emit('error', 'You are already in this lobby.');
+                }
             } else {
                 socket.emit('error', 'The lobby is full. Maximum 4 players allowed.');
             }
@@ -98,6 +106,11 @@ io.on('connection', (socket) => {
             if (index !== -1) {
                 lobbies[lobbyCode].players.splice(index, 1);
                 io.to(lobbyCode).emit('playerJoined', lobbies[lobbyCode].players);
+                // Remove lobby if no players left
+                if (lobbies[lobbyCode].players.length === 0) {
+                    delete lobbies[lobbyCode];
+                    console.log(`Lobby ${lobbyCode} has been removed as it is empty.`);
+                }
                 break;
             }
         }

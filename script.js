@@ -46,6 +46,10 @@ socket.on('playerJoined', (playersList) => {
 function checkPlayerCount() {
     if (playerCount >= 2 && playerCount <= 4) {
         alert(`There are ${playerCount} players in the lobby. The game can start!`);
+        // Start the game automatically if the count is sufficient
+        if (playerCount === 4) {
+            startGame();
+        }
     } else {
         alert('There must be at least 2 and at most 4 players in the lobby.');
     }
@@ -117,17 +121,6 @@ socket.on('nextWord', (word) => {
     currentWord = word;
     currentWordDisplay.textContent = `Association: ${currentWord}`;
 });
-
-// Function to get a new word
-function getNewWord() {
-    fetch('words.json')
-        .then(response => response.json())
-        .then(data => {
-            const randomIndex = Math.floor(Math.random() * data.length);
-            currentWord = data[randomIndex];
-            currentWordDisplay.textContent = `Association: ${currentWord}`;
-        });
-}
 
 // Initialize the game
 function initializeGame() {

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lobby</title>
+    <link rel="stylesheet" href="style.css"> 
+</head>
+<body> 
+    <div id="start-screen" class="screen">
+        <h1 class="gradient-text">Assoziationsspiel</h1>
+        <button id="create-lobby" class="btn">Lobby erstellen</button>
+        <button id="join-lobby" class="btn">Lobby beitreten</button>
+    </div>
+    <div id="game-screen" class="screen" style="display: none;">
+        <h2>Aktuelles Wort</h2>
+        <div id="current-word"></div>
+        <div id="players"></div>
+        <button id="reveal" class="btn">Aufdecken</button>
+        <button id="correct" class="btn">Richtig</button>
+        <button id="incorrect" class="btn">Falsch</button>
+        <button id="next" class="btn">Nächstes Wort</button>
+    </div>
+    
+    <div id="result-screen" class="screen" style="display: none;">
+        <h2>Ergebnisse</h2>
+        <div id="results"></div>
+        <button class="btn" onclick="location.reload();">Zurück zum Start</button>
+    </div>
+    
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

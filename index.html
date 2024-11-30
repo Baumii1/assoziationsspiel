@@ -7,28 +7,14 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="start-screen" class="screen">
-        <h1>Das große <span class="gradient-text">ASSOZIATIONS</span> Spiel</h1>
-        <input type="text" id="lobbyCode" placeholder="Room ID">
+    <div class="screen">
+        <h1>Das große <br><span class="gradient-text">ASSOZIATIONS</span><br></b> Spiel</h1>
+        <input type="text" id="lobbyCode" placeholder="Raum-ID">
         <button id="create-lobby" class="btn">Erstellen</button>
-        <button id="join-lobby" class="btn">Beitreten</button>
+        <button id="join-lobby" class="btn" disabled>Beitreten</button>
+        <div id="message" class="hidden"></div> <!-- Nachrichtenelement -->
     </div>
 
-    <div id="game-screen" class="screen" style="display: none;">
-        <h1>Das große <br><span class="gradient-text"><br>ASSOZIATIONS</span> Spiel</h1>
-        <h2 id="current-word">Überbegriff: </h2>
-        <div id="players"></div>
-        <button id="reveal" class="btn">Reveal</button>
-    </div>
-
-    <div id="result-screen" class="screen" style="display: none;">
-        <h1>Das große <span class="gradient-text">ASSOZIATIONS</span> Spiel</h1>
-        <h2>Ergebnisse</h2>
-        <div id="results"></div>
-        <button id="correct" class="btn">Richtig</button>
-        <button id="incorrect" class="btn">Falsch</button>
-        <button id="next" class="btn">Weiter</button>
-    </div>
     <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
     <script src="script.js"></script>
 </body>
