@@ -294,3 +294,7 @@ input[type="text"]:focus {
 .screen.show {
     opacity: 1;
 }
+
+.message {
+    margin: 15px;
+}
