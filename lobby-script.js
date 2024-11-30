@@ -11,6 +11,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const lobbyCode = new URLSearchParams(window.location.search).get('lobbyCode');
     lobbyCodeDisplay.textContent = lobbyCode; // Lobby-Code anzeigen
 
+    // Spieler der Lobby beitreten
+    socket.emit('joinLobby', lobbyCode); // Spieler der Lobby beitreten
+
     // Event-Listener für den Copy-Button
     copyButton.addEventListener('click', function() {
         const range = document.createRange();
@@ -30,8 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         window.getSelection().removeAllRanges(); // Auswahl zurücksetzen
     });
-
-    socket.emit('joinLobby', lobbyCode); // Spieler der Lobby beitreten
 
     // Spielerliste aktualisieren
     socket.on('playerJoined', (playersList) => {
