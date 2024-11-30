@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const joinLobbyButton = document.getElementById('join-lobby'); // Der Beitreten-Button
     const messageDiv = document.getElementById('message'); // Das Nachrichtenelement
 
-    // Lobby erstellen ```javascript
+    // Lobby erstellen
     createLobbyButton.addEventListener('click', () => {
         socket.emit('createLobby');
     });
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     socket.on('error', (errorMessage) => {
         messageDiv.textContent = errorMessage;
         messageDiv.classList.remove('hidden');
-    });
+    })
 
     // Aktivierung des Beitreten-Buttons, wenn ein Lobby-Code eingegeben wird
     lobbyCodeInput.addEventListener('input', function() {
