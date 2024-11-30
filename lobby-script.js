@@ -11,8 +11,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const lobbyCode = new URLSearchParams(window.location.search).get('lobbyCode');
     lobbyCodeDisplay.textContent = lobbyCode;
 
+    // Nickname aus Cookies abrufen
+    const nickname = getCookie('nickname'); // Stelle sicher, dass diese Funktion vorhanden ist
+
     // Spieler der Lobby beitreten
-    socket.emit('joinLobby', lobbyCode);
+    socket.emit('joinLobby', { lobbyCode, nickname }); // Sende Lobby-Code und Nicknamen
 
     // Event-Listener für den Copy-Button
     copyButton.addEventListener('click', function() {
@@ -78,5 +81,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function showErrorMessage(message) {
         errorMessageDiv.textContent = message;
         errorMessageDiv.classList.remove('hidden'); // Fehleranzeige sichtbar machen
+    }
+
+    // Funktion zum Abrufen eines Cookies
+    function getCookie(name) {
+        return document.cookie.split('; ').reduce((r, v) => {
+            const parts = v.split('=');
+            return parts[0] === name ? decodeURIComponent(parts[1]) : r;
+        }, '');
     }
 });

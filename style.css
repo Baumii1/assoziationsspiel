@@ -146,6 +146,7 @@ input[type="text"] {
     font-size: 24px; /* Größere Schriftgröße */
     transition: border-color 0.3s;
     background-color: #1a1a4a; /* Weißer Hintergrund */
+    color: white;
 }
 
 input[type="text"]:focus {
