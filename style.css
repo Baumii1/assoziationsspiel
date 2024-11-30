@@ -83,7 +83,7 @@ input[type="text"] {
     padding: 20px; /* Größeres Padding */
     margin: 10px 0;
     border: 3px solid #3a3a6a; /* Dickere Umrandung */
-    border-radius: 10px; /* Abgerundete Ecken */
+    border-radius: 20px; /* Abgerundete Ecken */
     width: 100%; /* Breiteres Eingabefeld */
     font-size: 24px; /* Größere Schriftgröße */
     transition: border-color 0.3s;
@@ -270,9 +270,10 @@ input[type="text"]:focus {
 }
 
 /* Fehleranzeige */
-.error {
-    color: #ff0000; /* Rote Farbe für Fehler */
-    font-size: 16px;
+.error-message {
+    color: red; /* Rote Schriftfarbe für Fehler */
+    font-weight: bold; /* Fettschrift */
+    margin: 10px 0; /* Abstand oben und unten */
 }
 
 /* Animationen für die Buttons */
