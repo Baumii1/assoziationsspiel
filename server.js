@@ -10,9 +10,9 @@ let lobbies = {}; // Stores the lobbies and players
 // Middleware for static files
 app.use(express.static('public'));
 
-// Server start
-server.listen(3000, () => {
-    console.log('Server running on http://localhost:3000');
+const PORT = process.env.PORT || 3000; // Verwende den Port von Heroku oder 3000 für lokale Entwicklung
+server.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
 });
 
 // Socket.io connection
