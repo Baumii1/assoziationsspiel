@@ -14,6 +14,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Spieler der Lobby beitreten
     socket.emit('joinLobby', lobbyCode); // Spieler der Lobby beitreten
 
+    // Weiterleitung zur Lobby-Seite
+    socket.on('redirect', (url) => {
+        window.location.href = url; // Weiterleitung zur Lobby-Seite
+    });
+
     // Event-Listener für den Copy-Button
     copyButton.addEventListener('click', function() {
         const range = document.createRange();

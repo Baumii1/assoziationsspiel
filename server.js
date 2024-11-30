@@ -40,6 +40,7 @@ io.on('connection', (socket) => {
                     socket.join(lobbyCode);
                     io.to(lobbyCode).emit('playerJoined', lobbies[lobbyCode].players);
                     console.log(`Spieler ${socket.id} ist der Lobby ${lobbyCode} beigetreten.`);
+                    socket.emit('redirect', `lobby.html?lobbyCode=${lobbyCode}`);
                 } else {
                     socket.emit('error', 'Du bist bereits in dieser Lobby.');
                 }
