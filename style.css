@@ -44,13 +44,13 @@ h1, h2 {
 
 /* Button-Stile */
 .btn {
-    padding: 15px 30px;
+    padding: 20px 40px; /* Größeres Padding */
     margin: 10px 0;
     border: none;
     border-radius: 10px;
     background-color: #ffffff; /* Weißer Hintergrund */
     color: #1a1a4a; /* Textfarbe passend zum Hintergrund */
-    font-size: 20px; /* Größere Schriftgröße */
+    font-size: 24px; /* Größere Schriftgröße */
     cursor: pointer;
     transition: background-color 0.3s, transform 0.2s, opacity 0.3s;
     width: 100%; /* Volle Breite */
@@ -64,21 +64,22 @@ h1, h2 {
 
 .btn:hover, .copy-button:hover {
     background-color: #f0f0f0; /* Hellerer Hintergrund bei Hover */
-    transform: scale(1.05); /* Leichtes Ver größern bei Hover */
+    transform: scale(1.05); /* Leichtes Vergrößern bei Hover */
 }
 
 /* Eingabefeld-Stile */
 input[type="text"] {
-    padding: 15px; /* Größeres Padding */
+    padding: 20px; /* Größeres Padding */
     margin: 10px 0;
     border: 3px solid #3a3a6a; /* Dickere Umrandung */
     border-radius: 5px;
     width: 100%; /* Volle Breite */
     max-width: 400px; /* Maximale Breite */
-    font-size: 20px; /* Größere Schriftgröße */
+    font-size: 24px; /* Größere Schriftgröße */
     transition: border-color 0.3s;
     background-color: #1a1a4a; /* Hintergrundfarbe für Textfelder */
     color: #ffffff; /* Textfarbe */
+    cursor: default; /* Cursor als Standard anzeigen */
 }
 
 input[type="text"]::placeholder {
@@ -111,6 +112,8 @@ input[type="text"]::placeholder {
     border: none; /* Kein Rahmen */
     cursor: pointer; /* Zeiger bei Hover */
     transition: background-color 0.3s; /* Übergangseffekt */
+    border-radius: 5px;
+    transition: border-color 0.3s;
 }
 
 .copy-button:hover {

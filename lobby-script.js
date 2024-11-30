@@ -11,12 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Funktion zum Kopieren des Lobby-Codes in die Zwischenablage
     copyButton.addEventListener('click', function() {
-        const lobbyCode = document.getElementById('lobby-code').textContent;
-        navigator.clipboard.writeText(lobbyCode).then(() => {
-            alert('Lobby-Code kopiert: ' + lobbyCode); // Optional: Benutzerfeedback
-        }).catch(err => {
-            console.error('Fehler beim Kopieren: ', err);
-        });
+        const lobbyCodeInput = document.getElementById('lobbyCode');
+        lobbyCodeInput.select();
+        document.execCommand('copy');
+        alert('Lobby-Code kopiert: ' + lobbyCodeInput.value);
     });
 
     socket.emit('joinLobby', lobbyCode);
