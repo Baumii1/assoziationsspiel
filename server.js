@@ -7,7 +7,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
     cors: {
-        origin: '*', // Erlaube alle Ursprünge
+        origin: 'https://baumii1.github.io', // Erlaube alle Ursprünge
         methods: ['GET', 'POST'],
         credentials: true
     },
