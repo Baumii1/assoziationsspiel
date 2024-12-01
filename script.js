@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const createLobbyButton = document.getElementById('create-lobby');
     const joinLobbyButton = document.getElementById('join-lobby');
     const nicknameInput = document.getElementById('nickname');
-    const nicknameMessage = document.getElementById('nickname-message');
     const messageDiv = document.getElementById('message');
 
     // Überprüfen, ob ein Nickname in den Cookies gespeichert ist
@@ -19,10 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const nickname = this.value.trim();
         if (nickname) {
             setCookie('nickname', nickname, 30); // Speichere den Nickname in Cookies
-            nicknameMessage.classList.add('hidden'); // Verstecke die Nachricht
         } else {
-            nicknameMessage.textContent = 'Bitte geben Sie einen Nicknamen ein.';
-            nicknameMessage.classList.remove('hidden'); // Zeige die Nachricht
+            showErrorMessage('Bitte geben Sie einen Nicknamen ein.');
         }
         updateButtons(); // Überprüfe die Schaltflächen
     });
@@ -42,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (lobbyCode && nickname) {
             socket.emit('joinLobby', { lobbyCode, nickname }); // Nickname zusammen mit dem Lobby-Code senden
         } else {
-            alert('Bitte geben Sie einen Lobby-Code ein oder stellen Sie sicher, dass Sie einen Nicknamen haben.');
+            showErrorMessage('Bitte geben Sie einen Lobby-Code ein oder stellen Sie sicher, dass Sie einen Nicknamen haben.');
         }
     });
     
@@ -61,6 +58,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Aktivierung des Beitreten-Buttons, wenn ein Lobby-Code eingegeben wird
     lobbyCodeInput.addEventListener('input', function() {
         updateButtons(); // Überprüfe die Schaltflächen
+    });
+
+    socket.on('error', (errorMessage) => {
+        showErrorMessage(errorMessage);
     });
 
     // Funktion um die Buttons zu aktivieren oder zu deaktivieren
@@ -83,5 +84,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const parts = v.split('=');
             return parts[0] === name ? decodeURIComponent(parts[1]) : r;
         }, '');
+    }
+
+    // Beispiel für die Fehlerbehandlung
+    function showErrorMessage(message) {
+        messageDiv.textContent = message;
+        messageDiv.classList.remove('hidden'); // Fehleranzeige sichtbar machen
+
+        // Nach 5 Sekunden die Nachricht ausblenden
+        setTimeout(() => {
+            messageDiv.classList.add('hidden'); // Nachricht ausblenden
+        }, 5000); // 5 Sekunden
     }
 });
