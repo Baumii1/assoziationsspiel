@@ -183,7 +183,7 @@ io.on('connection', (socket) => {
                 lobbies[lobbyCode].gameActive = true; // Setze das Spiel auf aktiv
                 io.to(lobbyCode).emit('gameStarted', word); // Sende den Begriff an alle Spieler
             }).catch(error => {
-                socket.emit('error', 'Fehler beim Abrufen des Begriffs: ' + error.message);
+                socket.emit('error', 'Fehler beim Abrufen des Begriffs: ' + error);
             });
         } else {
             socket.emit('error', 'Nicht genügend Spieler, um das Spiel zu starten.');
@@ -225,13 +225,21 @@ io.on('connection', (socket) => {
     // Funktion um einen zufälligen Begriff aus word.json zu holen
     function getRandomWord() {
         return new Promise((resolve, reject) => {
-            fs.readFile(path.join(__dirname, 'public', 'words.json'), 'utf8', (err, data) => {
+            fs.readFile(path.join(__dirname, 'public', 'word.json'), 'utf8', (err, data) => {
                 if (err) {
                     reject('Fehler beim Lesen der Datei: ' + err);
                 } else {
-                    const words = JSON.parse(data);
-                    const randomIndex = Math.floor(Math.random() * words.length);
-                    resolve(words[randomIndex]);
+                    try {
+                        const words = JSON.parse(data); // Versuche, die Daten zu parsen
+                        if (!Array.isArray(words) || words.length === 0) {
+                            reject('Das Format der Datei ist ungültig oder das Array ist leer.');
+                        } else {
+                            const randomIndex = Math.floor(Math.random() * words.length);
+                            resolve(words[randomIndex]); // Gebe den zufälligen Begriff zurück
+                        }
+                    } catch (parseError) {
+                        reject('Fehler beim Parsen der JSON-Daten: ' + parseError.message);
+                    }
                 }
             });
         });
