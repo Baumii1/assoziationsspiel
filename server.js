@@ -41,23 +41,32 @@ io.on('connection', (socket) => {
     });
 
     // Lobby beitreten
-    socket.on('joinLobby', ({ lobbyCode, nickname }) => { // Nickname als Teil des Objekts empfangen
+    socket.on('joinLobby', ({ lobbyCode }) => { // Nickname wird nicht mehr als Teil des Objekts empfangen
+        const nickname = getCookie('nickname'); // Nickname aus Cookies abrufen
         if (!nickname) {
             socket.emit('error', 'Sie müssen einen Nicknamen haben, um einer Lobby beizutreten.');
             return; // Beende die Funktion, wenn kein Nickname vorhanden ist
         }
-
+    
         if (lobbies[lobbyCode]) {
             if (lobbies[lobbyCode].players.length < 4) {
-                if (!lobbies[lobbyCode].players.find(player => player.id === socket.id)) {
-                    lobbies[lobbyCode].players.push({ id: socket.id, name: nickname }); // Speichere den Nicknamen
-                    socket.join(lobbyCode);
-                    socket.emit('lobbyJoined', lobbyCode);
-                    io.to(lobbyCode).emit('playerJoined', lobbies[lobbyCode].players.map(player => ({ id: player.id, name: player.name, isHost: player.id === lobbies[lobbyCode].hostId })));
-                    console.log(`Spieler ${nickname} (ID: ${socket.id}) ist der Lobby ${lobbyCode} beigetreten.`);
-                } else {
-                    socket.emit('error', 'Du bist bereits in dieser Lobby.');
+                // Überprüfen, ob der Spieler bereits in der Lobby ist
+                const existingPlayerIndex = lobbies[lobbyCode].players.findIndex(player => player.id === socket.id);
+                if (existingPlayerIndex !== -1) {
+                    // Entferne den alten Account
+                    lobbies[lobbyCode].players.splice(existingPlayerIndex, 1);
                 }
+    
+                // Füge den neuen Spieler hinzu
+                lobbies[lobbyCode].players.push({ id: socket.id, name: nickname }); // Speichere den Nicknamen
+                socket.join(lobbyCode);
+                socket.emit('lobbyJoined', lobbyCode);
+                io.to(lobbyCode).emit('playerJoined', lobbies[lobbyCode].players.map(player => ({
+                    id: player.id,
+                    name: player.name,
+                    isHost: player.id === lobbies[lobbyCode].hostId
+                })));
+                console.log(`Spieler ${nickname} (ID: ${socket.id}) ist der Lobby ${lobbyCode} beigetreten.`);
             } else {
                 socket.emit('error', 'Die Lobby ist voll. Maximal 4 Spieler erlaubt.');
             }
@@ -91,7 +100,12 @@ io.on('connection', (socket) => {
             const index = lobbies[lobbyCode].players.indexOf(socket.id);
             if (index !== -1) {
                 lobbies[lobbyCode].players.splice(index, 1);
-                io.to(lobbyCode).emit('playerJoined', lobbies[lobbyCode].players.map(id => ({ id, isHost: id === lobbies[lobbyCode].hostId }))); // Aktualisiere die Spieler-Liste
+                io.to(lobbyCode).emit('playerJoined', lobbies[lobbyCode].players.map(player => ({
+                    id: player.id,
+                    name: player.name,
+                    isHost: player.id === lobbies[lobbyCode].hostId
+                }))); // Aktualisiere die Spieler-Liste
+
                 // Lobby schließen, wenn keine Spieler mehr vorhanden sind
                 if (lobbies[lobbyCode].players.length === 0) {
                     // Setze einen Timer, um die Lobby nach einem Delay zu schließen
