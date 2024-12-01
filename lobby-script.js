@@ -49,10 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 hostBadge.classList.add('host-badge');
                 hostBadge.textContent = 'Host'; // Host-Badge
                 playerElement.appendChild(hostBadge);
-            }
     
-            // Kick-Button nur für den Host anzeigen
-            if (player.isHost) {
                 const kickButton = document.createElement('button');
                 kickButton.classList.add('kick-button');
                 kickButton.innerHTML = '<img src="kick-icon.png" alt="Kick" class="kick-icon" />';

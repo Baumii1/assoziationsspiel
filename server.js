@@ -49,16 +49,20 @@ io.on('connection', (socket) => {
     
         if (lobbies[lobbyCode]) {
             if (lobbies[lobbyCode].players.length < 4) {
-                // Überprüfen, ob der Spieler bereits in der Lobby ist
                 const existingPlayerIndex = lobbies[lobbyCode].players.findIndex(player => player.id === socket.id);
                 if (existingPlayerIndex !== -1) {
-                    // Spieler ist bereits in der Lobby, daher nichts tun
                     socket.emit('error', 'Du bist bereits in dieser Lobby.');
                     return; // Beende die Funktion, wenn der Spieler bereits in der Lobby ist
                 }
     
                 // Füge den neuen Spieler hinzu
-                lobbies[lobbyCode].players.push({ id: socket.id, name: nickname }); // Speichere den Nicknamen
+                lobbies[lobbyCode].players.push({ id: socket.id, name: nickname });
+    
+                // Setze den Host, wenn dies der erste Spieler ist
+                if (lobbies[lobbyCode].players.length === 1) {
+                    lobbies[lobbyCode].hostId = socket.id; // Setze den Host auf den ersten Spieler
+                }
+    
                 socket.join(lobbyCode);
                 socket.emit('lobbyJoined', lobbyCode);
                 io.to(lobbyCode).emit('playerJoined', lobbies[lobbyCode].players.map(player => ({
@@ -107,14 +111,20 @@ io.on('connection', (socket) => {
                     isHost: player.id === lobbies[lobbyCode].hostId
                 }))); // Aktualisiere die Spieler-Liste
 
-                // Lobby schließen, wenn keine Spieler mehr vorhanden sind
-                if (lobbies[lobbyCode].players.length === 0) {
-                    setTimeout(() => {
-                        if (lobbies[lobbyCode].players.length === 0) {
-                            delete lobbies[lobbyCode];
-                            console.log(`Lobby ${lobbyCode} wurde entfernt, da sie leer ist.`);
-                        }
-                    }, DISCONNECT_DELAY);
+                // Wenn der Host die Lobby verlässt, setze den neuen Host
+                if (lobbies[lobbyCode].hostId === socket.id) {
+                    if (lobbies[lobbyCode].players.length > 0) {
+                        // Setze den neuen Host auf den ersten Spieler in der Liste
+                        lobbies[lobbyCode].hostId = lobbies[lobbyCode].players[0].id;
+                    } else {
+                        // Lobby schließen, wenn keine Spieler mehr vorhanden sind
+                        setTimeout(() => {
+                            if (lobbies[lobbyCode].players.length === 0) {
+                                delete lobbies[lobbyCode];
+                                console.log(`Lobby ${lobbyCode} wurde entfernt, da sie leer ist.`);
+                            }
+                        }, DISCONNECT_DELAY);
+                    }
                 }
                 break;
             }
