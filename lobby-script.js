@@ -55,10 +55,39 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 
-    // Hole einen zufälligen Begriff, wenn die Lobby geladen wird
-    getRandomWord();
+    // Spiel starten
+    startGameButton.addEventListener('click', () => {
+        socket.emit('startGame', lobbyCode); // Sende das Start-Event an den Server
+        console.log('Spiel wird gestartet...');
+    });
 
-    // Spielerliste aktualisieren
+    // Socket.io Ereignis für das Spiel starten
+    socket.on('gameStarted', () => {
+        // Spieler-Liste oben rechts anzeigen
+        const playerCount = document.getElementById('player-count');
+        playerCount.style.position = 'absolute';
+        playerCount.style.top = '20px';
+        playerCount.style.right = '20px';
+        playerCount.style.fontSize = "16px";
+        playersDiv.style.position = 'absolute';
+        playersDiv.style.top = '50px';
+        playersDiv.style.right = '20px';
+        playersDiv.style.width = '200px'; // Verkleinerte Breite der Spieler-Liste
+
+        // Blende die Spieler-Liste und die neuen Elemente ein
+        currentWordDisplay.classList.remove('hidden'); // Mache das current-word sichtbar
+        associationInput.classList.remove('hidden');
+        revealButton.classList.remove('hidden');
+        revealCountDisplay.classList.remove('hidden');
+
+        // Hole einen zufälligen Begriff, wenn das Spiel gestartet wird
+        getRandomWord(); // Rufe die Funktion auf, um einen zufälligen Begriff abzurufen
+
+        // Blende den Start-Button aus
+        startGameButton.style.display = 'none';
+    });
+
+    // Spieler der Lobby beitreten
     socket.on('playerJoined', (playersList) => {
         playersDiv.innerHTML = ''; // Vorherige Spieler-Liste leeren
         playersList.forEach(player => {
@@ -118,35 +147,6 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             window.location.href = 'index.html'; // Zur Startseite weiterleiten
         }, 3000); // 3 Sekunden
-    });
-
-    // Spiel starten
-    startGameButton.addEventListener('click', () => {
-        socket.emit('startGame', lobbyCode); // Sende das Start-Event an den Server
-        console.log('Spiel wird gestartet...');
-    });
-
-    // Socket.io Ereignis für das Spiel starten
-    socket.on('gameStarted', () => {
-        // Spieler-Liste oben rechts anzeigen
-        const playerCount = document.getElementById('player-count');
-        playerCount.style.position = 'absolute';
-        playerCount.style.top = '20px';
-        playerCount.style.right = '20px';
-        playerCount.style.fontSize = "16px";
-        playersDiv.style.position = 'absolute';
-        playersDiv.style.top = '50px';
-        playersDiv.style.right = '20px';
-        playersDiv.style.width = '200px'; // Verkleinerte Breite der Spieler-Liste
-
-        // Blende die Spieler-Liste und die neuen Elemente ein
-        currentWordDisplay.classList.remove('hidden');
-        associationInput.classList.remove('hidden');
-        revealButton.classList.remove('hidden');
-        revealCountDisplay.classList.remove('hidden');
-
-        // Blende den Start-Button aus
-        startGameButton.style.display = 'none';
     });
 
     // Spieler der Lobby beitreten
