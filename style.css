@@ -12,6 +12,7 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column; /* Vertikale Anordnung */
 }
 
 /* Bildschirmcontainer */
@@ -41,7 +42,7 @@ html, body {
     justify-content: space-between; /* Platz zwischen Name und Kick-Button */
     align-items: center; /* Vertikale Zentrierung */
     padding: 10px; /* Innenabstand für jeden Spieler */
-    background-color: #2a2a6a; /* Hintergrundfarbe für Spieler */
+    background-color: #1a1a4a; /* Hintergrundfarbe für Spieler */
     border-radius: 8px; /* Abgerundete Ecken */
 }
 
@@ -224,9 +225,12 @@ input[type="text"]:focus {
 }
 
 /* Zusätzliche Stile für die Bildschirme */
-#lobby-screen {
+#game-screen {
     border-radius: 10px;
     padding: 20px;
+    display: flex;
+    flex-direction: column; /* Vertikale Anordnung der Elemente im Game Screen */
+    align-items: center; /* Zentriert den Inhalt im Game Screen */
 }
 
 /* Animationen */

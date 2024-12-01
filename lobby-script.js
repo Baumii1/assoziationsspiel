@@ -116,9 +116,10 @@ document.addEventListener('DOMContentLoaded', () => {
         playerCount.style.position = 'absolute';
         playerCount.style.top = '20px';
         playerCount.style.right = '20px';
+        playerCount.style.fontSize = "12px";
         const playersDiv = document.getElementById('players');
         playersDiv.style.position = 'absolute';
-        playersDiv.style.top = '40px';
+        playersDiv.style.top = '50px';
         playersDiv.style.right = '20px';
         playersDiv.style.width = '200px'; // Verkleinerte Breite der Spieler-Liste
 
