@@ -245,6 +245,7 @@ input[type="text"]:focus {
     font-size: 24px;
     font-weight: bold;
     margin: 20px 0;
+    animation: glow 1s infinite alternate; /* Leuchteffekt */
 }
 
 /* Ergebnisbereich */
@@ -334,11 +335,6 @@ input[type="text"]:focus {
     width: 500px; /* Standardbreite der Spieler-Liste in der Lobby */
 }
 
-/* Glow-Effekt für den aktuellen Begriff */
-.current-word {
-    animation: glow 1s infinite alternate; /* Leuchteffekt */
-    display: none; /* Zunächst nicht anzeigen */
-}
 
 @keyframes glow {
     0% {
