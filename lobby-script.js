@@ -64,9 +64,10 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Spiel wird gestartet...');
     });
 
-    // Socket.io Ereignis für das Spiel starten
-    socket.on('gameStarted', () => {
+    socket.on('gameStarted', (word) => {
         gameActive = true; // Spiel ist aktiv
+        currentWordDisplay.textContent = word; // Setze den aktuellen Begriff anzuzeigen
+        currentWordDisplay.classList.remove('hidden');
         const playerCount = document.getElementById('player-count');
         playerCount.style.position = 'absolute';
         playerCount.style.top = '20px';
@@ -77,7 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
         playersDiv.style.right = '20px';
         playersDiv.style.width = '200px';
 
-        currentWordDisplay.classList.remove('hidden');
         associationInput.classList.remove('hidden');
         revealButton.classList.remove('hidden');
         revealCountDisplay.classList.remove('hidden');
@@ -153,21 +153,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Reveal-Button Logik
     revealButton.addEventListener('click', () => {
         if (associationInput.disabled) {
+            // Wenn das Eingabefeld gesperrt ist, entsperren
             associationInput.disabled = false;
-            revealCount--;
-            revealButton.textContent = 'Reveal';
+            revealCount--; // Zähler verringern
+            revealButton.textContent = 'Reveal'; // Button-Text zurücksetzen
         } else {
+            // Wenn das Eingabefeld nicht gesperrt ist, sperren
             associationInput.disabled = true;
-            revealCount++;
-            revealButton.textContent = 'Unreveal';
-            socket.emit('playerRevealed', { playerId: socket.id, word: associationInput.value }); // Sende Reveal an den Server
-        }
-        updateRevealCount();
+            revealCount++; // Zähler erhöhen
+            revealButton.textContent = 'Unreveal'; // Button-Text ändern
 
-        if (revealCount === totalPlayers) {
-            console.log('Alle Spieler haben revealed!');
-            // socket.emit('evaluate', ...); // Hier kannst du das Auswertungs-Event senden
+            // Sende Reveal an den Server
+            socket.emit('playerRevealed', { playerId: socket.id, word: associationInput.value }); 
         }
+        updateRevealCount(); // Aktualisiere die Anzeige der Reveals
     });
 
     // Synchronisation der Reveals

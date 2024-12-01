@@ -177,12 +177,19 @@ io.on('connection', (socket) => {
     socket.on('startGame', (lobbyCode) => {
         if (lobbies[lobbyCode] && lobbies[lobbyCode].players.length >= MIN_PLAYERS) {
             lobbies[lobbyCode].gameActive = true;
-            io.to(lobbyCode).emit('gameStarted');
+            
+            // Hole einen zufälligen Begriff und sende ihn an alle Spieler
+            getRandomWord().then(word => {
+                lobbies[lobbyCode].currentWord = word; // Speichere den aktuellen Begriff
+                io.to(lobbyCode).emit('gameStarted', word); // Sende den Begriff an alle Spieler
+            });
+            
             console.log(`Das Spiel in der Lobby ${lobbyCode} wurde gestartet.`);
         } else {
             socket.emit('error', 'Nicht genügend Spieler, um das Spiel zu starten.');
         }
     });
+    
 
     // Stoppe das Spiel
     socket.on('stopGame', (lobbyCode) => {
@@ -214,6 +221,16 @@ io.on('connection', (socket) => {
             io.to(lobbyCode).emit('updateRevealCount', revealedPlayers); // Sende die aktualisierte Anzahl der revealed Spieler
         }
     });
+
+    // Funktion um einen zufälligen Begriff aus word.json zu holen
+    function getRandomWord() {
+        return fetch('word.json')
+            .then(response => response.json())
+            .then(words => {
+                const randomIndex = Math.floor(Math.random() * words.length);
+                return words[randomIndex]; // Gebe den zufälligen Begriff zurück
+            });
+    }
 });
 
 // Hilfsfunktionen
