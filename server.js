@@ -2,6 +2,7 @@ const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
+const fs = require('fs');
 
 const app = express();
 const server = http.createServer(app);
@@ -222,21 +223,17 @@ io.on('connection', (socket) => {
 
     // Funktion um einen zufälligen Begriff aus word.json zu holen
     function getRandomWord() {
-        return fetch('word.json') // Stelle sicher, dass der Pfad zur word.json korrekt ist
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Netzwerkantwort war nicht ok: ' + response.statusText);
+        return new Promise((resolve, reject) => {
+            fs.readFile(path.join(__dirname, 'public', 'words.json'), 'utf8', (err, data) => {
+                if (err) {
+                    reject('Fehler beim Lesen der Datei: ' + err);
+                } else {
+                    const words = JSON.parse(data);
+                    const randomIndex = Math.floor(Math.random() * words.length);
+                    resolve(words[randomIndex]);
                 }
-                return response.json();
-            })
-            .then(words => {
-                const randomIndex = Math.floor(Math.random() * words.length);
-                return words[randomIndex]; // Gebe den zufälligen Begriff zurück
-            })
-            .catch(error => {
-                console.error('Fehler beim Abrufen des Wortes:', error);
-                throw error; // Wirf den Fehler weiter, um ihn im Socket-Event zu behandeln
             });
+        });
     }
     });
 
