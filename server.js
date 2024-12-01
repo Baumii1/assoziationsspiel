@@ -222,7 +222,7 @@ io.on('connection', (socket) => {
 
     // Funktion um einen zufälligen Begriff aus word.json zu holen
     function getRandomWord() {
-        return fetch('/word.json') // Stelle sicher, dass der Pfad zur word.json korrekt ist
+        return fetch('word.json') // Stelle sicher, dass der Pfad zur word.json korrekt ist
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Netzwerkantwort war nicht ok: ' + response.statusText);
