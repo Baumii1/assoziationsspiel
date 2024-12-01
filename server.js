@@ -113,12 +113,7 @@ io.on('connection', (socket) => {
                 // Spieler aus der Lobby entfernen
                 const playerName = lobbies[lobbyCode].players[index].name; // Spielername speichern
                 lobbies[lobbyCode].players.splice(index, 1);
-                io.to(lobbyCode).emit('playerJoined', lobbies[lobbyCode].players.map(player => ({
-                    id: player.id,
-                    name: player.name,
-                    isHost: player.id === lobbies[lobbyCode].hostId
-                }))); // Aktualisiere die Spieler-Liste
-
+                
                 // Wenn der Host die Lobby verlässt, setze den neuen Host
                 if (lobbies[lobbyCode].hostId === socket.id) {
                     if (lobbies[lobbyCode].players.length > 0) {
@@ -135,6 +130,14 @@ io.on('connection', (socket) => {
                         }, DISCONNECT_DELAY);
                     }
                 }
+
+                // Informiere alle verbleibenden Spieler über die aktualisierte Spieler-Liste
+                io.to(lobbyCode).emit('playerJoined', lobbies[lobbyCode].players.map(player => ({
+                    id: player.id,
+                    name: player.name,
+                    isHost: player.id === lobbies[lobbyCode].hostId // Aktualisiere den Host-Status
+                }))); // Aktualisiere die Spieler-Liste
+                
                 break; // Beende die Schleife, nachdem der Spieler gefunden und entfernt wurde
             }
         }
