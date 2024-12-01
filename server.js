@@ -41,7 +41,7 @@ io.on('connection', (socket) => {
     });
 
     // Lobby beitreten
-    socket.on('joinLobby', ({ lobbyCode, nickname }) => { // Nickname als Teil des Objekts empfangen
+    socket.on('joinLobby', ({ lobbyCode, nickname }) => {
         if (!nickname) {
             socket.emit('error', 'Sie müssen einen Nicknamen haben, um einer Lobby beizutreten.');
             return; // Beende die Funktion, wenn kein Nickname vorhanden ist
@@ -52,8 +52,9 @@ io.on('connection', (socket) => {
                 // Überprüfen, ob der Spieler bereits in der Lobby ist
                 const existingPlayerIndex = lobbies[lobbyCode].players.findIndex(player => player.id === socket.id);
                 if (existingPlayerIndex !== -1) {
-                    // Entferne den alten Account
-                    lobbies[lobbyCode].players.splice(existingPlayerIndex, 1);
+                    // Spieler ist bereits in der Lobby, daher nichts tun
+                    socket.emit('error', 'Du bist bereits in dieser Lobby.');
+                    return; // Beende die Funktion, wenn der Spieler bereits in der Lobby ist
                 }
     
                 // Füge den neuen Spieler hinzu
@@ -96,8 +97,9 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log('Ein Spieler hat sich getrennt:', socket.id);
         for (const lobbyCode in lobbies) {
-            const index = lobbies[lobbyCode].players.indexOf(socket.id);
+            const index = lobbies[lobbyCode].players.findIndex(player => player.id === socket.id);
             if (index !== -1) {
+                // Spieler aus der Lobby entfernen
                 lobbies[lobbyCode].players.splice(index, 1);
                 io.to(lobbyCode).emit('playerJoined', lobbies[lobbyCode].players.map(player => ({
                     id: player.id,
@@ -107,7 +109,6 @@ io.on('connection', (socket) => {
 
                 // Lobby schließen, wenn keine Spieler mehr vorhanden sind
                 if (lobbies[lobbyCode].players.length === 0) {
-                    // Setze einen Timer, um die Lobby nach einem Delay zu schließen
                     setTimeout(() => {
                         if (lobbies[lobbyCode].players.length === 0) {
                             delete lobbies[lobbyCode];
