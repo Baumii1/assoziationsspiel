@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Nach 5 Sekunden zur Startseite weiterleiten
         setTimeout(() => {
             window.location.href = 'index.html'; // Zur Startseite weiterleiten
-        }, 5000); // 5 Sekunden
+        }, 1000); // 1 Sekunde
     });
 
     // Fehlerbehandlung
@@ -94,10 +94,16 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Spiel wird gestartet...');
     });
 
-    // Funktion zur Anzeige von Fehlermeldungen
+    // Beispiel für die Fehlerbehandlung
     function showErrorMessage(message) {
-        errorMessageDiv.textContent = message;
-        errorMessageDiv.classList.remove('hidden'); // Fehleranzeige sichtbar machen
+        const messageDiv = document.getElementById('message');
+        messageDiv.textContent = message;
+        messageDiv.classList.remove('hidden'); // Fehleranzeige sichtbar machen
+
+        // Nach 5 Sekunden die Nachricht ausblenden
+        setTimeout(() => {
+            messageDiv.classList.add('hidden'); // Nachricht ausblenden
+        }, 5000); // 5 Sekunden
     }
 
     // Funktion zum Abrufen eines Cookies
