@@ -224,7 +224,7 @@ input[type="text"]:focus {
 }
 
 /* Zusätzliche Stile für die Bildschirme */
-#start-screen, #game-screen, #result-screen {
+#lobby-screen {
     border-radius: 10px;
     padding: 20px;
 }
@@ -323,6 +323,26 @@ input[type="text"]:focus {
 
 .screen.show {
     opacity: 1;
+}
+
+/* Spieler-Liste (wird später angepasst) */
+.player-list {
+    width: 500px; /* Standardbreite der Spieler-Liste in der Lobby */
+}
+
+/* Glow-Effekt für den aktuellen Begriff */
+.current-word {
+    animation: glow 1s infinite alternate; /* Leuchteffekt */
+    display: none; /* Zunächst nicht anzeigen */
+}
+
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+    }
+    100% {
+        box-shadow: 0 0 20px rgba(255, 255, 255, 1);
+    }
 }
 
 .message {

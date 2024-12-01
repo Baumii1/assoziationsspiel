@@ -15,10 +15,17 @@
         </button>
     </div>
     <div id="popup-message" style="display: none; color: green; position: absolute; top: 50px; left: 20px;">Lobby-Code kopiert!</div>
+    <h1>Das große <br><span class="gradient-text">ASSOZIATIONS</span><br></b> Spiel</h1>
     <div id="game-screen" class="screen">
         <div id="player-count" class="player-count" style="font-size: 24px; margin-bottom: 20px; color: #ffffff;"></div> <!-- Spieleranzahl anzeigen -->
         <div id="players" class="player-list"></div> <!-- Spieler-Liste -->
         <button id="start-game" class="btn" style="display: none;">Spiel starten</button>
+        
+        <!-- Neue Elemente für das Spiel (zunächst ausgeblendet) -->
+        <div id="current-word" class="current-word hidden" style="border: 2px solid white; border-radius: 10px; padding: 20px; width: 500px; margin: 20px auto; box-shadow: 0 0 20px rgba(255, 255, 255, 0.5); text-align: center;">Begriff</div>
+        <input type="text" id="association-word" class="hidden" placeholder="Gib dein assoziiertes Wort ein" style="width: 500px;">
+        <button id="reveal-button" class="btn hidden">Reveal</button>
+        <div id="reveal-count" class="hidden" style="text-align: center; margin-top: 10px;">0/0</div>
         <div id="error-message" class="error-message hidden"></div>
     </div>
     <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>

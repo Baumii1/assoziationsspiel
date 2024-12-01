@@ -142,6 +142,12 @@ io.on('connection', (socket) => {
             }
         }
     });
+
+    // Spiel starten
+    socket.on('startGame', (lobbyCode) => {
+        // Informiere alle Spieler, dass das Spiel gestartet wurde
+        io.to(lobbyCode).emit('gameStarted');
+    });
 });
 
 // Hilfsfunktionen
