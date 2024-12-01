@@ -72,11 +72,10 @@ document.addEventListener('DOMContentLoaded', () => {
         playerCountDiv.textContent = `Spieler in der Lobby (${playerCount}/4):`;
 
         // Überprüfen, ob genügend Spieler vorhanden sind
+        const isHost = playersList.some(player => player.id === socket.id && player.isHost);
         if (playerCount < 2) {
             startGameButton.style.display = 'none'; // Start-Button ausblenden
         } else {
-            // Überprüfen, ob der Spieler der Host ist
-            const isHost = playersList.some(player => player.id === socket.id && player.isHost);
             startGameButton.style.display = isHost ? 'block' : 'none'; // Spiel starten Button anzeigen, wenn Host
         }
     });
