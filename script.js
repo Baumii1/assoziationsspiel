@@ -45,7 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Bitte geben Sie einen Lobby-Code ein oder stellen Sie sicher, dass Sie einen Nicknamen haben.');
         }
     });
-
+    
+    // Socket.IO Ereignis für Lobby-Beitritt
     socket.on('lobbyJoined', (lobbyCode) => {
         // Weiterleitung zur Lobby-Seite
         window.location.href = `lobby.html?lobbyCode=${lobbyCode}`;
