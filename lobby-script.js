@@ -97,11 +97,82 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000); // 3 Sekunden
     });
 
+
+
+
+    let revealCount = 0; // Zähler für Reveals
+    let totalPlayers = 0; // Gesamtanzahl der Spieler
+
     // Spiel starten
     startGameButton.addEventListener('click', () => {
-        socket.emit('startGame', lobbyCode);
+        socket.emit('startGame', lobbyCode); // Sende das Start-Event an den Server
         console.log('Spiel wird gestartet...');
     });
+
+    // Socket.io Ereignis für das Spiel starten
+    socket.on('gameStarted', () => {
+        // Spieler-Liste oben rechts anzeigen
+        const playerCount = document.getElementById('player-count');
+        playerCount.style.position = 'absolute';
+        playerCount.style.top = '20px';
+        playerCount.style.right = '20px';
+        const playersDiv = document.getElementById('players');
+        playersDiv.style.position = 'absolute';
+        playersDiv.style.top = '40px';
+        playersDiv.style.right = '20px';
+        playersDiv.style.width = '200px'; // Verkleinerte Breite der Spieler-Liste
+
+        // Blende die Spieler-Liste und die neuen Elemente ein
+        playersDiv.style.width = '200px'; // Ändere die Breite der Spieler-Liste
+        document.getElementById('current-word').classList.remove('hidden');
+        document.getElementById('association-word').classList.remove('hidden');
+        document.getElementById('reveal-button').classList.remove('hidden');
+        document.getElementById('reveal-count').classList.remove('hidden');
+
+        // Blende den Start-Button aus
+        startGameButton.style.display = 'none';
+    });
+
+    // Spieler der Lobby beitreten
+    socket.on('playerJoined', (playersList) => {
+        totalPlayers = playersList.length; // Gesamtanzahl der Spieler aktualisieren
+        updateRevealCount(); // Aktualisiere die Anzeige der Reveals
+        // ... (Rest der bestehenden Logik)
+    });
+
+    // Funktion zum Aktualisieren der Reveal-Anzeige
+    function updateRevealCount() {
+        const revealCountDisplay = document.getElementById('reveal-count');
+        revealCountDisplay.textContent = `${revealCount}/${totalPlayers}`;
+    }
+
+    // Reveal-Button Logik
+    const revealButton = document.getElementById('reveal-button');
+    const associationInput = document.getElementById('association-word');
+
+    revealButton.addEventListener('click', () => {
+        if (associationInput.disabled) {
+            // Wenn das Eingabefeld gesperrt ist, entsperren
+            associationInput.disabled = false;
+            revealCount--; // Zähler verringern
+            revealButton.textContent = 'Reveal'; // Button-Text zurücksetzen
+        } else {
+            // Wenn das Eingabefeld nicht gesperrt ist, sperren
+            associationInput.disabled = true;
+            revealCount++; // Zähler erhöhen
+            revealButton.textContent = 'Unreveal'; // Button-Text ändern
+        }
+        updateRevealCount(); // Aktualisiere die Anzeige der Reveals
+
+        // Überprüfen, ob alle Spieler revealed haben
+        if (revealCount === totalPlayers) {
+            // Hier kannst du zur Auswertung weiterleiten
+            console.log('Alle Spieler haben revealed!');
+            // socket.emit('evaluate', ...); // Hier kannst du das Auswertungs-Event senden
+        }
+    });
+
+
 
     // Beispiel für die Fehlerbehandlung
     function showErrorMessage(message) {
