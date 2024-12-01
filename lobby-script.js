@@ -6,6 +6,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const copyButton = document.getElementById('copy-button');
     const errorMessageDiv = document.getElementById('error-message');
     const popupMessage = document.getElementById('popup-message');
+    const currentWordDisplay = document.getElementById('current-word');
+    const associationInput = document.getElementById('association-word');
+    const revealButton = document.getElementById('reveal-button');
+    const revealCountDisplay = document.getElementById('reveal-count');
 
     // Lobby-Code aus der URL abrufen
     const lobbyCode = new URLSearchParams(window.location.search).get('lobbyCode');
@@ -34,6 +38,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
         window.getSelection().removeAllRanges();
     });
+
+    let revealCount = 0; // Zähler für Reveals
+    let totalPlayers = 0; // Gesamtanzahl der Spieler
+    let currentWord = ""; // Aktueller Begriff
+
+    // Funktion um einen zufälligen Begriff aus word.json zu holen
+    function getRandomWord() {
+        return fetch('word.json') // Stelle sicher, dass der Pfad zur word.json korrekt ist
+            .then(response => response.json())
+            .then(words => {
+                const randomIndex = Math.floor(Math.random() * words.length);
+                currentWord = words[randomIndex]; // Wähle einen zufälligen Begriff
+                currentWordDisplay.textContent = currentWord; // Zeige den Begriff an
+                currentWordDisplay.classList.remove('hidden'); // Mache das Element sichtbar
+            });
+    }
+
+    // Hole einen zufälligen Begriff, wenn die Lobby geladen wird
+    getRandomWord();
 
     // Spielerliste aktualisieren
     socket.on('playerJoined', (playersList) => {
@@ -97,12 +120,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000); // 3 Sekunden
     });
 
-
-
-
-    let revealCount = 0; // Zähler für Reveals
-    let totalPlayers = 0; // Gesamtanzahl der Spieler
-
     // Spiel starten
     startGameButton.addEventListener('click', () => {
         socket.emit('startGame', lobbyCode); // Sende das Start-Event an den Server
@@ -116,19 +133,17 @@ document.addEventListener('DOMContentLoaded', () => {
         playerCount.style.position = 'absolute';
         playerCount.style.top = '20px';
         playerCount.style.right = '20px';
-        playerCount.style.fontSize = "12px";
-        const playersDiv = document.getElementById('players');
+        playerCount.style.fontSize = "16px";
         playersDiv.style.position = 'absolute';
         playersDiv.style.top = '50px';
         playersDiv.style.right = '20px';
         playersDiv.style.width = '200px'; // Verkleinerte Breite der Spieler-Liste
 
         // Blende die Spieler-Liste und die neuen Elemente ein
-        playersDiv.style.width = '200px'; // Ändere die Breite der Spieler-Liste
-        document.getElementById('current-word').classList.remove('hidden');
-        document.getElementById('association-word').classList.remove('hidden');
-        document.getElementById('reveal-button').classList.remove('hidden');
-        document.getElementById('reveal-count').classList.remove('hidden');
+        currentWordDisplay.classList.remove('hidden');
+        associationInput.classList.remove('hidden');
+        revealButton.classList.remove('hidden');
+        revealCountDisplay.classList.remove('hidden');
 
         // Blende den Start-Button aus
         startGameButton.style.display = 'none';
@@ -138,19 +153,14 @@ document.addEventListener('DOMContentLoaded', () => {
     socket.on('playerJoined', (playersList) => {
         totalPlayers = playersList.length; // Gesamtanzahl der Spieler aktualisieren
         updateRevealCount(); // Aktualisiere die Anzeige der Reveals
-        // ... (Rest der bestehenden Logik)
     });
 
     // Funktion zum Aktualisieren der Reveal-Anzeige
     function updateRevealCount() {
-        const revealCountDisplay = document.getElementById('reveal-count');
         revealCountDisplay.textContent = `${revealCount}/${totalPlayers}`;
     }
 
     // Reveal-Button Logik
-    const revealButton = document.getElementById('reveal-button');
-    const associationInput = document.getElementById('association-word');
-
     revealButton.addEventListener('click', () => {
         if (associationInput.disabled) {
             // Wenn das Eingabefeld gesperrt ist, entsperren
@@ -167,13 +177,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Überprüfen, ob alle Spieler revealed haben
         if (revealCount === totalPlayers) {
-            // Hier kannst du zur Auswertung weiterleiten
             console.log('Alle Spieler haben revealed!');
             // socket.emit('evaluate', ...); // Hier kannst du das Auswertungs-Event senden
         }
     });
-
-
 
     // Beispiel für die Fehlerbehandlung
     function showErrorMessage(message) {
