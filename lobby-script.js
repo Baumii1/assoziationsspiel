@@ -71,6 +71,19 @@ document.addEventListener('DOMContentLoaded', () => {
         startGameButton.style.display = 'none';
     });
 
+    // Socket.io Ereignis für das Stoppen des Spiels
+    socket.on('gameStopped', () => {
+        // Spieler zurück zur Lobby schicken
+        const messageDiv = document.getElementById('error-message');
+        messageDiv.textContent = 'Das Spiel wurde gestoppt. Du wirst zurück zur Lobby geleitet.';
+        messageDiv.classList.remove('hidden');
+
+        setTimeout(() => {
+            // Hier kannst du zur Lobby-Seite weiterleiten
+            window.location.href = 'index.html'; // Oder die URL zur Lobby-Seite anpassen
+        }, 3000); // Warte 3 Sekunden, bevor du zur Lobby weiterleitest
+    });
+
     // Spieler der Lobby beitreten
     socket.on('playerJoined', (playersList) => {
         playersDiv.innerHTML = '';
@@ -137,36 +150,39 @@ document.addEventListener('DOMContentLoaded', () => {
     // Reveal-Button Logik
     revealButton.addEventListener('click', () => {
         if (associationInput.disabled) {
-            // Wenn das Eingabefeld gesperrt ist, entsperren
             associationInput.disabled = false;
-            revealCount--; // Zähler verringern
-            revealButton.textContent = 'Reveal'; // Button-Text zurücksetzen
+            revealCount--;
+            revealButton.textContent = 'Reveal';
         } else {
-            // Wenn das Eingabefeld nicht gesperrt ist, sperren
             associationInput.disabled = true;
-            revealCount++; // Zähler erhöhen
-            revealButton.textContent = 'Unreveal'; // Button-Text ändern
+            revealCount++;
+            revealButton.textContent = 'Unreveal';
 
             // Sende Reveal an den Server
-            socket.emit('playerRevealed', { playerId: socket.id, word: associationInput.value }); 
+            socket.emit('playerRevealed', { playerId: socket.id, word: associationInput.value });
         }
         updateRevealCount(); // Aktualisiere die Anzeige der Reveals
     });
 
     // Synchronisation der Reveals
     socket.on('updateRevealCount', (count) => {
-        revealCount = count;
-        updateRevealCount();
+        revealCount = count; // Aktualisiere den Reveal-Zähler
+        updateRevealCount(); // Aktualisiere die Anzeige
     });
+
+    // Funktion zur Aktualisierung der Reveal-Anzeige
+    function updateRevealCount() {
+        revealCountDisplay.textContent = `Reveals: ${revealCount}/${totalPlayers}`;
+    }
 
     // Timer für das Stoppen des Spiels
     function stopGame() {
         clearTimeout(countdownTimer);
         const messageDiv = document.getElementById('error-message');
-        messageDiv.textContent = 'Das Spiel wird in 15 Sekunden gestoppt, da weniger als 2 Spieler vorhanden sind.';
+        messageDiv.textContent = 'Das Spiel wird in 30 Sekunden gestoppt, da weniger als 2 Spieler vorhanden sind.';
         messageDiv.classList.remove('hidden');
 
-        let countdown = 15;
+        let countdown = 30;
         countdownTimer = setInterval(() => {
             countdown--;
             messageDiv.textContent = `Das Spiel wird in ${countdown} Sekunden gestoppt.`;
@@ -206,9 +222,4 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
-
-    // Funktion zur Aktualisierung der Reveal-Anzeige
-    function updateRevealCount() {
-        revealCountDisplay.textContent = `Reveals: ${revealCount}/${totalPlayers}`;
-    }
 });

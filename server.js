@@ -117,10 +117,7 @@ io.on('connection', (socket) => {
             const playerIndex = lobbies[lobbyCode].players.findIndex(player => player.id === socket.id);
             if (playerIndex !== -1) {
                 // Spieler aus der Lobby entfernen
-                const playerName = lobbies[lobbyCode].players[playerIndex].name; // Spielername speichern
                 lobbies[lobbyCode].players.splice(playerIndex, 1);
-                
-                // Informiere alle verbleibenden Spieler über den Spieler, der die Lobby verlassen hat
                 io.to(lobbyCode).emit('playerLeft', socket.id); // Sende das Event an die verbleibenden Spieler
 
                 // Wenn der Host die Lobby verlässt, setze den neuen Host
@@ -146,20 +143,18 @@ io.on('connection', (socket) => {
                     name: player.name,
                     isHost: player.id === lobbies[lobbyCode].hostId // Aktualisiere den Host-Status
                 }))); // Aktualisiere die Spieler-Liste
-                
+
                 // Überprüfen, ob das Spiel gestoppt werden soll
                 if (lobbies[lobbyCode].gameActive && lobbies[lobbyCode].players.length < MIN_PLAYERS) {
                     lobbies[lobbyCode].gameActive = false; // Setze das Spiel auf nicht aktiv
                     io.to(lobbyCode).emit('gameStopped');
-
-                    // Starte einen Timer, um das Spiel neu zu starten, wenn ein Spieler innerhalb von 15 Sekunden beitritt
+                    console.log(`Das Spiel in der Lobby ${lobbyCode} wurde gestoppt, da weniger als ${MIN_PLAYERS} Spieler vorhanden sind.`);
+                    
+                    // Starte einen Timer, um die Spieler zurück zur Lobby zu schicken
                     const restartTimer = setTimeout(() => {
-                        if (lobbies[lobbyCode].players.length >= MIN_PLAYERS) {
-                            lobbies[lobbyCode].gameActive = true; // Setze das Spiel auf aktiv
-                            io.to(lobbyCode).emit('gameStarted');
-                            console.log(`Das Spiel in der Lobby ${lobbyCode} wurde neu gestartet.`);
-                        }
-                    }, 15000); // 15 Sekunden warten
+                        io.to(lobbyCode).emit('redirectToLobby'); // Sende das Event, um zur Lobby zurückzukehren
+                        delete lobbies[lobbyCode]; // Lösche die Lobby, wenn sie leer ist
+                    }, 30000); // 15 Sekunden warten
 
                     // Wenn ein Spieler wieder beitritt, stoppe den Timer und starte das Spiel neu
                     socket.on('joinLobby', ({ lobbyCode, nickname }) => {
