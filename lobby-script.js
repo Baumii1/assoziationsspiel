@@ -68,8 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
         revealButton.classList.remove('hidden');
         revealCountDisplay.classList.remove('hidden');
 
-        getRandomWord();
-
         startGameButton.style.display = 'none';
     });
 
