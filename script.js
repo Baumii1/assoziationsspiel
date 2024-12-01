@@ -42,18 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
             showErrorMessage('Bitte geben Sie einen Lobby-Code ein oder stellen Sie sicher, dass Sie einen Nicknamen haben.');
         }
     });
-
-    socket.on('redirectToHome', (message) => {
-        console.log('Redirecting to home with message:', message); // Debugging-Log
-        const messageDiv = document.getElementById('message');
-        messageDiv.textContent = message;
-        messageDiv.classList.remove('hidden');
-    
-        // Nach 5 Sekunden zur Startseite weiterleiten
-        setTimeout(() => {
-            window.location.href = 'index.html'; // Zur Startseite weiterleiten
-        }, 1000); // 1 Sekunde
-    });
     
     // Socket.IO Ereignis für Lobby-Beitritt
     socket.on('lobbyJoined', (lobbyCode) => {
