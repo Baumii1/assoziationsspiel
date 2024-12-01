@@ -80,6 +80,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    socket.on('playerLeft', (playersList) => {
+        playersList.forEach(player => {
+            // Host-Badge und Kick-Button nur für den Host anzeigen
+            if (player.isHost) {
+                const hostBadge = document.createElement('span');
+                hostBadge.classList.add('host-badge');
+                hostBadge.textContent = 'Host'; // Host-Badge
+                playerElement.appendChild(hostBadge);
+            } else {
+                // Kick-Button nur für den Host anzeigen
+                const isHost = playersList.some(p => p.id === socket.id && p.isHost);
+                if (isHost) {
+                    const kickButton = document.createElement('button');
+                    kickButton.classList.add('kick-button');
+                    kickButton.innerHTML = '<img src="kick-icon.png" alt="Kick" class="kick-icon" />';
+                    kickButton.onclick = () => {
+                        socket.emit('kickPlayer', player.id); // Kick-Event an den Server senden
+                    };
+                    playerElement.appendChild(kickButton);
+                }
+            }
+        });
+    });
+
     // Fehlerbehandlung
     socket.on('error', (errorMessage) => {
         showErrorMessage(errorMessage);
