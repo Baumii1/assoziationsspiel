@@ -73,28 +73,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
         startGameButton.style.display = 'none';
 
-        // Füge Event-Listener für Reveal-Button hinzu
+        // Event-Listener für den Reveal-Button
         revealButton.addEventListener('click', () => {
             if (associationInput.disabled) {
-                associationInput.disabled = false;
-                revealCount--;
-                revealButton.textContent = 'Reveal';
+                associationInput.disabled = false; // Aktivieren des Eingabefelds
+                revealCount--; // Reduziere die Anzahl der Reveals
+                revealButton.textContent = 'Reveal'; // Button-Text ändern
             } else {
-                associationInput.disabled = true;
-                revealCount++;
-                revealButton.textContent = 'Unreveal';
+                associationInput.disabled = true; // Deaktivieren des Eingabefelds
+                revealCount++; // Erhöhe die Anzahl der Reveals
+                revealButton.textContent = 'Unreveal'; // Button-Text ändern
 
                 // Sende Reveal an den Server
-                socket.emit('playerRevealed', { playerId: socket.id, word: associationInput.value }); 
+                socket.emit('playerRevealed', { playerId: socket.id, word: associationInput.value });
+
+                // Überprüfen, ob alle Spieler revealed haben
+                if (revealCount === totalPlayers) {
+                    console.log('Alle Spieler haben revealed!');
+                    socket.emit('evaluateAnswers'); // Sende Event zur Auswertung der Antworten
+                }
             }
 
             updateRevealCount(); // Aktualisiere die Anzeige der Reveals
-
-            // Überprüfen, ob alle Spieler revealed haben
-            if (revealCount === totalPlayers) {
-                console.log('Alle Spieler haben revealed!');
-                socket.emit('evaluateAnswers'); // Sende Event zur Auswertung der Antworten
-            }
         });
     });
 
@@ -202,18 +202,20 @@ document.addEventListener('DOMContentLoaded', () => {
         // Blende den Spielbildschirm aus und zeige den Auswertungsbildschirm an
         document.getElementById('game-screen').classList.add('hidden');
         document.getElementById('evaluation-screen').classList.remove('hidden');
-
+    
         // Zeige die Wörter der Spieler an
         const revealedWordsDiv = document.getElementById('revealed-words');
         revealedWordsDiv.innerHTML = ''; // Leere vorherige Wörter
         revealedWords.forEach(word => {
             const wordBox = document.createElement('div');
             wordBox.textContent = word; // Setze den Text des Wortes
-            wordBox.style.border = '1px solid white'; // Füge eine Umrandung hinzu
-            wordBox.style.margin = '10px 0'; // Abstand zwischen den Boxen
-            wordBox.style.padding = '10px'; // Innenabstand
             revealedWordsDiv.appendChild(wordBox); // Füge die Box hinzu
         });
+    
+        // Blende das Eingabefeld und den Reveal-Button aus
+        associationInput.classList.add('hidden');
+        revealButton.classList.add('hidden');
+        revealCountDisplay.classList.add('hidden'); // Blende die Anzahl der Reveals aus
 
         // Zeige die Antwort-Buttons nur für den Host an
         const isHost = revealedWords.some(player => player.id === socket.id && player.isHost);
@@ -225,7 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateStreakDisplay(); // Aktualisiere die Streak-Anzeige
             nextWord(); // Gehe zum nächsten Wort
         });
-
+        
         document.getElementById('wrong-button').addEventListener('click', () => {
             streak = 0; // Setze den Streak zurück
             updateStreakDisplay(); // Aktualisiere die Streak-Anzeige
