@@ -33,6 +33,7 @@ html, body {
     width: 500px; /* Breite der Spieler-Liste */
     border: 3px solid #3a3a6a;
     border-radius: 12px;
+    margin-bottom: 20px;
 }
 
 .player {
@@ -57,6 +58,7 @@ html, body {
     background: none; /* Kein Hintergrund */
     border: none; /* Kein Rahmen */
     cursor: pointer; /* Zeiger bei Hover */
+    margin-left: 10px; /* Abstand zum Spielernamen */
 }
 
 .kick-icon {
