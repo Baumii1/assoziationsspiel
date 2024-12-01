@@ -30,7 +30,8 @@ html, body {
     display: flex;
     flex-direction: column;
     gap: 10px; /* Abstand zwischen den Spielern */
-    width: 100%; /* Breite der Spieler-Liste */
+    width: 500px; /* Breite der Spieler-Liste */
+    border: 3px solid #3a3a6a;
 }
 
 .player {
@@ -243,14 +244,6 @@ input[type="text"]:focus {
     font-size: 24px;
     font-weight: bold;
     margin: 20px 0;
-}
-
-/* Spielerbereich */
-#players {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
 }
 
 /* Ergebnisbereich */
