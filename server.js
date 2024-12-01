@@ -81,18 +81,25 @@ io.on('connection', (socket) => {
 
     // Kick-Player-Event
     socket.on('kickPlayer', (playerId) => {
-        const lobbyCode = Object.keys(lobbies).find(code => lobbies[code].players.includes(socket.id)); // Finde die Lobby des Hosts
+        const lobbyCode = Object.keys(lobbies).find(code => lobbies[code].players.some(player => player.id === socket.id)); // Finde die Lobby des Hosts
         if (lobbyCode && socket.id === lobbies[lobbyCode].hostId) { // Überprüfe, ob der Sender der Host ist
-            const index = lobbies[lobbyCode].players.indexOf(playerId);
+            const index = lobbies[lobbyCode].players.findIndex(player => player.id === playerId);
             if (index !== -1) {
+                const playerName = lobbies[lobbyCode].players[index].name; // Spielername speichern
                 lobbies[lobbyCode].players.splice(index, 1); // Spieler entfernen
-                io.to(lobbyCode).emit('playerJoined', lobbies[lobbyCode].players.map(id => ({ id, isHost: id === lobbies[lobbyCode].hostId }))); // Aktualisiere die Spieler-Liste
+                io.to(lobbyCode).emit('playerJoined', lobbies[lobbyCode].players.map(player => ({
+                    id: player.id,
+                    name: player.name,
+                    isHost: player.id === lobbies[lobbyCode].hostId
+                }))); // Aktualisiere die Spieler-Liste
+                
+                // Sende eine Nachricht an den gekickten Spieler
                 const playerSocket = io.sockets.sockets.get(playerId);
                 if (playerSocket) {
-                    playerSocket.emit('redirectToHome'); // Sende Nachricht an den gekickten Spieler
+                    playerSocket.emit('redirectToHome', `Du wurdest aus der Lobby ${lobbyCode} gekickt von ${socket.id}.`);
                     playerSocket.disconnect(); // Trenne den Spieler
                 }
-                console.log(`Spieler ${playerId} wurde von ${socket.id} gekickt.`);
+                console.log(`Spieler ${playerName} wurde von ${socket.id} gekickt.`);
             }
         }
     });

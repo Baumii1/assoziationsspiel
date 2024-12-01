@@ -334,4 +334,5 @@ input[type="text"]:focus {
 
 .message {
     margin: 15px;
+    font-size: 12px;;
 }
