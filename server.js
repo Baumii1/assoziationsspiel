@@ -96,7 +96,7 @@ io.on('connection', (socket) => {
                 // Sende die Nachricht an den gekickten Spieler
                 const playerSocket = io.sockets.sockets.get(playerId);
                 if (playerSocket) {
-                    playerSocket.emit('redirectToHome', `Du wurdest aus der Lobby ${lobbyCode} gekickt von ${socket.id}.`);
+                    playerSocket.emit('redirectToHome', `Du wurdest von ${playerName} aus der Lobby ${lobbyCode} gekickt.`);
                     playerSocket.disconnect(); // Trenne den Spieler
                 }
                 console.log(`Spieler ${playerName} wurde von ${socket.id} gekickt.`);
