@@ -81,19 +81,19 @@ io.on('connection', (socket) => {
 
     // Kick-Player-Event
     socket.on('kickPlayer', (playerId) => {
-        const lobbyCode = Object.keys(lobbies).find(code => lobbies[code].players.some(player => player.id === socket.id)); // Finde die Lobby des Hosts
-        if (lobbyCode && socket.id === lobbies[lobbyCode].hostId) { // Überprüfe, ob der Sender der Host ist
+        const lobbyCode = Object.keys(lobbies).find(code => lobbies[code].players.some(player => player.id === socket.id));
+        if (lobbyCode && socket.id === lobbies[lobbyCode].hostId) {
             const index = lobbies[lobbyCode].players.findIndex(player => player.id === playerId);
             if (index !== -1) {
-                const playerName = lobbies[lobbyCode].players[index].name; // Spielername speichern
-                lobbies[lobbyCode].players.splice(index, 1); // Spieler entfernen
+                const playerName = lobbies[lobbyCode].players[index].name;
+                lobbies[lobbyCode].players.splice(index, 1);
                 io.to(lobbyCode).emit('playerJoined', lobbies[lobbyCode].players.map(player => ({
                     id: player.id,
                     name: player.name,
                     isHost: player.id === lobbies[lobbyCode].hostId
-                }))); // Aktualisiere die Spieler-Liste
-                
-                // Sende eine Nachricht an den gekickten Spieler
+                })));
+    
+                // Sende die Nachricht an den gekickten Spieler
                 const playerSocket = io.sockets.sockets.get(playerId);
                 if (playerSocket) {
                     playerSocket.emit('redirectToHome', `Du wurdest aus der Lobby ${lobbyCode} gekickt von ${socket.id}.`);
