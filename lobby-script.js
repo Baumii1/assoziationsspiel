@@ -71,18 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
         startGameButton.style.display = isHost ? 'block' : 'none'; // Spiel starten Button anzeigen, wenn Host
     });
 
-    socket.on('redirectToHome', (message) => {
-        // Zeige die Nachricht an
-        const messageDiv = document.getElementById('message');
-        messageDiv.textContent = message;
-        messageDiv.classList.remove('hidden');
-    
-        // Nach 5 Sekunden zur Startseite weiterleiten
-        setTimeout(() => {
-            window.location.href = 'index.html'; // Zur Startseite weiterleiten
-        }, 1000); // 1 Sekunde
-    });
-
     // Fehlerbehandlung
     socket.on('error', (errorMessage) => {
         showErrorMessage(errorMessage);
