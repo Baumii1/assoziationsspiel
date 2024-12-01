@@ -42,25 +42,29 @@ document.addEventListener('DOMContentLoaded', () => {
             const playerElement = document.createElement('div');
             playerElement.classList.add('player');
             playerElement.textContent = player.name; // Spielername anzeigen
-
-            // Kick-Button für den Host
+    
+            // Kick-Button und Host-Badge nur für den Host anzeigen
             if (player.isHost) {
                 const hostBadge = document.createElement('span');
                 hostBadge.classList.add('host-badge');
-                hostBadge.textContent = 'Host';
+                hostBadge.textContent = 'Host'; // Host-Badge
                 playerElement.appendChild(hostBadge);
             }
-
-            const kickButton = document.createElement('button');
-            kickButton.classList.add('kick-button');
-            kickButton.innerHTML = '<img src="kick-icon.png" alt="Kick" class="kick-icon" />';
-            kickButton.onclick = () => {
-                socket.emit('kickPlayer', player.id); // Kick-Event an den Server senden
-            };
-            playerElement.appendChild(kickButton);
+    
+            // Kick-Button nur für den Host anzeigen
+            if (player.isHost) {
+                const kickButton = document.createElement('button');
+                kickButton.classList.add('kick-button');
+                kickButton.innerHTML = '<img src="kick-icon.png" alt="Kick" class="kick-icon" />';
+                kickButton.onclick = () => {
+                    socket.emit('kickPlayer', player.id); // Kick-Event an den Server senden
+                };
+                playerElement.appendChild(kickButton);
+            }
+    
             playersDiv.appendChild(playerElement); // Spieler-Element zur Liste hinzufügen
         });
-
+    
         // Überprüfen, ob der Spieler der Host ist
         const isHost = playersList.some(player => player.id === socket.id && player.isHost);
         startGameButton.style.display = isHost ? 'block' : 'none'; // Spiel starten Button anzeigen, wenn Host

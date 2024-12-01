@@ -32,6 +32,7 @@ html, body {
     gap: 10px; /* Abstand zwischen den Spielern */
     width: 500px; /* Breite der Spieler-Liste */
     border: 3px solid #3a3a6a;
+    border-radius: 12px;
 }
 
 .player {
@@ -46,9 +47,10 @@ html, body {
 .host-badge {
     background-color: #ffcc00; /* Hintergrundfarbe für den Host-Badge */
     color: #000; /* Schriftfarbe für den Host */
-    padding: 5px 10px; /* Innenabstand */
-    border-radius: 15px; /* Stärker abgerundete Ecken */
-    font-weight: bold; /* Fett für bessere Sichtbarkeit */
+    padding: 2px 5px; /* Kleines Padding */
+    border-radius: 5px; /* Abgerundete Ecken */
+    font-size: 0.8em; /* Kleinere Schriftgröße */
+    margin-left: 5px; /* Abstand zum Spielernamen */
 }
 
 .kick-button {
