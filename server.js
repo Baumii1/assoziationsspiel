@@ -41,8 +41,7 @@ io.on('connection', (socket) => {
     });
 
     // Lobby beitreten
-    socket.on('joinLobby', ({ lobbyCode }) => { // Nickname wird nicht mehr als Teil des Objekts empfangen
-        const nickname = getCookie('nickname'); // Nickname aus Cookies abrufen
+    socket.on('joinLobby', ({ lobbyCode, nickname }) => { // Nickname als Teil des Objekts empfangen
         if (!nickname) {
             socket.emit('error', 'Sie müssen einen Nicknamen haben, um einer Lobby beizutreten.');
             return; // Beende die Funktion, wenn kein Nickname vorhanden ist

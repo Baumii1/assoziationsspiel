@@ -38,9 +38,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Lobby beitreten
     joinLobbyButton.addEventListener('click', () => {
         const lobbyCode = lobbyCodeInput.value.trim();
-        const nickname = nicknameInput.value.trim();
+        const nickname = getCookie('nickname'); // Nickname aus Cookies abrufen
         if (lobbyCode && nickname) {
-            socket.emit('joinLobby', lobbyCode); // Beitreten zur Lobby
+            socket.emit('joinLobby', { lobbyCode, nickname }); // Nickname zusammen mit dem Lobby-Code senden
+        } else {
+            alert('Bitte geben Sie einen Lobby-Code ein oder stellen Sie sicher, dass Sie einen Nicknamen haben.');
         }
     });
 
