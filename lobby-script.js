@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const playerElement = document.createElement('div');
             playerElement.classList.add('player');
             playerElement.textContent = player.name; // Spielername anzeigen
-    
+
             // Host-Badge und Kick-Button nur für den Host anzeigen
             if (player.isHost) {
                 const hostBadge = document.createElement('span');
@@ -62,13 +62,23 @@ document.addEventListener('DOMContentLoaded', () => {
                     playerElement.appendChild(kickButton);
                 }
             }
-    
+
             playersDiv.appendChild(playerElement); // Spieler-Element zur Liste hinzufügen
         });
-    
-        // Überprüfen, ob der Spieler der Host ist
-        const isHost = playersList.some(player => player.id === socket.id && player.isHost);
-        startGameButton.style.display = isHost ? 'block' : 'none'; // Spiel starten Button anzeigen, wenn Host
+
+        // Spieleranzahl aktualisieren
+        const playerCountDiv = document.getElementById('player-count');
+        const playerCount = playersList.length;
+        playerCountDiv.textContent = `Spieler in der Lobby (${playerCount}/4):`;
+
+        // Überprüfen, ob genügend Spieler vorhanden sind
+        if (playerCount < 2) {
+            startGameButton.style.display = 'none'; // Start-Button ausblenden
+        } else {
+            // Überprüfen, ob der Spieler der Host ist
+            const isHost = playersList.some(player => player.id === socket.id && player.isHost);
+            startGameButton.style.display = isHost ? 'block' : 'none'; // Spiel starten Button anzeigen, wenn Host
+        }
     });
 
     // Fehlerbehandlung

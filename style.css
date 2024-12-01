@@ -328,12 +328,12 @@ input[type="text"]:focus {
 .message {
     font-weight: bold;
     margin: 15px;
-    font-size: 12px;;
+    font-size: 25px;;
 }
 
 /* Fehleranzeige */
 .error-message {
     font-weight: bold;
     margin: 15px;
-    font-size: 12px;;
+    font-size: 25px;;
 }
