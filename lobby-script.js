@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const playerElement = document.createElement('div');
             playerElement.classList.add('player');
             playerElement.textContent = player.name; // Spielername anzeigen
-
+    
             // Host-Badge und Kick-Button nur für den Host anzeigen
             if (player.isHost) {
                 const hostBadge = document.createElement('span');
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     playerElement.appendChild(kickButton);
                 }
             }
-
+    
             playersDiv.appendChild(playerElement); // Spieler-Element zur Liste hinzufügen
         });
 
@@ -78,30 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             startGameButton.style.display = isHost ? 'block' : 'none'; // Spiel starten Button anzeigen, wenn Host
         }
-    });
-
-    socket.on('playerLeft', (playersList) => {
-        playersList.forEach(player => {
-            // Host-Badge und Kick-Button nur für den Host anzeigen
-            if (player.isHost) {
-                const hostBadge = document.createElement('span');
-                hostBadge.classList.add('host-badge');
-                hostBadge.textContent = 'Host'; // Host-Badge
-                playerElement.appendChild(hostBadge);
-            } else {
-                // Kick-Button nur für den Host anzeigen
-                const isHost = playersList.some(p => p.id === socket.id && p.isHost);
-                if (isHost) {
-                    const kickButton = document.createElement('button');
-                    kickButton.classList.add('kick-button');
-                    kickButton.innerHTML = '<img src="kick-icon.png" alt="Kick" class="kick-icon" />';
-                    kickButton.onclick = () => {
-                        socket.emit('kickPlayer', player.id); // Kick-Event an den Server senden
-                    };
-                    playerElement.appendChild(kickButton);
-                }
-            }
-        });
     });
 
     // Fehlerbehandlung
