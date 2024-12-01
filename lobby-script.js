@@ -16,10 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
     lobbyCodeDisplay.textContent = lobbyCode;
 
     // Nickname aus Cookies abrufen
-    const nickname = getCookie('nickname'); // Stelle sicher, dass diese Funktion vorhanden ist
+    const nickname = getCookie('nickname');
 
     // Spieler der Lobby beitreten
-    socket.emit('joinLobby', { lobbyCode, nickname }); // Sende Lobby-Code und Nicknamen
+    socket.emit('joinLobby', { lobbyCode, nickname });
 
     // Event-Listener für den Copy-Button
     copyButton.addEventListener('click', function() {
@@ -42,28 +42,31 @@ document.addEventListener('DOMContentLoaded', () => {
     let revealCount = 0; // Zähler für Reveals
     let totalPlayers = 0; // Gesamtanzahl der Spieler
     let currentWord = ""; // Aktueller Begriff
+    let gameActive = false; // Flag, um den Spielstatus zu verfolgen
+    let countdownTimer; // Timer für den Countdown
 
     // Funktion um einen zufälligen Begriff aus word.json zu holen
     function getRandomWord() {
-        return fetch('word.json') // Stelle sicher, dass der Pfad zur word.json korrekt ist
+        return fetch('word.json')
             .then(response => response.json())
             .then(words => {
                 const randomIndex = Math.floor(Math.random() * words.length);
-                currentWord = words[randomIndex]; // Wähle einen zufälligen Begriff
-                currentWordDisplay.textContent = currentWord; // Zeige den Begriff an
-                currentWordDisplay.classList.remove('hidden'); // Mache das Element sichtbar
-            });
+                currentWord = words[randomIndex];
+                currentWordDisplay.textContent = currentWord;
+                currentWordDisplay.classList.remove('hidden');
+            })
+            .catch(error => console.error('Fehler beim Abrufen des Wortes:', error));
     }
 
     // Spiel starten
     startGameButton.addEventListener('click', () => {
-        socket.emit('startGame', lobbyCode); // Sende das Start-Event an den Server
+        socket.emit('startGame', lobbyCode);
         console.log('Spiel wird gestartet...');
     });
 
     // Socket.io Ereignis für das Spiel starten
     socket.on('gameStarted', () => {
-        // Spieler-Liste oben rechts anzeigen
+        gameActive = true; // Spiel ist aktiv
         const playerCount = document.getElementById('player-count');
         playerCount.style.position = 'absolute';
         playerCount.style.top = '20px';
@@ -72,61 +75,60 @@ document.addEventListener('DOMContentLoaded', () => {
         playersDiv.style.position = 'absolute';
         playersDiv.style.top = '50px';
         playersDiv.style.right = '20px';
-        playersDiv.style.width = '200px'; // Verkleinerte Breite der Spieler-Liste
+        playersDiv.style.width = '200px';
 
-        // Blende die Spieler-Liste und die neuen Elemente ein
-        currentWordDisplay.classList.remove('hidden'); // Mache das current-word sichtbar
+        currentWordDisplay.classList.remove('hidden');
         associationInput.classList.remove('hidden');
         revealButton.classList.remove('hidden');
         revealCountDisplay.classList.remove('hidden');
 
-        // Hole einen zufälligen Begriff, wenn das Spiel gestartet wird
-        getRandomWord(); // Rufe die Funktion auf, um einen zufälligen Begriff abzurufen
+        getRandomWord();
 
-        // Blende den Start-Button aus
         startGameButton.style.display = 'none';
     });
 
     // Spieler der Lobby beitreten
     socket.on('playerJoined', (playersList) => {
-        playersDiv.innerHTML = ''; // Vorherige Spieler-Liste leeren
+        playersDiv.innerHTML = '';
         playersList.forEach(player => {
             const playerElement = document.createElement('div');
             playerElement.classList.add('player');
-            playerElement.textContent = player.name; // Spielername anzeigen
-    
-            // Host-Badge und Kick-Button nur für den Host anzeigen
+            playerElement.textContent = player.name;
+
             if (player.isHost) {
                 const hostBadge = document.createElement('span');
                 hostBadge.classList.add('host-badge');
-                hostBadge.textContent = 'Host'; // Host-Badge
+                hostBadge.textContent = 'Host';
                 playerElement.appendChild(hostBadge);
             } else {
-                // Kick-Button nur für den Host anzeigen
                 const isHost = playersList.some(p => p.id === socket.id && p.isHost);
                 if (isHost) {
                     const kickButton = document.createElement('button');
                     kickButton.classList.add('kick-button');
                     kickButton.innerHTML = '<img src="kick-icon.png" alt="Kick" class="kick-icon" />';
                     kickButton.onclick = () => {
-                        socket.emit('kickPlayer', player.id); // Kick-Event an den Server senden
+                        socket.emit('kickPlayer', player.id);
                     };
                     playerElement.appendChild(kickButton);
                 }
             }
-    
-            playersDiv.appendChild(playerElement); // Spieler-Element zur Liste hinzufügen
+
+            playersDiv.appendChild(playerElement);
         });
 
-        // Spieleranzahl aktualisieren
+        totalPlayers = playersList.length; // Gesamtanzahl der Spieler aktualisieren
+        updateRevealCount(); // Aktualisiere die Anzeige der Reveals
+
         const playerCountDiv = document.getElementById('player-count');
-        const playerCount = playersList.length;
-        playerCountDiv.textContent = `Spieler in der Lobby (${playerCount}/4):`;
+        playerCountDiv.textContent = `Spieler in der Lobby (${totalPlayers}/4):`;
 
         // Überprüfen, ob genügend Spieler vorhanden sind
         const isHost = playersList.some(player => player.id === socket.id && player.isHost);
-        if (playerCount < 2) {
+        if (totalPlayers < 2) {
             startGameButton.style.display = 'none'; // Start-Button ausblenden
+            if (gameActive) {
+                stopGame(); // Stoppe das Spiel, wenn weniger als 2 Spieler
+            }
         } else {
             startGameButton.style.display = isHost ? 'block' : 'none'; // Spiel starten Button anzeigen, wenn Host
         }
@@ -138,59 +140,68 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     socket.on('redirectToHome', (message) => {
-        console.log('Redirecting to home with message:', message); // Debugging-Log
+        console.log('Redirecting to home with message:', message);
         const messageDiv = document.getElementById('error-message');
         messageDiv.textContent = message;
         messageDiv.classList.remove('hidden');
-    
-        // Nach 3 Sekunden zur Startseite weiterleiten
+
         setTimeout(() => {
-            window.location.href = 'index.html'; // Zur Startseite weiterleiten
-        }, 3000); // 3 Sekunden
+            window.location.href = 'index.html';
+        }, 3000);
     });
-
-    // Spieler der Lobby beitreten
-    socket.on('playerJoined', (playersList) => {
-        totalPlayers = playersList.length; // Gesamtanzahl der Spieler aktualisieren
-        updateRevealCount(); // Aktualisiere die Anzeige der Reveals
-    });
-
-    // Funktion zum Aktualisieren der Reveal-Anzeige
-    function updateRevealCount() {
-        revealCountDisplay.textContent = `${revealCount}/${totalPlayers}`;
-    }
 
     // Reveal-Button Logik
     revealButton.addEventListener('click', () => {
         if (associationInput.disabled) {
-            // Wenn das Eingabefeld gesperrt ist, entsperren
             associationInput.disabled = false;
-            revealCount--; // Zähler verringern
-            revealButton.textContent = 'Reveal'; // Button-Text zurücksetzen
+            revealCount--;
+            revealButton.textContent = 'Reveal';
         } else {
-            // Wenn das Eingabefeld nicht gesperrt ist, sperren
             associationInput.disabled = true;
-            revealCount++; // Zähler erhöhen
-            revealButton.textContent = 'Unreveal'; // Button-Text ändern
+            revealCount++;
+            revealButton.textContent = 'Unreveal';
+            socket.emit('playerRevealed', { playerId: socket.id, word: associationInput.value }); // Sende Reveal an den Server
         }
-        updateRevealCount(); // Aktualisiere die Anzeige der Reveals
+        updateRevealCount();
 
-        // Überprüfen, ob alle Spieler revealed haben
         if (revealCount === totalPlayers) {
             console.log('Alle Spieler haben revealed!');
             // socket.emit('evaluate', ...); // Hier kannst du das Auswertungs-Event senden
         }
     });
 
+    // Synchronisation der Reveals
+    socket.on('updateRevealCount', (count) => {
+        revealCount = count;
+        updateRevealCount();
+    });
+
+    // Timer für das Stoppen des Spiels
+    function stopGame() {
+        clearTimeout(countdownTimer);
+        const messageDiv = document.getElementById('error-message');
+        messageDiv.textContent = 'Das Spiel wird in 15 Sekunden gestoppt, da weniger als 2 Spieler vorhanden sind.';
+        messageDiv.classList.remove('hidden');
+
+        let countdown = 15;
+        countdownTimer = setInterval(() => {
+            countdown--;
+            messageDiv.textContent = `Das Spiel wird in ${countdown} Sekunden gestoppt.`;
+            if (countdown <= 0) {
+                clearInterval(countdownTimer);
+                socket.emit('stopGame', lobbyCode); // Stoppe das Spiel und gehe zurück zur Lobby
+            }
+        }, 1000);
+    }
+
     // Beispiel für die Fehlerbehandlung
     function showErrorMessage(message) {
-        const messageDiv = document.getElementById('message');
+        const messageDiv = document.getElementById('error-message');
         messageDiv.textContent = message;
-        messageDiv.classList.remove('hidden'); // Fehleranzeige sichtbar machen
+        messageDiv.classList.remove('hidden');
 
-        // Nach 5 Sekunden die Nachricht ausblenden
         setTimeout(() => {
-            messageDiv.classList.add('hidden'); // Nachricht ausblenden
+            messageDiv.classList.add('hidden');
         }, 5000); // 5 Sekunden
     }
 
@@ -200,5 +211,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const parts = v.split('=');
             return parts[0] === name ? decodeURIComponent(parts[1]) : r;
         }, '');
+    }
+
+    // Spieler verlassen das Spiel
+    socket.on('playerLeft', (playerId) => {
+        if (gameActive) {
+            totalPlayers--; // Spieleranzahl verringern
+            updateRevealCount(); // Aktualisiere die Anzeige der Reveals
+            if (totalPlayers < 2) {
+                stopGame(); // Stoppe das Spiel, wenn weniger als 2 Spieler
+            }
+        }
+    });
+
+    // Funktion zur Aktualisierung der Reveal-Anzeige
+    function updateRevealCount() {
+        revealCountDisplay.textContent = `Reveals: ${revealCount}/${totalPlayers}`;
     }
 });
