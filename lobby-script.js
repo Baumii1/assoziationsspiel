@@ -76,6 +76,18 @@ document.addEventListener('DOMContentLoaded', () => {
         showErrorMessage(errorMessage);
     });
 
+    socket.on('redirectToHome', (message) => {
+        console.log('Redirecting to home with message:', message); // Debugging-Log
+        const messageDiv = document.getElementById('error-message');
+        messageDiv.textContent = message;
+        messageDiv.classList.remove('hidden');
+    
+        // Nach 3 Sekunden zur Startseite weiterleiten
+        setTimeout(() => {
+            window.location.href = 'index.html'; // Zur Startseite weiterleiten
+        }, 3000); // 3 Sekunden
+    });
+
     // Spiel starten
     startGameButton.addEventListener('click', () => {
         socket.emit('startGame', lobbyCode);

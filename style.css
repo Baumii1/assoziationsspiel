@@ -81,13 +81,6 @@ html, body {
     transition: opacity 0.5 s ease; /* Übergangseffekt */
 }
 
-/* Fehleranzeige */
-.error-message {
-    color: red; /* Rote Schriftfarbe für Fehler */
-    font-weight: bold; /* Fettschrift */
-    margin: 10px 0; /* Abstand oben und unten */
-}
-
 /* Überschriften */
 h1, h2 {
     margin: 20px 0;
@@ -333,6 +326,14 @@ input[type="text"]:focus {
 }
 
 .message {
+    font-weight: bold;
+    margin: 15px;
+    font-size: 12px;;
+}
+
+/* Fehleranzeige */
+.error-message {
+    font-weight: bold;
     margin: 15px;
     font-size: 12px;;
 }
