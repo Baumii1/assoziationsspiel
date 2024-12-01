@@ -176,15 +176,13 @@ io.on('connection', (socket) => {
     // Spiel starten
     socket.on('startGame', (lobbyCode) => {
         if (lobbies[lobbyCode] && lobbies[lobbyCode].players.length >= MIN_PLAYERS) {
-            lobbies[lobbyCode].gameActive = true;
-            
-            // Hole einen zufälligen Begriff und sende ihn an alle Spieler
             getRandomWord().then(word => {
                 lobbies[lobbyCode].currentWord = word; // Speichere den aktuellen Begriff
+                lobbies[lobbyCode].gameActive = true; // Setze das Spiel auf aktiv
                 io.to(lobbyCode).emit('gameStarted', word); // Sende den Begriff an alle Spieler
+            }).catch(error => {
+                socket.emit('error', 'Fehler beim Abrufen des Begriffs: ' + error.message);
             });
-            
-            console.log(`Das Spiel in der Lobby ${lobbyCode} wurde gestartet.`);
         } else {
             socket.emit('error', 'Nicht genügend Spieler, um das Spiel zu starten.');
         }
@@ -224,14 +222,23 @@ io.on('connection', (socket) => {
 
     // Funktion um einen zufälligen Begriff aus word.json zu holen
     function getRandomWord() {
-        return fetch('word.json')
-            .then(response => response.json())
+        return fetch('/word.json') // Stelle sicher, dass der Pfad zur word.json korrekt ist
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Netzwerkantwort war nicht ok: ' + response.statusText);
+                }
+                return response.json();
+            })
             .then(words => {
                 const randomIndex = Math.floor(Math.random() * words.length);
                 return words[randomIndex]; // Gebe den zufälligen Begriff zurück
+            })
+            .catch(error => {
+                console.error('Fehler beim Abrufen des Wortes:', error);
+                throw error; // Wirf den Fehler weiter, um ihn im Socket-Event zu behandeln
             });
     }
-});
+    });
 
 // Hilfsfunktionen
 function generateLobbyCode() {

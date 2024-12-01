@@ -41,22 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let revealCount = 0; // Zähler für Reveals
     let totalPlayers = 0; // Gesamtanzahl der Spieler
-    let currentWord = ""; // Aktueller Begriff
     let gameActive = false; // Flag, um den Spielstatus zu verfolgen
     let countdownTimer; // Timer für den Countdown
-
-    // Funktion um einen zufälligen Begriff aus word.json zu holen
-    function getRandomWord() {
-        return fetch('word.json')
-            .then(response => response.json())
-            .then(words => {
-                const randomIndex = Math.floor(Math.random() * words.length);
-                currentWord = words[randomIndex];
-                currentWordDisplay.textContent = currentWord;
-                currentWordDisplay.classList.remove('hidden');
-            })
-            .catch(error => console.error('Fehler beim Abrufen des Wortes:', error));
-    }
 
     // Spiel starten
     startGameButton.addEventListener('click', () => {
