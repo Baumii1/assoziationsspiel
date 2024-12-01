@@ -26,6 +26,17 @@
         <input type="text" id="association-word" class="hidden" placeholder="Gib dein assoziiertes Wort ein" style="width: 500px;">
         <button id="reveal-button" class="btn hidden">Reveal</button>
         <div id="reveal-count" class="hidden" style="text-align: center; margin-top: 10px;">0/0</div>
+
+        <div id="evaluation-screen" class="screen hidden"> <!-- Auswertungsbildschirm -->
+            <div id="revealed-words" style="width: 500px; margin: 20px auto;"></div> <!-- Wörter der Spieler -->
+            <div class="button-container" style="width: 500px; display: none;" id="answer-buttons"> <!-- Buttons für Host -->
+                <button id="correct-button" class="btn">Richtig</button>
+                <button id="wrong-button" class="btn">Falsch</button>
+            </div>
+            <button id="next-word-button" class="btn hidden" style="width: 500px;">Weiter</button> <!-- Weiter-Button -->
+            <div id="streak" style="text-align: center; margin-top: 20px;">Streak: 0</div> <!-- Streak-Anzeige -->
+        </div>
+
         <div id="error-message" class="error-message hidden"></div>
     </div>
     <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>

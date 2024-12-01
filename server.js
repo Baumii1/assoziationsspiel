@@ -217,6 +217,15 @@ io.on('connection', (socket) => {
         }
     });
 
+    // Spieler hat das Spiel gestartet
+    socket.on('evaluateAnswers', () => {
+        const lobbyCode = Object.keys(lobbies).find(code => lobbies[code].players.some(player => player.id === socket.id));
+        if (lobbyCode) {
+            const revealedWords = lobbies[lobbyCode].players.map(player => player.revealed ? player.word : null).filter(Boolean);
+            io.to(lobbyCode).emit('evaluateAnswers', revealedWords); // Sende die Wörter zur Auswertung
+        }
+    });
+
     // Funktion um einen zufälligen Begriff aus word.json zu holen
     function getRandomWord() {
         return new Promise((resolve, reject) => {

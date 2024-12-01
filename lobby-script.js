@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let totalPlayers = 0; // Gesamtanzahl der Spieler
     let gameActive = false; // Flag, um den Spielstatus zu verfolgen
     let countdownTimer; // Timer für den Countdown
+    let streak = 0; // Streak-Zähler
 
     // Spiel starten
     startGameButton.addEventListener('click', () => {
@@ -50,10 +51,12 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Spiel wird gestartet...');
     });
 
+    // Socket.io Ereignis für das Spiel starten
     socket.on('gameStarted', (word) => {
         gameActive = true; // Spiel ist aktiv
         currentWordDisplay.textContent = word; // Setze den aktuellen Begriff anzuzeigen
         currentWordDisplay.classList.remove('hidden');
+
         const playerCount = document.getElementById('player-count');
         playerCount.style.position = 'absolute';
         playerCount.style.top = '20px';
@@ -69,6 +72,30 @@ document.addEventListener('DOMContentLoaded', () => {
         revealCountDisplay.classList.remove('hidden');
 
         startGameButton.style.display = 'none';
+
+        // Füge Event-Listener für Reveal-Button hinzu
+        revealButton.addEventListener('click', () => {
+            if (associationInput.disabled) {
+                associationInput.disabled = false;
+                revealCount--;
+                revealButton.textContent = 'Reveal';
+            } else {
+                associationInput.disabled = true;
+                revealCount++;
+                revealButton.textContent = 'Unreveal';
+
+                // Sende Reveal an den Server
+                socket.emit('playerRevealed', { playerId: socket.id, word: associationInput.value }); 
+            }
+
+            updateRevealCount(); // Aktualisiere die Anzeige der Reveals
+
+            // Überprüfen, ob alle Spieler revealed haben
+            if (revealCount === totalPlayers) {
+                console.log('Alle Spieler haben revealed!');
+                socket.emit('evaluateAnswers'); // Sende Event zur Auswertung der Antworten
+            }
+        });
     });
 
     // Socket.io Ereignis für das Stoppen des Spiels
@@ -169,6 +196,60 @@ document.addEventListener('DOMContentLoaded', () => {
         revealCount = count; // Aktualisiere den Reveal-Zähler
         updateRevealCount(); // Aktualisiere die Anzeige
     });
+
+    // Socket.io Ereignis für die Auswertung der Antworten
+    socket.on('evaluateAnswers', (revealedWords) => {
+        // Blende den Spielbildschirm aus und zeige den Auswertungsbildschirm an
+        document.getElementById('game-screen').classList.add('hidden');
+        document.getElementById('evaluation-screen').classList.remove('hidden');
+
+        // Zeige die Wörter der Spieler an
+        const revealedWordsDiv = document.getElementById('revealed-words');
+        revealedWordsDiv.innerHTML = ''; // Leere vorherige Wörter
+        revealedWords.forEach(word => {
+            const wordBox = document.createElement('div');
+            wordBox.textContent = word; // Setze den Text des Wortes
+            wordBox.style.border = '1px solid white'; // Füge eine Umrandung hinzu
+            wordBox.style.margin = '10px 0'; // Abstand zwischen den Boxen
+            wordBox.style.padding = '10px'; // Innenabstand
+            revealedWordsDiv.appendChild(wordBox); // Füge die Box hinzu
+        });
+
+        // Zeige die Antwort-Buttons nur für den Host an
+        const isHost = revealedWords.some(player => player.id === socket.id && player.isHost);
+        document.getElementById('answer-buttons').style.display = isHost ? 'flex' : 'none';
+
+        // Event-Listener für die Antwort-Buttons
+        document.getElementById('correct-button').addEventListener('click', () => {
+            streak++; // Erhöhe den Streak
+            updateStreakDisplay(); // Aktualisiere die Streak-Anzeige
+            nextWord(); // Gehe zum nächsten Wort
+        });
+
+        document.getElementById('wrong-button').addEventListener('click', () => {
+            streak = 0; // Setze den Streak zurück
+            updateStreakDisplay(); // Aktualisiere die Streak-Anzeige
+            nextWord(); // Gehe zum nächsten Wort
+        });
+    });
+
+    // Funktion zur Aktualisierung der Streak-Anzeige
+    function updateStreakDisplay() {
+        document.getElementById('streak').textContent = `Streak: ${streak}`;
+    }
+
+    // Funktion für den nächsten Begriff
+    function nextWord() {
+        // Blende die Antwort-Buttons aus und zeige den Weiter-Button an
+        document.getElementById('answer-buttons').style.display = 'none';
+        document.getElementById('next-word-button').classList.remove('hidden');
+
+        // Event-Listener für den Weiter-Button
+        document.getElementById('next-word-button').onclick = () => {
+            socket.emit('startGame', lobbyCode); // Starte das nächste Spiel
+            document.getElementById('next-word-button').classList.add('hidden'); // Blende den Button aus
+        };
+    }
 
     // Funktion zur Aktualisierung der Reveal-Anzeige
     function updateRevealCount() {
