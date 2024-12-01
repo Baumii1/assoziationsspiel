@@ -76,11 +76,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // Event-Listener für den Reveal-Button
         revealButton.addEventListener('click', () => {
             if (associationInput.disabled) {
-                associationInput.disabled = false; // Aktivieren des Eingabefelds
+                // Wenn das Eingabefeld deaktiviert ist, aktiviere es
+                associationInput.disabled = false; 
                 revealCount--; // Reduziere die Anzahl der Reveals
                 revealButton.textContent = 'Reveal'; // Button-Text ändern
             } else {
-                associationInput.disabled = true; // Deaktivieren des Eingabefelds
+                // Wenn das Eingabefeld aktiviert ist, deaktiviere es
+                associationInput.disabled = true; 
                 revealCount++; // Erhöhe die Anzahl der Reveals
                 revealButton.textContent = 'Unreveal'; // Button-Text ändern
 
@@ -216,24 +218,37 @@ document.addEventListener('DOMContentLoaded', () => {
         associationInput.classList.add('hidden');
         revealButton.classList.add('hidden');
         revealCountDisplay.classList.add('hidden'); // Blende die Anzahl der Reveals aus
-
+    
         // Zeige die Antwort-Buttons nur für den Host an
         const isHost = revealedWords.some(player => player.id === socket.id && player.isHost);
         document.getElementById('answer-buttons').style.display = isHost ? 'flex' : 'none';
-
+    
         // Event-Listener für die Antwort-Buttons
-        document.getElementById('correct-button').addEventListener('click', () => {
-            streak++; // Erhöhe den Streak
-            updateStreakDisplay(); // Aktualisiere die Streak-Anzeige
-            nextWord(); // Gehe zum nächsten Wort
-        });
-        
-        document.getElementById('wrong-button').addEventListener('click', () => {
-            streak = 0; // Setze den Streak zurück
-            updateStreakDisplay(); // Aktualisiere die Streak-Anzeige
-            nextWord(); // Gehe zum nächsten Wort
-        });
+        const correctButton = document.getElementById('correct-button');
+        const wrongButton = document.getElementById('wrong-button');
+    
+        // Entferne vorherige Event-Listener, um Duplikate zu vermeiden
+        correctButton.removeEventListener('click', handleCorrect);
+        wrongButton.removeEventListener('click', handleWrong);
+    
+        // Hinzufügen der neuen Event-Listener
+        correctButton.addEventListener('click', handleCorrect);
+        wrongButton.addEventListener('click', handleWrong);
     });
+    
+    // Funktion für den korrekten Button
+    function handleCorrect() {
+        streak++; // Erhöhe den Streak
+        updateStreakDisplay(); // Aktualisiere die Streak-Anzeige
+        nextWord(); // Gehe zum nächsten Wort
+    }
+    
+    // Funktion für den falschen Button
+    function handleWrong() {
+        streak = 0; // Setze den Streak zurück
+        updateStreakDisplay(); // Aktualisiere die Streak-Anzeige
+        nextWord(); // Gehe zum nächsten Wort
+    }
 
     // Funktion zur Aktualisierung der Streak-Anzeige
     function updateStreakDisplay() {
