@@ -72,7 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
         revealCountDisplay.classList.remove('hidden');
 
         startGameButton.style.display = 'none';
-        associationInput.disabled = false;
 
         revealCount = 0;
         updateRevealCount();
@@ -93,11 +92,9 @@ document.addEventListener('DOMContentLoaded', () => {
             associationInput.disabled = true; 
             revealButton.textContent = 'Unreveal'; // Button-Text ändern
     
-            // Sende Reveal an den Server
-            socket.emit('playerRevealed', { playerId: socket.id, word: associationInput.value });
-    
             // Erhöhe die Anzahl der Reveals
             revealCount++; 
+            socket.emit('playerRevealed', { playerId: socket.id, word: associationInput.value });
         }
     
         // Aktualisiere die Anzeige der Reveals
