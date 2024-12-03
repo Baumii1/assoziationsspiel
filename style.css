@@ -46,6 +46,20 @@ html, body {
     border-radius: 8px; /* Abgerundete Ecken */
 }
 
+.player-count2 {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 16px;
+}
+
+.player-list2 {
+    position: absolute;
+    top: 50px;
+    right: 20px;
+    width: 200px;
+}
+
 .host-badge {
     background-color: #ffcc00; /* Hintergrundfarbe für den Host-Badge */
     color: #000; /* Schriftfarbe für den Host */
