@@ -51,12 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Spiel wird gestartet...');
     });
 
-    // Socket.io Ereignis für das Spiel starten
-    socket.on('gameStarted', (word) => {
-        gameActive = true; // Spiel ist aktiv
-        currentWordDisplay.textContent = word; // Setze den aktuellen Begriff anzuzeigen
-        currentWordDisplay.classList.remove('hidden');
-
         const playerCount = document.getElementById('player-count');
         playerCount.style.position = 'absolute';
         playerCount.style.top = '20px';
@@ -66,6 +60,12 @@ document.addEventListener('DOMContentLoaded', () => {
         playersDiv.style.top = '50px';
         playersDiv.style.right = '20px';
         playersDiv.style.width = '200px';
+
+    // Socket.io Ereignis für das Spiel starten
+    socket.on('gameStarted', (word) => {
+        gameActive = true; // Spiel ist aktiv
+        currentWordDisplay.textContent = word; // Setze den aktuellen Begriff anzuzeigen
+        currentWordDisplay.classList.remove('hidden');
 
         associationInput.classList.remove('hidden');
         revealButton.classList.remove('hidden');
@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
         messageDiv.classList.remove('hidden');
 
         setTimeout(() => {
-            // Hier kannst du zur Lobby-Seite weiterleiten
+            // Hier kannst du zur Lobby Seite weiterleiten
             window.location.href = 'index.html'; // Oder die URL zur Lobby-Seite anpassen
         }, 3000); // Warte 3 Sekunden, bevor du zur Lobby weiterleitest
     });
