@@ -72,6 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
         revealCountDisplay.classList.remove('hidden');
 
         startGameButton.style.display = 'none';
+        associationInput.disabled = false;
 
         revealCount = 0;
         updateRevealCount();
