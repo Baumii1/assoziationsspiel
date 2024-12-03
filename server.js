@@ -217,6 +217,19 @@ io.on('connection', (socket) => {
         }
     });
 
+    // Spieler hat ein Wort unrevealed
+    socket.on('playerUnrevealed', (data) => {
+        const lobbyCode = Object.keys(lobbies).find(code => lobbies[code].players.some(player => player.id === data.playerId));
+        if (lobbyCode) {
+            const player = lobbies[lobbyCode].players.find(p => p.id === data.playerId);
+            if (player) {
+                player.revealed = false; // Markiere den Spieler als nicht revealed
+                const revealedPlayers = lobbies[lobbyCode].players.filter(p => p.revealed).length;
+                io.to(lobbyCode).emit('updateRevealCount', revealedPlayers); // Sende die aktualisierte Anzahl der revealed Spieler
+            }
+        }
+    });
+
     // Spieler hat das Spiel gestartet
     socket.on('evaluateAnswers', () => {
         const lobbyCode = Object.keys(lobbies).find(code => lobbies[code].players.some(player => player.id === socket.id));

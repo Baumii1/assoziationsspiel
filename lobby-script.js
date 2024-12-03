@@ -83,27 +83,30 @@ document.addEventListener('DOMContentLoaded', () => {
             // Wenn das Eingabefeld deaktiviert ist, aktiviere es (Unreveal)
             associationInput.disabled = false; 
             revealButton.textContent = 'Reveal'; // Button-Text ändern
+    
+            // Reduziere die Anzahl der Reveals
+            revealCount--; 
+            socket.emit('playerUnrevealed', { playerId: socket.id }); // Sende Unreveal an den Server
         } else {
             // Wenn das Eingabefeld aktiviert ist, deaktiviere es (Reveal)
             associationInput.disabled = true; 
             revealButton.textContent = 'Unreveal'; // Button-Text ändern
-
+    
             // Sende Reveal an den Server
             socket.emit('playerRevealed', { playerId: socket.id, word: associationInput.value });
-
+    
             // Erhöhe die Anzahl der Reveals
             revealCount++; 
-            updateRevealCount(); // Aktualisiere die Anzeige der Reveals
-
-            // Überprüfen, ob alle Spieler revealed haben
-            if (revealCount === totalPlayers) {
-                console.log('Alle Spieler haben revealed!');
-                socket.emit('evaluateAnswers'); // Sende Event zur Auswertung der Antworten
-            }
         }
-
-        // Update der Reveal-Anzeige
-        updateRevealCount();
+    
+        // Aktualisiere die Anzeige der Reveals
+        updateRevealCount(); 
+    
+        // Überprüfen, ob alle Spieler revealed haben
+        if (revealCount === totalPlayers) {
+            console.log('Alle Spieler haben revealed!');
+            socket.emit('evaluateAnswers'); // Sende Event zur Auswertung der Antworten
+        }
     });
 
     // Socket.io Ereignis für das Stoppen des Spiels
