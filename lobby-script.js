@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (playerName === playerId) {
                 const statusDot = playerElement.querySelector('.status-dot');
                 statusDot.classList.remove('not-revealed');
-                statusDot.classList.add('revealed');
+                statusDot.classList.add('revealed'); // Ändere den Statuspunkt zu grün
             }
         });
     });
@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (playerName === playerId) {
                 const statusDot = playerElement.querySelector('.status-dot');
                 statusDot.classList.remove('revealed');
-                statusDot.classList.add('not-revealed');
+                statusDot.classList.add('not-revealed'); // Ändere den Statuspunkt zurück zu grau
             }
         });
     });
@@ -253,9 +253,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     });
 
-    // Synchronisation der Reveals
-    socket.on('updateRevealCount', (count) => {
-        updateRevealCount(); // Aktualisiere die Anzeige
+    // Aktualisiere die Anzahl der revealed Spieler
+    socket.on('updateRevealCount', (revealedCount) => {
+        revealCountDisplay.textContent = `Revealed: ${revealedCount} von ${totalPlayers}`; // Aktualisiere die Anzeige
     });
 
     // Socket.io Ereignis für die Auswertung der Antworten
@@ -380,3 +380,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
