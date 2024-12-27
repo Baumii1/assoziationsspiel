@@ -198,7 +198,12 @@ io.on('connection', (socket) => {
             getRandomWord().then(word => {
                 lobbies[lobbyCode].currentWord = word; // Speichere den aktuellen Begriff
                 lobbies[lobbyCode].gameActive = true; // Setze das Spiel auf aktiv
-                io.to(lobbyCode).emit('gameStarted', word, lobbies[lobbyCode].players); // Sende den Begriff und die Spieler an alle Spieler
+                io.to(lobbyCode).emit('gameStarted', word, lobbies[lobbyCode].players.map(player => ({
+                    id: player.id,
+                    name: player.name,
+                    isHost: player.id === lobbies[lobbyCode].hostId,
+                    revealed: player.revealed // Füge den Reveal-Status hinzu
+                }))); // Sende den Begriff und die Spieler an alle Spieler
             }).catch(error => {
                 socket.emit('error', 'Fehler beim Abrufen des Begriffs: ' + error);
             });
