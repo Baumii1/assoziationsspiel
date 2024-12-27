@@ -65,8 +65,12 @@ document.addEventListener('DOMContentLoaded', () => {
     socket.on('gameStarted', (word) => {
         gameActive = true; // Spiel ist aktiv
         currentWordDisplay.textContent = word; // Setze den aktuellen Begriff anzuzeigen
-        currentWordDisplay.classList.remove('hidden');
 
+        // Blende den Lobby-Bildschirm aus und zeige den Spiel-Bildschirm an
+        document.getElementById('lobby-screen').classList.add('hidden');
+        document.getElementById('game-screen').classList.remove('hidden');
+
+        // Weitere UI-Anpassungen
         associationInput.classList.remove('hidden');
         revealButton.classList.remove('hidden');
         revealCountDisplay.classList.remove('hidden');
@@ -109,6 +113,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Socket.io Ereignis für das Stoppen des Spiels
     socket.on('gameStopped', () => {
+        // Blende den Spielbildschirm aus und zeige den Lobby-Bildschirm an
+        document.getElementById('game-screen').classList.add('hidden');
+        document.getElementById('lobby-screen').classList.remove('hidden');
+
         // Spieler zurück zur Lobby schicken
         const messageDiv = document.getElementById('error-message');
         messageDiv.textContent = 'Das Spiel wurde gestoppt. Du wirst zurück zur Lobby geleitet.';
