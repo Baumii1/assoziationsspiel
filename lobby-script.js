@@ -39,9 +39,9 @@ document.addEventListener('DOMContentLoaded', () => {
         window.getSelection().removeAllRanges();
     });
 
-    let revealCount = 0; // Zähler für Reveals
     let totalPlayers = 0; // Gesamtanzahl der Spieler
     let gameActive = false; // Flag, um den Spielstatus zu verfolgen
+    let revealedPlayers = []; // Array für revealed Spieler
     let countdownTimer; // Timer für den Countdown
     let streak = 0; // Streak-Zähler
 
@@ -76,6 +76,14 @@ document.addEventListener('DOMContentLoaded', () => {
             playerName.textContent = player.name;
             playerElement.appendChild(playerName); // Füge den Spielernamen hinzu
 
+            // Host-Badge hinzufügen, wenn der Spieler der Host ist
+            if (player.isHost) {
+                const hostBadge = document.createElement('span');
+                hostBadge.classList.add('host-badge');
+                hostBadge.textContent = 'Host';
+                playerElement.appendChild(hostBadge); // Füge den Host-Badge hinzu
+            }
+
             playersDiv.appendChild(playerElement);
         });
 
@@ -95,7 +103,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         startGameButton.style.display = 'none';
 
-        revealCount = 0;
         updateRevealCount();
     });
 
@@ -106,26 +113,25 @@ document.addEventListener('DOMContentLoaded', () => {
             associationInput.disabled = false; 
             revealButton.textContent = 'Reveal'; // Button-Text ändern
 
-            // Reduziere die Anzahl der Reveals
-            revealCount--; 
+            // Entferne den Spieler aus dem revealedPlayers Array
+            revealedPlayers = revealedPlayers.filter(id => id !== socket.id);
+            updateRevealCount(); // Aktualisiere die Anzeige der Reveals
             socket.emit('playerUnrevealed', { playerId: socket.id }); // Sende Unreveal an den Server
         } else {
             // Wenn das Eingabefeld aktiviert ist, deaktiviere es (Reveal)
             associationInput.disabled = true; 
             revealButton.textContent = 'Unreveal'; // Button-Text ändern
 
-            // Sende Reveal an den Server
+            // Füge den Spieler zum revealedPlayers Array hinzu
+            revealedPlayers.push(socket.id);
             socket.emit('playerRevealed', { playerId: socket.id, word: associationInput.value });
 
-            // Erhöhe die Anzahl der Reveals
-            revealCount++; 
+            // Aktualisiere die Anzeige der Reveals
+            updateRevealCount(); 
         }
 
-        // Aktualisiere die Anzeige der Reveals
-        updateRevealCount(); 
-        
         // Überprüfen, ob alle Spieler revealed haben
-        if (revealCount === totalPlayers) {
+        if (revealedPlayers.length === totalPlayers) {
             console.log('Alle Spieler haben revealed!');
             socket.emit('evaluateAnswers'); // Sende Event zur Auswertung der Antworten
         }
@@ -140,6 +146,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 const statusDot = playerElement.querySelector('.status-dot');
                 statusDot.classList.remove('not-revealed');
                 statusDot.classList.add('revealed');
+            }
+        });
+    });
+
+    // Spieler hat ein Wort unrevealed
+    socket.on('playerUnrevealed', ({ playerId }) => {
+        const playerElements = document.querySelectorAll('.player');
+        playerElements.forEach(playerElement => {
+            const playerName = playerElement.textContent.trim();
+            if (playerName === playerId) {
+                const statusDot = playerElement.querySelector('.status-dot');
+                statusDot.classList.remove('revealed');
+                statusDot.classList.add('not-revealed');
             }
         });
     });
@@ -191,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     kickButton.classList.add('kick-button');
                     kickButton.innerHTML = '<img src="kick-icon.png" alt="Kick" class="kick-icon" />';
                     kickButton.onclick = () => {
-                        socket.emit('kickPlayer', player.id);
+                    socket.emit('kickPlayer', player.id);
                     };
                     playerElement.appendChild(kickButton); // Füge den Kick-Button hinzu
                 }
@@ -299,7 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Funktion für den nächsten Begriff
     function nextWord() {
         // Blende die Antwort-Buttons aus und zeige den Weiter-Button an
-        document.getElementById('answer-buttons').style.display = 'none';
+        document.getElement.getElementById('answer-buttons').style.display = 'none';
         document.getElementById('next-word-button').classList.remove('hidden');
 
         // Event-Listener für den Weiter-Button
@@ -311,7 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Funktion zur Aktualisierung der Reveal-Anzeige
     function updateRevealCount() {
-        revealCountDisplay.textContent = `Reveals: ${revealCount}/${totalPlayers}`;
+        revealCountDisplay.textContent = `Reveals: ${revealedPlayers.length}/${totalPlayers}`;
     }
 
     // Timer für das Stoppen des Spiels
