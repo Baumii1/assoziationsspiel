@@ -94,6 +94,9 @@ document.addEventListener('DOMContentLoaded', () => {
             // Reduziere die Anzahl der Reveals
             revealCount--; 
             socket.emit('playerUnrevealed', { playerId: socket.id }); // Sende Unreveal an den Server
+
+            // Aktualisiere die Anzeige der Reveals
+            updateRevealCount(); 
         } else {
             // Wenn das Eingabefeld aktiviert ist, deaktiviere es (Reveal)
             associationInput.disabled = true; 
@@ -102,10 +105,10 @@ document.addEventListener('DOMContentLoaded', () => {
             // Erhöhe die Anzahl der Reveals
             revealCount++; 
             socket.emit('playerRevealed', { playerId: socket.id, word: associationInput.value });
+
+            // Aktualisiere die Anzeige der Reveals
+            updateRevealCount(); 
         }
-    
-        // Aktualisiere die Anzeige der Reveals
-        updateRevealCount(); 
     
         // Überprüfen, ob alle Spieler revealed haben
         if (revealCount === totalPlayers) {
