@@ -208,12 +208,10 @@ io.on('connection', (socket) => {
     socket.on('playerRevealed', ({ playerId, word }) => {
         const lobbyCode = Object.keys(lobbies).find(code => lobbies[code].players.some(player => player.id === playerId));
         if (lobbyCode) {
-            // Markiere den Spieler als revealed
-            const currentLobby = lobbies[lobbyCode];
-            const player = currentLobby.players.find(p => p.id === playerId);
+            const player = lobbies[lobbyCode].players.find(p => p.id === playerId);
             if (player) {
                 player.revealed = true; // Markiere den Spieler als revealed
-                const revealedCount = currentLobby.players.filter(p => p.revealed).length; // Zähle die revealed Spieler
+                const revealedCount = lobbies[lobbyCode].players.filter(p => p.revealed).length; // Zähle die revealed Spieler
                 io.to(lobbyCode).emit('updateRevealCount', revealedCount); // Sende die aktualisierte Anzahl der revealed Spieler
             }
         }
