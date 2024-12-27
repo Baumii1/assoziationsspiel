@@ -39,12 +39,32 @@ html, body {
 
 .player {
     display: flex;
-    justify-content: center; /* Horizontale Zentrierung */
-    margin: 5px 0; /* Abstand zwischen den Spielern */
     align-items: center; /* Vertikale Zentrierung */
     padding: 10px; /* Innenabstand für jeden Spieler */
     background-color: #1a1a4a; /* Hintergrundfarbe für Spieler */
     border-radius: 8px; /* Abgerundete Ecken */
+    justify-content: space-between; /* Platz zwischen den Elementen */
+}
+
+.status-dot {
+    display: inline-block; /* Damit der Punkt nebeneinander angezeigt wird */
+    width: 10px; /* Breite des Punktes */
+    height: 10px; /* Höhe des Punktes */
+    border-radius: 50%; /* Runde Form für den Punkt */
+    margin-right: 10px; /* Abstand zwischen Punkt und Spielernamen */
+}
+
+.not-revealed {
+    background-color: gray; /* Grauer Punkt für nicht revealed */
+}
+
+.revealed {
+    background-color: green; /* Grüner Punkt für revealed */
+}
+
+.player-name {
+    flex-grow: 1; /* Nimmt den verfügbaren Platz ein */
+    text-align: center; /* Zentriert den Spielernamen */
 }
 
 .host-badge {
@@ -80,7 +100,7 @@ html, body {
     padding: 10px;
     margin-top: 20px;
     border-radius: 5px;
-    transition: opacity 0.5 s ease; /* Übergangseffekt */
+    transition: opacity 0.5s ease; /* Übergangseffekt */
 }
 
 /* Überschriften */
@@ -108,7 +128,7 @@ h1, h2 {
 }
 
 .btn {
-    width: 100%; /* Button auf volle Breite */
+ width: 100%; /* Button auf volle Breite */
     padding: 20px; /* Größeres Padding */
     border: none;
     border-radius: 10px; /* Abgerundete Ecken */
@@ -145,7 +165,7 @@ input[type="text"] {
     width: 100%; /* Breiteres Eingabefeld */
     font-size: 24px; /* Größere Schriftgröße */
     transition: border-color 0.3s;
-    background-color: #1a1a4a; /* Weißer Hintergrund */
+    background-color: #1a1a4a; /* Hintergrundfarbe */
     color: white;
 }
 
@@ -185,7 +205,6 @@ input[type="text"]:focus {
     cursor: pointer; /* Zeiger bei Hover */
     transition: background-color 0.3s; /* Übergangseffekt */
     border-radius: 5px;
-    transition: border-color 0.3s;
 }
 
 .copy-button:hover {
@@ -311,7 +330,6 @@ input[type="text"]:focus {
     color: #ffcc00; /* Goldene Farbe für positives Feedback */
 }
 
-
 /* Animationen für die Buttons */
 .btn {
     transition: all 0.3s ease;
@@ -336,23 +354,6 @@ input[type="text"]:focus {
     width: 500px; /* Standardbreite der Spieler-Liste in der Lobby */
 }
 
-.status-dot {
-    display: inline-block; /* Damit der Punkt nebeneinander angezeigt wird */
-    width: 10px; /* Breite des Punktes */
-    height: 10px; /* Höhe des Punktes */
-    border-radius: 50%; /* Runde Form für den Punkt */
-    margin-right: 10px; /* Abstand zwischen Punkt und Spielernamen */
-}
-
-.not-revealed {
-    background-color: gray; /* Grauer Punkt für nicht revealed */
-}
-
-.revealed {
-    background-color: green; /* Grüner Punkt für revealed */
-}
-
-
 @keyframes glow {
     0% {
         box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
@@ -365,12 +366,12 @@ input[type="text"]:focus {
 .message {
     font-weight: bold;
     margin: 15px;
-    font-size: 25px;;
+    font-size: 25px;
 }
 
 /* Fehleranzeige */
 .error-message {
     font-weight: bold;
     margin: 15px;
-    font-size: 25px;;
+    font-size: 25px;
 }
