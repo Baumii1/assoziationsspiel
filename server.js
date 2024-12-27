@@ -154,7 +154,7 @@ io.on('connection', (socket) => {
                     const restartTimer = setTimeout(() => {
                         io.to(lobbyCode).emit('redirectToLobby'); // Sende das Event, um zur Lobby zurückzukehren
                         delete lobbies[lobbyCode]; // Lösche die Lobby, wenn sie leer ist
-                    }, 30000); // 15 Sekunden warten
+                    }, 30000); // 30 Sekunden warten
 
                     // Wenn ein Spieler wieder beitritt, stoppe den Timer und starte das Spiel neu
                     socket.on('joinLobby', ({ lobbyCode, nickname }) => {
@@ -184,7 +184,6 @@ io.on('connection', (socket) => {
             socket.emit('error', 'Nicht genügend Spieler, um das Spiel zu starten.');
         }
     });
-    
 
     // Stoppe das Spiel
     socket.on('stopGame', (lobbyCode) => {
@@ -209,11 +208,14 @@ io.on('connection', (socket) => {
     socket.on('playerRevealed', ({ playerId, word }) => {
         const lobbyCode = Object.keys(lobbies).find(code => lobbies[code].players.some(player => player.id === playerId));
         if (lobbyCode) {
-            // Erhöhe den Reveal-Zähler und benachrichtige alle Spieler
+            // Markiere den Spieler als revealed
             const currentLobby = lobbies[lobbyCode];
-            const revealedPlayers = currentLobby.players.filter(player => player.revealed).length;
-            currentLobby.players.find(p => p.id === playerId).revealed = true; // Markiere den Spieler als revealed
-            io.to(lobbyCode).emit('updateRevealCount', revealedPlayers); // Sende die aktualisierte Anzahl der revealed Spieler
+            const player = currentLobby.players.find(p => p.id === playerId);
+            if (player) {
+                player.revealed = true; // Markiere den Spieler als revealed
+                const revealedCount = currentLobby.players.filter(p => p.revealed).length; // Zähle die revealed Spieler
+                io.to(lobbyCode).emit('updateRevealCount', revealedCount); // Sende die aktualisierte Anzahl der revealed Spieler
+            }
         }
     });
 
@@ -224,8 +226,8 @@ io.on('connection', (socket) => {
             const player = lobbies[lobbyCode].players.find(p => p.id === data.playerId);
             if (player) {
                 player.revealed = false; // Markiere den Spieler als nicht revealed
-                const revealedPlayers = lobbies[lobbyCode].players.filter(p => p.revealed).length;
-                io.to(lobbyCode).emit('updateRevealCount', revealedPlayers); // Sende die aktualisierte Anzahl der revealed Spieler
+                const revealedCount = lobbies[lobbyCode].players.filter(p => p.revealed).length; // Zähle die revealed Spieler
+                io.to(lobbyCode).emit('updateRevealCount', revealedCount); // Sende die aktualisierte Anzahl der revealed Spieler
             }
         }
     });
@@ -261,7 +263,7 @@ io.on('connection', (socket) => {
             });
         });
     }
-    });
+});
 
 // Hilfsfunktionen
 function generateLobbyCode() {
