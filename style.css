@@ -26,7 +26,7 @@ html, body {
     transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
 }
 
-/* Spieler-Liste */
+/* Spieler-Liste in der Lobby */
 .player-list {
     display: flex;
     flex-direction: column;
@@ -34,7 +34,8 @@ html, body {
     width: 500px; /* Breite der Spieler-Liste */
     border: 3px solid #3a3a6a;
     border-radius: 12px;
-    margin-bottom: 20px;
+    margin: 0 auto; /* Zentriert die Liste */
+    align-items: center; /* Zentriert die Spieler in der Liste */
 }
 
 .player {
@@ -53,11 +54,15 @@ html, body {
     font-size: 16px;
 }
 
+/* Spieler-Liste im Spiel */
 .player-list2 {
     position: absolute;
-    top: 50px;
-    right: 20px;
-    width: 200px;
+    top: 20px; /* Positionierung oben */
+    right: 20px; /* Positionierung rechts */
+    width: 200px; /* Kleinere Breite für die Spiel-Liste */
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Abstand zwischen den Spielern */
 }
 
 .host-badge {
