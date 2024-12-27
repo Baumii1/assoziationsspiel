@@ -18,6 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Nickname aus Cookies abrufen
     const nickname = getCookie('nickname');
 
+    document.getElementById('lobby-screen').classList.remove('hidden');
+    document.getElementById('game-screen').classList.add('hidden');
+
     // Spieler der Lobby beitreten
     socket.emit('joinLobby', { lobbyCode, nickname });
 
@@ -51,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Spiel wird gestartet...');
     });
 
-        const playerCount = document.getElementById('player-count');
+        /*const playerCount = document.getElementById('player-count');
         playerCount.style.position = 'absolute';
         playerCount.style.top = '20px';
         playerCount.style.right = '20px';
@@ -59,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
         playersDiv.style.position = 'absolute';
         playersDiv.style.top = '50px';
         playersDiv.style.right = '20px';
-        playersDiv.style.width = '200px';
+        playersDiv.style.width = '200px';*/
 
     // Socket.io Ereignis für das Spiel starten
     socket.on('gameStarted', (word) => {
