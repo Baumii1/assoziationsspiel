@@ -335,6 +335,22 @@ input[type="text"]:focus {
     width: 500px; /* Standardbreite der Spieler-Liste in der Lobby */
 }
 
+.status-dot {
+    display: inline-block; /* Damit der Punkt nebeneinander angezeigt wird */
+    width: 10px; /* Breite des Punktes */
+    height: 10px; /* Höhe des Punktes */
+    border-radius: 50%; /* Runde Form für den Punkt */
+    margin-right: 10px; /* Abstand zwischen Punkt und Spielernamen */
+}
+
+.not-revealed {
+    background-color: gray; /* Grauer Punkt für nicht revealed */
+}
+
+.revealed {
+    background-color: green; /* Grüner Punkt für revealed */
+}
+
 
 @keyframes glow {
     0% {

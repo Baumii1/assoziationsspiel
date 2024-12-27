@@ -109,6 +109,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Spieler hat ein Wort revealed
+    socket.on('playerRevealed', ({ playerId }) => {
+        const playerElements = document.querySelectorAll('.player');
+        playerElements.forEach(playerElement => {
+            const playerName = playerElement.textContent.trim();
+            if (playerName === playerId) {
+                const statusDot = playerElement.querySelector('.status-dot');
+                statusDot.classList.remove('not-revealed');
+                statusDot.classList.add('revealed');
+            }
+        });
+    });
+
     // Socket.io Ereignis für das Stoppen des Spiels
     socket.on('gameStopped', () => {
         // Spieler zurück zur Lobby schicken
@@ -128,7 +141,14 @@ document.addEventListener('DOMContentLoaded', () => {
         playersList.forEach(player => {
             const playerElement = document.createElement('div');
             playerElement.classList.add('player');
-            playerElement.textContent = player.name;
+
+            // Erstelle den Punkt
+            const statusDot = document.createElement('span');
+            statusDot.classList.add('status-dot');
+            statusDot.classList.add(player.revealed ? 'revealed' : 'not-revealed'); // Füge die entsprechende Klasse hinzu
+
+            playerElement.appendChild(statusDot); // Füge den Punkt zum Spieler-Element hinzu
+            playerElement.appendChild(document.createTextNode(player.name)); // Füge den Spielernamen hinzu
 
             if (player.isHost) {
                 const hostBadge = document.createElement('span');
