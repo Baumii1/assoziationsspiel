@@ -57,6 +57,23 @@ document.addEventListener('DOMContentLoaded', () => {
         currentWordDisplay.textContent = word; // Setze den aktuellen Begriff anzuzeigen
         currentWordDisplay.classList.remove('hidden');
 
+        // Zeige die Spieler mit Statuspunkten an
+        playersDiv.innerHTML = ''; // Leere die Spieler-Liste
+        playersList.forEach(player => {
+            const playerElement = document.createElement('div');
+            playerElement.classList.add('player');
+
+            // Erstelle den Punkt
+            const statusDot = document.createElement('span');
+            statusDot.classList.add('status-dot');
+            statusDot.classList.add(player.revealed ? 'revealed' : 'not-revealed'); // Füge die entsprechende Klasse hinzu
+
+            playerElement.appendChild(statusDot); // Füge den Punkt zum Spieler-Element hinzu
+            playerElement.appendChild(document.createTextNode(player.name)); // Füge den Spielernamen hinzu
+
+            playersDiv.appendChild(playerElement);
+        });
+
         const playerCount = document.getElementById('player-count');
         playerCount.style.position = 'absolute';
         playerCount.style.top = '20px';
@@ -83,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Wenn das Eingabefeld deaktiviert ist, aktiviere es (Unreveal)
             associationInput.disabled = false; 
             revealButton.textContent = 'Reveal'; // Button-Text ändern
-    
+
             // Reduziere die Anzahl der Reveals
             revealCount--; 
             socket.emit('playerUnrevealed', { playerId: socket.id }); // Sende Unreveal an den Server
@@ -91,17 +108,17 @@ document.addEventListener('DOMContentLoaded', () => {
             // Wenn das Eingabefeld aktiviert ist, deaktiviere es (Reveal)
             associationInput.disabled = true; 
             revealButton.textContent = 'Unreveal'; // Button-Text ändern
-    
+
             // Sende Reveal an den Server
             socket.emit('playerRevealed', { playerId: socket.id, word: associationInput.value });
-    
+
             // Erhöhe die Anzahl der Reveals
             revealCount++; 
         }
-    
+
         // Aktualisiere die Anzeige der Reveals
         updateRevealCount(); 
-    
+        
         // Überprüfen, ob alle Spieler revealed haben
         if (revealCount === totalPlayers) {
             console.log('Alle Spieler haben revealed!');
@@ -142,51 +159,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const playerElement = document.createElement('div');
             playerElement.classList.add('player');
 
-            // Erstelle den Punkt
+            // Erstelle den Punkt (nur im Spiel sichtbar)
             const statusDot = document.createElement('span');
             statusDot.classList.add('status-dot');
-            statusDot.classList.add(player.revealed ? 'revealed' : 'not-revealed'); // Füge die entsprechende Klasse hinzu
+            statusDot.classList.add('not-revealed'); // Standardmäßig grau
 
             playerElement.appendChild(statusDot); // Füge den Punkt zum Spieler-Element hinzu
             playerElement.appendChild(document.createTextNode(player.name)); // Füge den Spielernamen hinzu
-
-            if (player.isHost) {
-                const hostBadge = document.createElement('span');
-                hostBadge.classList.add('host-badge');
-                hostBadge.textContent = 'Host';
-                playerElement.appendChild(hostBadge);
-            } else {
-                const isHost = playersList.some(p => p.id === socket.id && p.isHost);
-                if (isHost) {
-                    const kickButton = document.createElement('button');
-                    kickButton.classList.add('kick-button');
-                    kickButton.innerHTML = '<img src="kick-icon.png" alt="Kick" class="kick-icon" />';
-                    kickButton.onclick = () => {
-                        socket.emit('kickPlayer', player.id);
-                    };
-                    playerElement.appendChild(kickButton);
-                }
-            }
 
             playersDiv.appendChild(playerElement);
         });
 
         totalPlayers = playersList.length; // Gesamtanzahl der Spieler aktualisieren
         updateRevealCount(); // Aktualisiere die Anzeige der Reveals
-
-        const playerCountDiv = document.getElementById('player-count');
-        playerCountDiv.textContent = `Spieler in der Lobby (${totalPlayers}/4):`;
-
-        // Überprüfen, ob genügend Spieler vorhanden sind
-        const isHost = playersList.some(player => player.id === socket.id && player.isHost);
-        if (totalPlayers < 2) {
-            startGameButton.style.display = 'none'; // Start-Button ausblenden
-            if (gameActive) {
-                stopGame(); // Stoppe das Spiel, wenn weniger als 2 Spieler
-            }
-        } else {
-            startGameButton.style.display = isHost ? 'block' : 'none'; // Spiel starten Button anzeigen, wenn Host
-        }
     });
 
     // Fehlerbehandlung
