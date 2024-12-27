@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Socket.io Ereignis für das Spiel starten
-    socket.on('gameStarted', (word) => {
+    socket.on('gameStarted', (word, playersList) => {
         gameActive = true; // Spiel ist aktiv
         currentWordDisplay.textContent = word; // Setze den aktuellen Begriff anzuzeigen
         currentWordDisplay.classList.remove('hidden');
@@ -69,7 +69,12 @@ document.addEventListener('DOMContentLoaded', () => {
             statusDot.classList.add(player.revealed ? 'revealed' : 'not-revealed'); // Füge die entsprechende Klasse hinzu
 
             playerElement.appendChild(statusDot); // Füge den Punkt zum Spieler-Element hinzu
-            playerElement.appendChild(document.createTextNode(player.name)); // Füge den Spielernamen hinzu
+
+            // Spielername zentrieren
+            const playerName = document.createElement('span');
+            playerName.classList.add('player-name');
+            playerName.textContent = player.name;
+            playerElement.appendChild(playerName); // Füge den Spielernamen hinzu
 
             playersDiv.appendChild(playerElement);
         });
