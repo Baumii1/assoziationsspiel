@@ -329,8 +329,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Funktion zur Aktualisierung der Reveal-Anzeige
-    function updateRevealCount() {
-        revealCountDisplay.textContent = `Reveals: ${revealedPlayers.length}/${totalPlayers}`;
+    function updateRevealCount(revealedCount) {
+        revealCountDisplay.textContent = `Reveals: ${revealedCount}/${totalPlayers}`;
     }
 
     // Timer für das Stoppen des Spiels
