@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
     socket.on('playerRevealed', ({ playerId }) => {
         const playerElements = document.querySelectorAll('.player');
         playerElements.forEach(playerElement => {
-            const playerName = playerElement.textContent.trim();
+            const playerName = playerElement.querySelector('.player-name').textContent.trim();
             if (playerName === playerId) {
                 const statusDot = playerElement.querySelector('.status-dot');
                 statusDot.classList.remove('not-revealed');
@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
     socket.on('playerUnrevealed', ({ playerId }) => {
         const playerElements = document.querySelectorAll('.player');
         playerElements.forEach(playerElement => {
-            const playerName = playerElement.textContent.trim();
+            const playerName = playerElement.querySelector('.player-name').textContent.trim();
             if (playerName === playerId) {
                 const statusDot = playerElement.querySelector('.status-dot');
                 statusDot.classList.remove('revealed');
@@ -210,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     kickButton.classList.add('kick-button');
                     kickButton.innerHTML = '<img src="kick-icon.png" alt="Kick" class="kick-icon" />';
                     kickButton.onclick = () => {
-                    socket.emit('kickPlayer', player.id);
+                        socket.emit('kickPlayer', player.id);
                     };
                     playerElement.appendChild(kickButton); // Füge den Kick-Button hinzu
                 }
@@ -255,7 +255,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Synchronisation der Reveals
     socket.on('updateRevealCount', (count) => {
-        revealCount = count; // Aktualisiere den Reveal-Zähler
         updateRevealCount(); // Aktualisiere die Anzeige
     });
 
@@ -264,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Blende den Spielbildschirm aus und zeige den Auswertungsbildschirm an
         document.getElementById('game-screen').classList.add('hidden');
         document.getElementById('evaluation-screen').classList.remove('hidden');
-    
+
         // Zeige die Wörter der Spieler an
         const revealedWordsDiv = document.getElementById('revealed-words');
         revealedWordsDiv.innerHTML = ''; // Leere vorherige Wörter
@@ -273,36 +272,36 @@ document.addEventListener('DOMContentLoaded', () => {
             wordBox.textContent = word; // Setze den Text des Wortes
             revealedWordsDiv.appendChild(wordBox); // Füge die Box hinzu
         });
-    
+
         // Blende das Eingabefeld und den Reveal-Button aus
         associationInput.classList.add('hidden');
         revealButton.classList.add('hidden');
         revealCountDisplay.classList.add('hidden'); // Blende die Anzahl der Reveals aus
-    
+
         // Zeige die Antwort-Buttons nur für den Host an
         const isHost = revealedWords.some(player => player.id === socket.id && player.isHost);
         document.getElementById('answer-buttons').style.display = isHost ? 'flex' : 'none';
-    
+
         // Event-Listener für die Antwort-Buttons
         const correctButton = document.getElementById('correct-button');
         const wrongButton = document.getElementById('wrong-button');
-    
+
         // Entferne vorherige Event-Listener, um Duplikate zu vermeiden
         correctButton.removeEventListener('click', handleCorrect);
         wrongButton.removeEventListener('click', handleWrong);
-    
+
         // Hinzufügen der neuen Event-Listener
         correctButton.addEventListener('click', handleCorrect);
         wrongButton.addEventListener('click', handleWrong);
     });
-    
+
     // Funktion für den korrekten Button
     function handleCorrect() {
         streak++; // Erhöhe den Streak
         updateStreakDisplay(); // Aktualisiere die Streak-Anzeige
         nextWord(); // Gehe zum nächsten Wort
     }
-    
+
     // Funktion für den falschen Button
     function handleWrong() {
         streak = 0; // Setze den Streak zurück
@@ -318,7 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Funktion für den nächsten Begriff
     function nextWord() {
         // Blende die Antwort-Buttons aus und zeige den Weiter-Button an
-        document.getElement.getElementById('answer-buttons').style.display = 'none';
+        document.getElementById('answer-buttons').style.display = 'none';
         document.getElementById('next-word-button').classList.remove('hidden');
 
         // Event-Listener für den Weiter-Button
@@ -329,8 +328,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Funktion zur Aktualisierung der Reveal-Anzeige
-    function updateRevealCount(revealedCount) {
-        revealCountDisplay.textContent = `Reveals: ${revealedCount}/${totalPlayers}`;
+    function updateRevealCount() {
+        revealCountDisplay.textContent = `Reveals: ${revealedPlayers.length}/${totalPlayers}`; // Zeige die Anzahl der revealed Spieler an
     }
 
     // Timer für das Stoppen des Spiels
