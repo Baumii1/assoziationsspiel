@@ -39,7 +39,8 @@ html, body {
 
 .player {
     display: flex;
-    justify-content: space-between; /* Platz zwischen Name und Kick-Button */
+    justify-content: center; /* Horizontale Zentrierung */
+    margin: 5px 0; /* Abstand zwischen den Spielern */
     align-items: center; /* Vertikale Zentrierung */
     padding: 10px; /* Innenabstand für jeden Spieler */
     background-color: #1a1a4a; /* Hintergrundfarbe für Spieler */
