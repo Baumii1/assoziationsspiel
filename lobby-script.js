@@ -18,9 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Nickname aus Cookies abrufen
     const nickname = getCookie('nickname');
 
-    document.getElementById('lobby-screen').classList.remove('hidden');
-    document.getElementById('game-screen').classList.add('hidden');
-
     // Spieler der Lobby beitreten
     socket.emit('joinLobby', { lobbyCode, nickname });
 
@@ -54,7 +51,13 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Spiel wird gestartet...');
     });
 
-        /*const playerCount = document.getElementById('player-count');
+    // Socket.io Ereignis für das Spiel starten
+    socket.on('gameStarted', (word) => {
+        gameActive = true; // Spiel ist aktiv
+        currentWordDisplay.textContent = word; // Setze den aktuellen Begriff anzuzeigen
+        currentWordDisplay.classList.remove('hidden');
+
+        const playerCount = document.getElementById('player-count');
         playerCount.style.position = 'absolute';
         playerCount.style.top = '20px';
         playerCount.style.right = '20px';
@@ -62,18 +65,8 @@ document.addEventListener('DOMContentLoaded', () => {
         playersDiv.style.position = 'absolute';
         playersDiv.style.top = '50px';
         playersDiv.style.right = '20px';
-        playersDiv.style.width = '200px';*/
+        playersDiv.style.width = '200px';
 
-    // Socket.io Ereignis für das Spiel starten
-    socket.on('gameStarted', (word) => {
-        gameActive = true; // Spiel ist aktiv
-        currentWordDisplay.textContent = word; // Setze den aktuellen Begriff anzuzeigen
-
-        // Blende den Lobby-Bildschirm aus und zeige den Spiel-Bildschirm an
-        document.getElementById('lobby-screen').classList.add('hidden');
-        document.getElementById('game-screen').classList.remove('hidden');
-
-        // Weitere UI-Anpassungen
         associationInput.classList.remove('hidden');
         revealButton.classList.remove('hidden');
         revealCountDisplay.classList.remove('hidden');
@@ -94,21 +87,20 @@ document.addEventListener('DOMContentLoaded', () => {
             // Reduziere die Anzahl der Reveals
             revealCount--; 
             socket.emit('playerUnrevealed', { playerId: socket.id }); // Sende Unreveal an den Server
-
-            // Aktualisiere die Anzeige der Reveals
-            updateRevealCount(); 
         } else {
             // Wenn das Eingabefeld aktiviert ist, deaktiviere es (Reveal)
             associationInput.disabled = true; 
             revealButton.textContent = 'Unreveal'; // Button-Text ändern
     
+            // Sende Reveal an den Server
+            socket.emit('playerRevealed', { playerId: socket.id, word: associationInput.value });
+    
             // Erhöhe die Anzahl der Reveals
             revealCount++; 
-            socket.emit('playerRevealed', { playerId: socket.id, word: associationInput.value });
-
-            // Aktualisiere die Anzeige der Reveals
-            updateRevealCount(); 
         }
+    
+        // Aktualisiere die Anzeige der Reveals
+        updateRevealCount(); 
     
         // Überprüfen, ob alle Spieler revealed haben
         if (revealCount === totalPlayers) {
@@ -119,17 +111,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Socket.io Ereignis für das Stoppen des Spiels
     socket.on('gameStopped', () => {
-        // Blende den Spielbildschirm aus und zeige den Lobby-Bildschirm an
-        document.getElementById('game-screen').classList.add('hidden');
-        document.getElementById('lobby-screen').classList.remove('hidden');
-
         // Spieler zurück zur Lobby schicken
         const messageDiv = document.getElementById('error-message');
         messageDiv.textContent = 'Das Spiel wurde gestoppt. Du wirst zurück zur Lobby geleitet.';
         messageDiv.classList.remove('hidden');
 
         setTimeout(() => {
-            // Hier kannst du zur Lobby Seite weiterleiten
+            // Hier kannst du zur Lobby-Seite weiterleiten
             window.location.href = 'index.html'; // Oder die URL zur Lobby-Seite anpassen
         }, 3000); // Warte 3 Sekunden, bevor du zur Lobby weiterleitest
     });
