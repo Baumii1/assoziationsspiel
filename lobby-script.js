@@ -153,62 +153,65 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Spieler der Lobby beitreten
-socket.on('playerJoined', (playersList) => {
-    playersDiv.innerHTML = '';
-    playersList.forEach(player => {
-        const playerElement = document.createElement('div');
-        playerElement.classList.add('player');
+    socket.on('playerJoined', (playersList) => {
+        playersDiv.innerHTML = '';
+        playersList.forEach(player => {
+            const playerElement = document.createElement('div');
+            playerElement.classList.add('player');
 
-        // Erstelle den Punkt
-        const statusDot = document.createElement('span');
-        statusDot.classList.add('status-dot');
-        statusDot.classList.add(player.revealed ? 'revealed' : 'not-revealed'); // Füge die entsprechende Klasse hinzu
+            // Erstelle den Punkt
+            const statusDot = document.createElement('span');
+            statusDot.classList.add('status-dot');
+            statusDot.classList.add(player.revealed ? 'revealed' : 'not-revealed'); // Füge die entsprechende Klasse hinzu
 
-        playerElement.appendChild(statusDot); // Füge den Punkt zum Spieler-Element hinzu
+            playerElement.appendChild(statusDot); // Füge den Punkt zum Spieler-Element hinzu
 
-        // Spielername zentrieren
-        const playerName = document.createElement('span');
-        playerName.classList.add('player-name');
-        playerName.textContent = player.name;
-        playerElement.appendChild(playerName); // Füge den Spielernamen hinzu
+            // Spielername zentrieren
+            const playerName = document.createElement('span');
+            playerName.classList.add('player-name');
+            playerName.textContent = player.name;
+            playerElement.appendChild(playerName); // Füge den Spielernamen hinzu
 
-        // Host-Badge hinzufügen, wenn der Spieler der Host ist
-        if (player.isHost) {
-            const hostBadge = document.createElement('span');
-            hostBadge.classList.add('host-badge');
-            hostBadge.textContent = 'Host';
-            playerElement.appendChild(hostBadge); // Füge den Host-Badge hinzu
+            // Host-Badge hinzufügen, wenn der Spieler der Host ist
+            if (player.isHost) {
+                const hostBadge = document.createElement('span');
+                hostBadge.classList.add('host-badge');
+                hostBadge.textContent = 'Host';
+                playerElement.appendChild(hostBadge); // Füge den Host-Badge hinzu
+            } else {
+                // Kick-Button nur für den Host anzeigen
+                const isHost = playersList.some(p => p.id === socket.id && p.isHost);
+                if (isHost) {
+                    const kickButton = document.createElement('button');
+                    kickButton.classList.add('kick-button');
+                    kickButton.innerHTML = '<img src="kick-icon.png" alt="Kick" class="kick-icon" />';
+                    kickButton.onclick = () => {
+                        socket.emit('kickPlayer', player.id);
+                    };
+                    playerElement.appendChild(kickButton); // Füge den Kick-Button hinzu
+                }
+            }
+
+            playersDiv.appendChild(playerElement); // Füge das Spieler-Element zur Liste hinzu
+        });
+
+        totalPlayers = playersList.length; // Gesamtanzahl der Spieler aktualisieren
+        updateRevealCount(); // Aktualisiere die Anzeige der Reveals
+
+        const playerCountDiv = document.getElementById('player-count');
+        playerCountDiv.textContent = `Spieler in der Lobby (${totalPlayers}/4):`;
+
+        // Überprüfen, ob genügend Spieler vorhanden sind
+        const isHost = playersList.some(player => player.id === socket.id && player.isHost);
+        if (totalPlayers < 2) {
+            startGameButton.style.display = 'none'; // Start-Button ausblenden
+            if (gameActive) {
+                stopGame(); // Stoppe das Spiel, wenn weniger als 2 Spieler
+            }
+        } else {
+            startGameButton.style.display = isHost ? 'block' : 'none'; // Spiel starten Button anzeigen, wenn Host
         }
-
-        // Kick-Button hinzufügen
-        const kickButton = document.createElement('button');
-        kickButton.classList.add('kick-button');
-        kickButton.innerHTML = '<img src="kick-icon.png" alt="Kick" class="kick-icon" />';
-        kickButton.onclick = () => {
-            socket.emit('kickPlayer', player.id);
-        };
-        playerElement.appendChild(kickButton); // Füge den Kick-Button hinzu
-
-        playersDiv.appendChild(playerElement); // Füge das Spieler-Element zur Liste hinzu
     });
-
-    totalPlayers = playersList.length; // Gesamtanzahl der Spieler aktualisieren
-    updateRevealCount(); // Aktualisiere die Anzeige der Reveals
-
-    const playerCountDiv = document.getElementById('player-count');
-    playerCountDiv.textContent = `Spieler in der Lobby (${totalPlayers}/4):`;
-
-    // Überprüfen, ob genügend Spieler vorhanden sind
-    const isHost = playersList.some(player => player.id === socket.id && player.isHost);
-    if (totalPlayers < 2) {
-        startGameButton.style.display = 'none'; // Start-Button ausblenden
-        if (gameActive) {
-            stopGame(); // Stoppe das Spiel, wenn weniger als 2 Spieler
-        }
-    } else {
-        startGameButton.style.display = isHost ? 'block' : 'none'; // Spiel starten Button anzeigen, wenn Host
-    }
-});
 
     // Fehlerbehandlung
     socket.on('error', (errorMessage) => {
