@@ -118,11 +118,12 @@ io.on('connection', (socket) => {
             const player = lobbies[lobbyCode].players.find(p => p.id === playerId);
             if (player) {
                 player.revealed = true; // Markiere den Spieler als revealed
+                player.word = word; // Speichere das Wort, das der Spieler revealed hat
                 lobbies[lobbyCode].revealedPlayers.push(playerId); // Füge den Spieler zu revealedPlayers hinzu
                 const revealedCount = lobbies[lobbyCode].revealedPlayers.length; // Zähle die revealed Spieler
                 io.to(lobbyCode).emit('updateRevealCount', revealedCount); // Sende die aktualisierte Anzahl der revealed Spieler
                 io.to(lobbyCode).emit('playerRevealed', { playerId, word }); // Informiere alle Spieler über den revealed Status
-                console.log(`Spieler ${playerId} hat revealed. Aktuelle revealedPlayers: ${lobbies[lobbyCode].revealedPlayers}`);
+                console.log(`Spieler ${playerId} hat revealed: ${word}. Aktuelle revealedPlayers: ${lobbies[lobbyCode].revealedPlayers}`);
             }
         }
     });
@@ -245,10 +246,10 @@ io.on('connection', (socket) => {
     });
 
     // Spieler hat das Spiel gestartet
-    socket.on('evaluateAnswers', ( word ) => {
+    socket.on('evaluateAnswers', () => {
         const lobbyCode = Object.keys(lobbies).find(code => lobbies[code].players.some(player => player.id === socket.id));
         if (lobbyCode) {
-            const revealedWords = lobbies[lobbyCode].players.map(player => player.revealed ? { word: word, name: player.name } : null).filter(Boolean);
+            const revealedWords = lobbies[lobbyCode].players.map(player => player.revealed ? { word: player.word, name: player.name } : null).filter(Boolean);
             io.to(lobbyCode).emit('evaluateAnswers', revealedWords); // Sende die Wörter zur Auswertung
         }
     });
