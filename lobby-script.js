@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM vollständig geladen. Initialisiere Socket.io...');
     const socket = io("https://assoziationsspiel-backend-dcf85e77dc96.herokuapp.com/");
     const playersDiv = document.getElementById('players');
     const startGameButton = document.getElementById('start-game');
@@ -13,16 +14,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Lobby-Code aus der URL abrufen
     const lobbyCode = new URLSearchParams(window.location.search).get('lobbyCode');
+    console.log(`Lobby-Code abgerufen: ${lobbyCode}`);
     lobbyCodeDisplay.textContent = lobbyCode;
 
     // Nickname aus Cookies abrufen
     const nickname = getCookie('nickname');
+    console.log(`Nickname aus Cookies abgerufen: ${nickname}`);
 
     // Spieler der Lobby beitreten
+    console.log('Sende Join-Lobby-Event...');
     socket.emit('joinLobby', { lobbyCode, nickname });
 
     // Event-Listener für den Copy-Button
     copyButton.addEventListener('click', function() {
+        console.log('Copy-Button wurde geklickt.');
         const range = document.createRange();
         range.selectNode(lobbyCodeDisplay);
         window.getSelection().removeAllRanges();
@@ -31,9 +36,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         popupMessage.textContent = 'Lobby-Code kopiert: ' + lobbyCodeDisplay.textContent;
         popupMessage.style.display = 'block';
+        console.log('Popup-Nachricht angezeigt: ' + popupMessage.textContent);
 
         setTimeout(() => {
             popupMessage.style.display = 'none';
+            console.log('Popup-Nachricht nach 3 Sekunden ausgeblendet.');
         }, 3000);
 
         window.getSelection().removeAllRanges();
@@ -47,12 +54,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Spiel starten
     startGameButton.addEventListener('click', () => {
+        console.log('Start-Button wurde geklickt. Spiel wird gestartet...');
         socket.emit('startGame', lobbyCode);
-        console.log('Spiel wird gestartet...');
     });
 
     // Socket.io Ereignis für das Spiel starten
     socket.on('gameStarted', (word, playersList) => {
+        console.log('Spiel gestartet. Aktuelles Wort:', word);
         gameActive = true; // Spiel ist aktiv
         currentWordDisplay.textContent = word; // Setze den aktuellen Begriff anzuzeigen
         currentWordDisplay.classList.remove('hidden');
@@ -60,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Zeige die Spieler mit Statuspunkten an
         playersDiv.innerHTML = ''; // Leere die Spieler-Liste
         playersList.forEach(player => {
+            console.log(`Füge Spieler hinzu: ${player.name}, revealed: ${player.revealed}`);
             const playerElement = document.createElement('div');
             playerElement.classList.add('player');
 
@@ -82,6 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 hostBadge.classList.add('host-badge');
                 hostBadge.textContent = 'Host';
                 playerElement.appendChild(hostBadge); // Füge den Host-Badge hinzu
+                console.log(`Host-Badge hinzugefügt für Spieler: ${player.name}`);
             } else {
                 // Kick-Button nur für den Host anzeigen
                 const isHost = playersList.some(p => p.id === socket.id && p.isHost);
@@ -90,6 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     kickButton.classList.add('kick-button');
                     kickButton.innerHTML = '<img src="kick-icon.png" alt="Kick" class="kick-icon" />';
                     kickButton.onclick = () => {
+                        console.log(`Kick-Button geklickt für Spieler: ${player.name}`);
                         socket.emit('kickPlayer', player.id);
                     };
                     playerElement.appendChild(kickButton); // Füge den Kick-Button hinzu
@@ -113,17 +124,20 @@ document.addEventListener('DOMContentLoaded', () => {
         revealCountDisplay.classList.remove('hidden');
 
         startGameButton.style.display = 'none';
+        console.log('Spiel-UI aktualisiert. Reveal-Buttons sichtbar.');
 
         updateRevealCount();
     });
 
     // Event-Listener für den Reveal-Button
     revealButton.addEventListener('click', () => {
+        console.log('Reveal-Button wurde geklickt.');
         if (associationInput.disabled) {
             // Unreveal-Logik
             associationInput.disabled = false; 
             revealButton.textContent = 'Reveal'; // Button-Text ändern
             revealedPlayers = revealedPlayers.filter(id => id !== socket.id);
+            console.log(`Spieler ${socket.id} hat unrevealed.`);
             updateRevealCount(); // Aktualisiere die Anzeige der Reveals
             socket.emit('playerUnrevealed', { playerId: socket.id }); // Sende Unreveal an den Server
         } else {
@@ -131,6 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
             associationInput.disabled = true; 
             revealButton.textContent = 'Unreveal'; // Button-Text ändern
             revealedPlayers.push(socket.id);
+            console.log(`Spieler ${socket.id} hat revealed: ${associationInput.value}`);
             socket.emit('playerRevealed', { playerId: socket.id, word: associationInput.value });
             updateRevealCount(); // Aktualisiere die Anzeige der Reveals
         }
@@ -138,6 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Spieler hat ein Wort revealed
     socket.on('playerRevealed', ({ playerId }) => {
+        console.log(`Spieler revealed: ${playerId}`);
         const playerElements = document.querySelectorAll('.player');
         playerElements.forEach(playerElement => {
             const playerName = playerElement.querySelector('.player-name').textContent.trim();
@@ -145,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const statusDot = playerElement.querySelector('.status-dot');
                 statusDot.classList.remove('not-revealed');
                 statusDot.classList.add('revealed'); // Ändere den Statuspunkt zu grün
-                console.log(`Player ${socket.id} revealed: ${associationInput.value}`);
+                console.log(`Statuspunkt für Spieler ${playerName} auf revealed gesetzt.`);
             }
         });
 
@@ -158,6 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Spieler hat ein Wort unrevealed
     socket.on('playerUnrevealed', ({ playerId }) => {
+        console.log(`Spieler unrevealed: ${playerId}`);
         const playerElements = document.querySelectorAll('.player');
         playerElements.forEach(playerElement => {
             const playerName = playerElement.querySelector('.player-name').textContent.trim();
@@ -165,18 +182,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 const statusDot = playerElement.querySelector('.status-dot');
                 statusDot.classList.remove('revealed');
                 statusDot.classList.add('not-revealed'); // Ändere den Statuspunkt zurück zu grau
+                console.log(`Statuspunkt für Spieler ${playerName} auf not-revealed gesetzt.`);
             }
         });
     });
 
     // Socket.io Ereignis für das Stoppen des Spiels
     socket.on('gameStopped', () => {
+        console.log('Das Spiel wurde gestoppt.');
         // Spieler zurück zur Lobby schicken
         const messageDiv = document.getElementById('error-message');
         messageDiv.textContent = 'Das Spiel wurde gestoppt. Du wirst zurück zur Lobby geleitet.';
         messageDiv.classList.remove('hidden');
 
         setTimeout(() => {
+            console.log('Leite Spieler zurück zur Lobby...');
             // Hier kannst du zur Lobby-Seite weiterleiten
             window.location.href = 'index.html'; // Oder die URL zur Lobby-Seite anpassen
         }, 3000); // Warte 3 Sekunden, bevor du zur Lobby weiterleitest
@@ -184,8 +204,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Spieler der Lobby beitreten
     socket.on('playerJoined', (playersList) => {
+        console.log('Ein Spieler hat die Lobby betreten. Aktualisiere die Spieler-Liste...');
         playersDiv.innerHTML = '';
         playersList.forEach(player => {
+            console.log(`Füge Spieler hinzu: ${player.name}, revealed: ${player.revealed}`);
             const playerElement = document.createElement('div');
             playerElement.classList.add('player');
 
@@ -208,6 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 hostBadge.classList.add('host-badge');
                 hostBadge.textContent = 'Host';
                 playerElement.appendChild(hostBadge); // Füge den Host-Badge hinzu
+                console.log(`Host-Badge hinzugefügt für Spieler: ${player.name}`);
             } else {
                 // Kick-Button nur für den Host anzeigen
                 const isHost = playersList.some(p => p.id === socket.id && p.isHost);
@@ -216,6 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     kickButton.classList.add('kick-button');
                     kickButton.innerHTML = '<img src="kick-icon.png" alt="Kick" class="kick-icon" />';
                     kickButton.onclick = () => {
+                        console.log(`Kick-Button geklickt für Spieler: ${player.name}`);
                         socket.emit('kickPlayer', player.id);
                     };
                     playerElement.appendChild(kickButton); // Füge den Kick-Button hinzu
@@ -226,6 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         totalPlayers = playersList.length; // Gesamtanzahl der Spieler aktualisieren
+        console.log(`Aktualisierte Spieleranzahl: ${totalPlayers}`);
         updateRevealCount(); // Aktualisiere die Anzeige der Reveals
 
         const playerCountDiv = document.getElementById('player-count');
@@ -234,17 +259,20 @@ document.addEventListener('DOMContentLoaded', () => {
         // Überprüfen, ob genügend Spieler vorhanden sind
         const isHost = playersList.some(player => player.id === socket.id && player.isHost);
         if (totalPlayers < 2) {
+            console.log('Weniger als 2 Spieler. Start-Button wird ausgeblendet.');
             startGameButton.style.display = 'none'; // Start-Button ausblenden
             if (gameActive) {
                 stopGame(); // Stoppe das Spiel, wenn weniger als 2 Spieler
             }
         } else {
             startGameButton.style.display = isHost ? 'block' : 'none'; // Spiel starten Button anzeigen, wenn Host
+            console.log('Start-Button sichtbar für Host:', isHost);
         }
     });
 
     // Fehlerbehandlung
     socket.on('error', (errorMessage) => {
+        console.error('Fehler empfangen:', errorMessage);
         showErrorMessage(errorMessage);
     });
 
@@ -255,17 +283,20 @@ document.addEventListener('DOMContentLoaded', () => {
         messageDiv.classList.remove('hidden');
 
         setTimeout(() => {
+            console.log('Leite Spieler zurück zur Startseite...');
             window.location.href = 'index.html';
         }, 3000);
     });
 
     // Aktualisiere die Anzahl der revealed Spieler
     socket.on('updateRevealCount', (revealedCount) => {
+        console.log(`Aktualisiere die Anzahl der revealed Spieler: ${revealedCount}`);
         revealCountDisplay.textContent = `Reveals: ${revealedCount}/${totalPlayers}`; // Aktualisiere die Anzeige
     });
 
     // Socket.io Ereignis für die Auswertung der Antworten
     socket.on('evaluateAnswers', (revealedWords) => {
+        console.log('Beginne mit der Auswertung der Antworten...');
         // Blende den Spielbildschirm aus und zeige den Auswertungsbildschirm an
         document.getElementById('game-screen').classList.add('hidden');
         document.getElementById('evaluation-screen').classList.remove('hidden');
@@ -277,6 +308,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const wordBox = document.createElement('div');
             wordBox.textContent = word; // Setze den Text des Wortes
             revealedWordsDiv.appendChild(wordBox); // Füge die Box hinzu
+            console.log(`Wort hinzugefügt zur Auswertung: ${word}`);
         });
 
         // Blende das Eingabefeld und den Reveal-Button aus
@@ -287,6 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Zeige die Antwort-Buttons nur für den Host an
         const isHost = revealedWords.some(player => player.id === socket.id && player.isHost);
         document.getElementById('answer-buttons').style.display = isHost ? 'flex' : 'none';
+        console.log('Antwort-Buttons sichtbar für Host:', isHost);
 
         // Event-Listener für die Antwort-Buttons
         const correctButton = document.getElementById('correct-button');
@@ -303,6 +336,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Funktion für den korrekten Button
     function handleCorrect() {
+        console.log('Korrekt-Button wurde geklickt.');
         streak++; // Erhöhe den Streak
         updateStreakDisplay(); // Aktualisiere die Streak-Anzeige
         nextWord(); // Gehe zum nächsten Wort
@@ -310,6 +344,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Funktion für den falschen Button
     function handleWrong() {
+        console.log('Falsch-Button wurde geklickt.');
         streak = 0; // Setze den Streak zurück
         updateStreakDisplay(); // Aktualisiere die Streak-Anzeige
         nextWord(); // Gehe zum nächsten Wort
@@ -318,16 +353,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // Funktion zur Aktualisierung der Streak-Anzeige
     function updateStreakDisplay() {
         document.getElementById('streak').textContent = `Streak: ${streak}`;
+        console.log(`Streak aktualisiert: ${streak}`);
     }
 
     // Funktion für den nächsten Begriff
     function nextWord() {
+        console.log('Gehe zum nächsten Wort...');
         // Blende die Antwort-Buttons aus und zeige den Weiter-Button an
         document.getElementById('answer-buttons').style.display = 'none';
         document.getElementById('next-word-button').classList.remove('hidden');
 
         // Event-Listener für den Weiter-Button
         document.getElementById('next-word-button').onclick = () => {
+            console.log('Weiter-Button wurde geklickt. Starte das nächste Spiel...');
             socket.emit('startGame', lobbyCode); // Starte das nächste Spiel
             document.getElementById('next-word-button').classList.add('hidden'); // Blende den Button aus
         };
@@ -335,11 +373,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Funktion zur Aktualisierung der Reveal-Anzeige
     function updateRevealCount() {
+        console.log(`Aktualisiere die Anzahl der revealed Spieler: ${revealedPlayers.length}/${totalPlayers}`);
         revealCountDisplay.textContent = `Reveals: ${revealedPlayers.length}/${totalPlayers}`; // Zeige die Anzahl der revealed Spieler an
     }
 
     // Timer für das Stoppen des Spiels
     function stopGame() {
+        console.log('Stoppe das Spiel...');
         clearTimeout(countdownTimer);
         const messageDiv = document.getElementById('error-message');
         messageDiv.textContent = 'Das Spiel wird in 30 Sekunden gestoppt, da weniger als 2 Spieler vorhanden sind.';
@@ -349,8 +389,10 @@ document.addEventListener('DOMContentLoaded', () => {
         countdownTimer = setInterval(() => {
             countdown--;
             messageDiv.textContent = `Das Spiel wird in ${countdown} Sekunden gestoppt.`;
+            console.log(`Countdown: ${countdown} Sekunden verbleibend.`);
             if (countdown <= 0) {
                 clearInterval(countdownTimer);
+                console.log('Countdown abgelaufen. Stoppe das Spiel...');
                 socket.emit('stopGame', lobbyCode); // Stoppe das Spiel und gehe zurück zur Lobby
             }
         }, 1000);
@@ -358,17 +400,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Beispiel für die Fehlerbehandlung
     function showErrorMessage(message) {
+        console.error('Fehler:', message);
         const messageDiv = document.getElementById('error-message');
         messageDiv.textContent = message;
         messageDiv.classList.remove('hidden');
 
         setTimeout(() => {
             messageDiv.classList.add('hidden');
+            console.log('Fehlermeldung nach 5 Sekunden ausgeblendet.');
         }, 5000); // 5 Sekunden
     }
 
     // Funktion zum Abrufen eines Cookies
     function getCookie(name) {
+        console.log(`Cookie abgerufen: ${name}`);
         return document.cookie.split('; ').reduce((r, v) => {
             const parts = v.split('=');
             return parts[0] === name ? decodeURIComponent(parts[1]) : r;
@@ -377,13 +422,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Spieler verlassen das Spiel
     socket.on('playerLeft', (playerId) => {
+        console.log(`Spieler hat das Spiel verlassen: ${playerId}`);
         if (gameActive) {
             totalPlayers--; // Spieleranzahl verringern
             updateRevealCount(); // Aktualisiere die Anzeige der Reveals
             if (totalPlayers < 2) {
+                console.log('Weniger als 2 Spieler. Stoppe das Spiel...');
                 stopGame(); // Stoppe das Spiel, wenn weniger als 2 Spieler
             }
         }
     });
 });
-
