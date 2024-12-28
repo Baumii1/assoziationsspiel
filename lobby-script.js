@@ -149,6 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
             socket.emit('playerRevealed', { playerId: socket.id, word: associationInput.value });
             updateRevealCount(); // Aktualisiere die Anzeige der Reveals
         }
+        console.log(`Aktuelle revealedPlayers: ${revealedPlayers}`);
     });
 
     // Spieler hat ein Wort revealed
@@ -164,6 +165,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log(`Statuspunkt für Spieler ${playerName} auf revealed gesetzt.`);
             }
         });
+
+        console.log(`revealedPlayers.length: ${revealedPlayers.length}, totalPlayers: ${totalPlayers}`);
 
         // Überprüfen, ob alle Spieler revealed haben
         if (revealedPlayers.length === totalPlayers) {
