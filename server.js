@@ -248,7 +248,7 @@ io.on('connection', (socket) => {
     socket.on('evaluateAnswers', () => {
         const lobbyCode = Object.keys(lobbies).find(code => lobbies[code].players.some(player => player.id === socket.id));
         if (lobbyCode) {
-            const revealedWords = lobbies[lobbyCode].players.map(player => player.revealed ? player.word : null).filter(Boolean);
+            const revealedWords = lobbies[lobbyCode].players.map(player => player.revealed ? { word: player.word, name: player.name } : null).filter(Boolean);
             io.to(lobbyCode).emit('evaluateAnswers', revealedWords); // Sende die Wörter zur Auswertung
         }
     });

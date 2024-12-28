@@ -153,6 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const playerElements = document.querySelectorAll('.player');
         playerElements.forEach(playerElement => {
             const playerName = playerElement.querySelector('.player-name').textContent.trim();
+            console.log(playerName + ' + ' + playerId)
             if (playerName === playerId) {
                 const statusDot = playerElement.querySelector('.status-dot');
                 statusDot.classList.remove('not-revealed');
@@ -303,9 +304,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const revealedWordsDiv = document.getElementById('revealed-words');
         revealedWordsDiv.innerHTML = ''; // Leere vorherige Wörter
-        revealedWords.forEach(({ word, playerName }) => {
+        revealedWords.forEach(({ word, name }) => {
             const wordBox = document.createElement('div');
-            wordBox.textContent = `${playerName}: ${word}`; // Setze den Text des Wortes mit Spielernamen
+            wordBox.textContent = `${name}: ${word}`; // Setze den Text des Wortes mit Spielernamen
             revealedWordsDiv.appendChild(wordBox); // Füge die Box hinzu
             console.log(`Wort hinzugefügt zur Auswertung: ${word}`);
         });
@@ -316,7 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
         revealCountDisplay.classList.add('hidden'); // Blende die Anzahl der Reveals aus
 
         // Zeige die Antwort-Buttons nur für den Host an
-        const isHost = revealedWords.some(player => player.id === socket.id && player.isHost);
+        const isHost = lobbies[lobbyCode].players.some(player => player.id === socket.id && player.isHost);
         document.getElementById('answer-buttons').style.display = isHost ? 'flex' : 'none';
         console.log('Antwort-Buttons sichtbar für Host:', isHost);
 
@@ -373,6 +374,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Funktion zur Aktualisierung der Reveal-Anzeige
     function updateRevealCount(revealedCount) {
         console.log(`Aktualisiere die Anzahl der revealed Spieler: ${revealedCount}/${totalPlayers}`);
+        if (revealedCount = undefined) {
+            revealedCount = 0;
+        }
         revealCountDisplay.textContent = `Reveals: ${revealedCount}/${totalPlayers}`; // Zeige die Anzahl der revealed Spieler an
     }
 
