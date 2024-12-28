@@ -20,6 +20,8 @@ const io = socketIo(server, {
 const DISCONNECT_DELAY = 5000; // 5 Sekunden Delay
 const MIN_PLAYERS = 2; // Minimale Spieleranzahl zum Starten des Spiels
 
+let lobbies = {};
+
 app.use(cors());
 app.use(express.static('public'));
 
@@ -105,8 +107,6 @@ io.on('connection', (socket) => {
         }
     });
 
-    // Füge revealedPlayers zum Lobby-Objekt hinzu
-    let lobbies = {}; // Speichert die Lobbys und Spieler
 
     // Spieler hat ein Wort aufgedeckt
     socket.on('playerRevealed', ({ playerId, word }) => {
