@@ -298,16 +298,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Socket.io Ereignis für die Auswertung der Antworten
     socket.on('evaluateAnswers', (revealedWords) => {
         console.log('Beginne mit der Auswertung der Antworten...');
-        // Blende den Spielbildschirm aus und zeige den Auswertungsbildschirm an
         document.getElementById('game-screen').classList.add('hidden');
         document.getElementById('evaluation-screen').classList.remove('hidden');
 
-        // Zeige die Wörter der Spieler an
         const revealedWordsDiv = document.getElementById('revealed-words');
         revealedWordsDiv.innerHTML = ''; // Leere vorherige Wörter
-        revealedWords.forEach(word => {
+        revealedWords.forEach(({ word, playerName }) => {
             const wordBox = document.createElement('div');
-            wordBox.textContent = word; // Setze den Text des Wortes
+            wordBox.textContent = `${playerName}: ${word}`; // Setze den Text des Wortes mit Spielernamen
             revealedWordsDiv.appendChild(wordBox); // Füge die Box hinzu
             console.log(`Wort hinzugefügt zur Auswertung: ${word}`);
         });
