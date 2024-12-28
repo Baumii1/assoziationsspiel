@@ -95,6 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     playerElement.appendChild(kickButton); // Füge den Kick-Button hinzu
                 }
             }
+            playersDiv.appendChild(playerElement);
         });
 
         const playerCount = document.getElementById('player-count');
