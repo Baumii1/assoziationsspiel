@@ -161,11 +161,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        updateRevealCount(); // Aktualisiere die Anzeige der Reveals
-
         // Überprüfen, ob alle Spieler revealed haben
-        console.log(`revealedPlayers.length: ${lobbies[lobbyCode].revealedPlayers.length}, totalPlayers: ${totalPlayers}`);
-        if (lobbies[lobbyCode].revealedPlayers.length === totalPlayers) {
+        console.log(`revealedPlayers.length: ${revealedCount}, totalPlayers: ${totalPlayers}`);
+        if (revealedCount === totalPlayers) {
             console.log('Alle Spieler haben revealed!');
             socket.emit('evaluateAnswers'); // Sende Event zur Auswertung der Antworten
         }
@@ -291,6 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Aktualisiere die Anzahl der revealed Spieler
     socket.on('updateRevealCount', (revealedCount) => {
+        console.log(`Aktualisiere die Anzahl der revealed Spieler: ${revealedCount}`);
         updateRevealCount(revealedCount); // Rufe die aktualisierte Funktion auf
     });
 

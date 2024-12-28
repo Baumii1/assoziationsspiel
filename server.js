@@ -50,12 +50,14 @@ io.on('connection', (socket) => {
 
     // Lobby beitreten
     socket.on('joinLobby', ({ lobbyCode, nickname }) => {
+        console.log(`Spieler ${nickname} versucht, der Lobby ${lobbyCode} beizutreten...`);
         if (!nickname) {
             socket.emit('error', 'Sie müssen einen Nicknamen haben, um einer Lobby beizutreten.');
             return; // Beende die Funktion, wenn kein Nickname vorhanden ist
         }
 
         if (!lobbies[lobbyCode]) {
+            console.error(`Lobby ${lobbyCode} nicht gefunden.`);
             socket.emit('error', 'Lobby nicht gefunden.');
             return; // Beende die Funktion, wenn die Lobby nicht existiert
         }
@@ -68,7 +70,7 @@ io.on('connection', (socket) => {
             }
 
             // Füge den neuen Spieler hinzu
-            lobbies[lobbyCode].players.push({ id: socket.id, name: nickname, revealed: false });
+            lobbies[lobbyCode].players.push({ id: socket.id, name: nickname, revealed: false }); // Setze revealed auf false
 
             // Setze den Host, wenn dies der erste Spieler ist
             if (lobbies[lobbyCode].players.length === 1) {
@@ -80,7 +82,8 @@ io.on('connection', (socket) => {
             io.to(lobbyCode).emit('playerJoined', lobbies[lobbyCode].players.map(player => ({
                 id: player.id,
                 name: player.name,
-                isHost: player.id === lobbies[lobbyCode].hostId
+                isHost: player.id === lobbies[lobbyCode].hostId,
+                revealed: player.revealed // Füge den Reveal-Status hinzu
             })));
             console.log(`Spieler ${nickname} (ID: ${socket.id}) ist der Lobby ${lobbyCode} beigetreten.`);
         } else {
