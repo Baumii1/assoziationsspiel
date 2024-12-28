@@ -309,7 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
         revealedWords.forEach(({ word, name }) => {
             const wordBox = document.createElement('div');
             wordBox.classList.add('word-box');
-            wordBox.textContent = `<strong>${name}:</strong> ${word}`; // Setze den Text des Wortes mit Spielernamen
+            wordBox.innerHTML = `<strong>${name}:</strong> ${word}`; // Setze den Text des Wortes mit Spielernamen
             revealedWordsDiv.appendChild(wordBox); // Füge die Box hinzu
             console.log(`Wort hinzugefügt zur Auswertung: ${word}`);
         });
