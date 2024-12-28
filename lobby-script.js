@@ -162,11 +162,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Überprüfen, ob alle Spieler revealed haben
-        console.log(`revealedPlayers.length: ${revealedCount}, totalPlayers: ${totalPlayers}`);
-        if (revealedCount === totalPlayers) {
-            console.log('Alle Spieler haben revealed!');
-            socket.emit('evaluateAnswers'); // Sende Event zur Auswertung der Antworten
-        }
+        socket.on('updateRevealCount', ({ revealedCount }) => {
+            console.log(`revealedPlayers.length: ${revealedCount}, totalPlayers: ${totalPlayers}`);
+            if (revealedCount === totalPlayers) {
+                console.log('Alle Spieler haben revealed!');
+                socket.emit('evaluateAnswers'); // Sende Event zur Auswertung der Antworten
+            }
+        })
     });
 
     // Spieler hat ein Wort unrevealed
