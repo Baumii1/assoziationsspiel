@@ -20,8 +20,6 @@ const io = socketIo(server, {
 const DISCONNECT_DELAY = 5000; // 5 Sekunden Delay
 const MIN_PLAYERS = 2; // Minimale Spieleranzahl zum Starten des Spiels
 
-let lobbies = {}; // Speichert die Lobbys und Spieler
-
 app.use(cors());
 app.use(express.static('public'));
 
@@ -37,7 +35,12 @@ io.on('connection', (socket) => {
     // Lobby erstellen
     socket.on('createLobby', () => {
         const lobbyCode = generateLobbyCode();
-        lobbies[lobbyCode] = { players: [], hostId: socket.id, gameActive: false }; // Host-ID speichern
+        lobbies[lobbyCode] = { 
+            players: [], 
+            hostId: socket.id, 
+            gameActive: false,
+            revealedPlayers: [] // Füge revealedPlayers hier hinzu
+        }; 
         socket.join(lobbyCode);
         socket.emit('lobbyCreated', lobbyCode);
         console.log(`Lobby ${lobbyCode} wurde erstellt.`);
@@ -102,6 +105,9 @@ io.on('connection', (socket) => {
         }
     });
 
+    // Füge revealedPlayers zum Lobby-Objekt hinzu
+    let lobbies = {}; // Speichert die Lobbys und Spieler
+
     // Spieler hat ein Wort aufgedeckt
     socket.on('playerRevealed', ({ playerId, word }) => {
         const lobbyCode = Object.keys(lobbies).find(code => lobbies[code].players.some(player => player.id === playerId));
@@ -109,9 +115,11 @@ io.on('connection', (socket) => {
             const player = lobbies[lobbyCode].players.find(p => p.id === playerId);
             if (player) {
                 player.revealed = true; // Markiere den Spieler als revealed
-                const revealedCount = lobbies[lobbyCode].players.filter(p => p.revealed).length; // Zähle die revealed Spieler
+                lobbies[lobbyCode].revealedPlayers.push(playerId); // Füge den Spieler zu revealedPlayers hinzu
+                const revealedCount = lobbies[lobbyCode].revealedPlayers.length; // Zähle die revealed Spieler
                 io.to(lobbyCode).emit('updateRevealCount', revealedCount); // Sende die aktualisierte Anzahl der revealed Spieler
                 io.to(lobbyCode).emit('playerRevealed', { playerId }); // Informiere alle Spieler über den revealed Status
+                console.log(`Spieler ${playerId} hat revealed. Aktuelle revealedPlayers: ${lobbies[lobbyCode].revealedPlayers}`);
             }
         }
     });
@@ -123,9 +131,11 @@ io.on('connection', (socket) => {
             const player = lobbies[lobbyCode].players.find(p => p.id === playerId);
             if (player) {
                 player.revealed = false; // Markiere den Spieler als nicht revealed
-                const revealedCount = lobbies[lobbyCode].players.filter(p => p.revealed).length; // Zähle die revealed Spieler
+                lobbies[lobbyCode].revealedPlayers = lobbies[lobbyCode].revealedPlayers.filter(id => id !== playerId); // Entferne den Spieler aus revealedPlayers
+                const revealedCount = lobbies[lobbyCode].revealedPlayers.length; // Zähle die revealed Spieler
                 io.to(lobbyCode).emit('updateRevealCount', revealedCount); // Sende die aktualisierte Anzahl der revealed Spieler
                 io.to(lobbyCode).emit('playerUnrevealed', { playerId }); // Informiere alle Spieler über den unrevealed Status
+                console.log(`Spieler ${playerId} hat unrevealed. Aktuelle revealedPlayers: ${lobbies[lobbyCode].revealedPlayers}`);
             }
         }
     });
