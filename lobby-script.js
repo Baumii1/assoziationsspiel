@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const revealButton = document.getElementById('reveal-button');
     const revealCountDisplay = document.getElementById('reveal-count');
 
+    let isHost = false; // Variable für den Host-Status
+
     // Lobby-Code aus der URL abrufen
     const lobbyCode = new URLSearchParams(window.location.search).get('lobbyCode');
     console.log(`Lobby-Code abgerufen: ${lobbyCode}`);
@@ -94,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log(`Host-Badge hinzugefügt für Spieler: ${player.name}`);
             } else {
                 // Kick-Button nur für den Host anzeigen
-                const isHost = playersList.some(p => p.id === socket.id && p.isHost);
+                isHost = playersList.some(p => p.id === socket.id && p.isHost);
                 if (isHost) {
                     const kickButton = document.createElement('button');
                     kickButton.classList.add('kick-button');
@@ -235,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log(`Host-Badge hinzugefügt für Spieler: ${player.name}`);
             } else {
                 // Kick-Button nur für den Host anzeigen
-                const isHost = playersList.some(p => p.id === socket.id && p.isHost);
+                isHost = playersList.some(p => p.id === socket.id && p.isHost);
                 if (isHost) {
                     const kickButton = document.createElement('button');
                     kickButton.classList.add('kick-button');
@@ -259,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
         playerCountDiv.textContent = `Spieler in der Lobby (${totalPlayers}/4):`;
 
         // Überprüfen, ob genügend Spieler vorhanden sind
-        const isHost = playersList.some(player => player.id === socket.id && player.isHost);
+        isHost = playersList.some(player => player.id === socket.id && player.isHost);
         if (totalPlayers < 2) {
             console.log('Weniger als 2 Spieler. Start-Button wird ausgeblendet.');
             startGameButton.style.display = 'none'; // Start-Button ausblenden
@@ -317,7 +319,6 @@ document.addEventListener('DOMContentLoaded', () => {
         revealCountDisplay.classList.add('hidden'); // Blende die Anzahl der Reveals aus
 
         // Zeige die Antwort-Buttons nur für den Host an
-        const isHost = lobbies[lobbyCode].players.some(player => player.id === socket.id && player.isHost);
         document.getElementById('answer-buttons').style.display = isHost ? 'flex' : 'none';
         console.log('Antwort-Buttons sichtbar für Host:', isHost);
 
@@ -374,9 +375,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Funktion zur Aktualisierung der Reveal-Anzeige
     function updateRevealCount(revealedCount) {
         console.log(`Aktualisiere die Anzahl der revealed Spieler: ${revealedCount}/${totalPlayers}`);
-        if (revealedCount = undefined) {
-            revealedCount = 0;
-        }
         revealCountDisplay.textContent = `Reveals: ${revealedCount}/${totalPlayers}`; // Zeige die Anzahl der revealed Spieler an
     }
 
