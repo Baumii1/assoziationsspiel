@@ -136,20 +136,15 @@ document.addEventListener('DOMContentLoaded', () => {
             // Unreveal-Logik
             associationInput.disabled = false; 
             revealButton.textContent = 'Reveal'; // Button-Text ändern
-            revealedPlayers = revealedPlayers.filter(id => id !== socket.id);
             console.log(`Spieler ${socket.id} hat unrevealed.`);
-            updateRevealCount(); // Aktualisiere die Anzeige der Reveals
             socket.emit('playerUnrevealed', { playerId: socket.id }); // Sende Unreveal an den Server
         } else {
             // Reveal-Logik
             associationInput.disabled = true; 
             revealButton.textContent = 'Unreveal'; // Button-Text ändern
-            revealedPlayers.push(socket.id);
             console.log(`Spieler ${socket.id} hat revealed: ${associationInput.value}`);
             socket.emit('playerRevealed', { playerId: socket.id, word: associationInput.value });
-            updateRevealCount(); // Aktualisiere die Anzeige der Reveals
         }
-        console.log(`Aktuelle revealedPlayers: ${revealedPlayers}`);
     });
 
     // Spieler hat ein Wort revealed
@@ -166,10 +161,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        console.log(`revealedPlayers.length: ${revealedPlayers.length}, totalPlayers: ${totalPlayers}`);
+        updateRevealCount(); // Aktualisiere die Anzeige der Reveals
 
         // Überprüfen, ob alle Spieler revealed haben
-        if (revealedPlayers.length === totalPlayers) {
+        console.log(`revealedPlayers.length: ${lobbies[lobbyCode].revealedPlayers.length}, totalPlayers: ${totalPlayers}`);
+        if (lobbies[lobbyCode].revealedPlayers.length === totalPlayers) {
             console.log('Alle Spieler haben revealed!');
             socket.emit('evaluateAnswers'); // Sende Event zur Auswertung der Antworten
         }
@@ -188,6 +184,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log(`Statuspunkt für Spieler ${playerName} auf not-revealed gesetzt.`);
             }
         });
+
+        updateRevealCount(); // Aktualisiere die Anzeige der Reveals
     });
 
     // Socket.io Ereignis für das Stoppen des Spiels
@@ -293,8 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Aktualisiere die Anzahl der revealed Spieler
     socket.on('updateRevealCount', (revealedCount) => {
-        console.log(`Aktualisiere die Anzahl der revealed Spieler: ${revealedCount}`);
-        revealCountDisplay.textContent = `Reveals: ${revealedCount}/${totalPlayers}`; // Aktualisiere die Anzeige
+        updateRevealCount(revealedCount); // Rufe die aktualisierte Funktion auf
     });
 
     // Socket.io Ereignis für die Auswertung der Antworten
@@ -375,9 +372,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Funktion zur Aktualisierung der Reveal-Anzeige
-    function updateRevealCount() {
-        console.log(`Aktualisiere die Anzahl der revealed Spieler: ${revealedPlayers.length}/${totalPlayers}`);
-        revealCountDisplay.textContent = `Reveals: ${revealedPlayers.length}/${totalPlayers}`; // Zeige die Anzahl der revealed Spieler an
+    function updateRevealCount(revealedCount) {
+        console.log(`Aktualisiere die Anzahl der revealed Spieler: ${revealedCount}/${totalPlayers}`);
+        revealCountDisplay.textContent = `Reveals: ${revealedCount}/${totalPlayers}`; // Zeige die Anzahl der revealed Spieler an
     }
 
     // Timer für das Stoppen des Spiels
