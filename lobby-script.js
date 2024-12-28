@@ -83,7 +83,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 playerElement.appendChild(hostBadge); // Füge den Host-Badge hinzu
             }
 
-            playersDiv.appendChild(playerElement);
+            // Kick-Button nur für den Host anzeigen
+            const isHost = playersList.some(p => p.id === socket.id && p.isHost);
+            if (isHost) {
+                const kickButton = document.createElement('button');
+                kickButton.classList.add('kick-button');
+                kickButton.innerHTML = '<img src="kick-icon.png" alt="Kick" class="kick-icon" />';
+                kickButton.onclick = () => {
+                    socket.emit('kickPlayer', player.id);
+                };
+                playerElement.appendChild(kickButton); // Füge den Kick-Button hinzu
+            }
+
+            playersDiv.appendChild(playerElement); // Füge das Spieler-Element zur Liste hinzu
         });
 
         const playerCount = document.getElementById('player-count');
