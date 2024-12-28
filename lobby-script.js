@@ -41,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let totalPlayers = 0; // Gesamtanzahl der Spieler
     let gameActive = false; // Flag, um den Spielstatus zu verfolgen
-    let revealedPlayers = []; // Array für revealed Spieler
     let countdownTimer; // Timer für den Countdown
     let streak = 0; // Streak-Zähler
 
@@ -113,27 +112,15 @@ document.addEventListener('DOMContentLoaded', () => {
             associationInput.disabled = false; 
             revealButton.textContent = 'Reveal'; // Button-Text ändern
 
-            // Entferne den Spieler aus dem revealedPlayers Array
-            revealedPlayers = revealedPlayers.filter(id => id !== socket.id);
-            updateRevealCount(); // Aktualisiere die Anzeige der Reveals
+            // Sende Unreveal an den Server
             socket.emit('playerUnrevealed', { playerId: socket.id }); // Sende Unreveal an den Server
         } else {
             // Wenn das Eingabefeld aktiviert ist, deaktiviere es (Reveal)
             associationInput.disabled = true; 
             revealButton.textContent = 'Unreveal'; // Button-Text ändern
 
-            // Füge den Spieler zum revealedPlayers Array hinzu
-            revealedPlayers.push(socket.id);
-            socket.emit('playerRevealed', { playerId: socket.id, word: associationInput.value });
-
-            // Aktualisiere die Anzeige der Reveals
-            updateRevealCount(); 
-        }
-
-        // Überprüfen, ob alle Spieler revealed haben
-        if (revealedPlayers.length === totalPlayers) {
-            console.log('Alle Spieler haben revealed!');
-            socket.emit('evaluateAnswers'); // Sende Event zur Auswertung der Antworten
+            // Sende Reveal an den Server
+            socket.emit('playerRevealed', { playerId: socket.id, word: associationInput.value }); // Sende Reveal an den Server
         }
     });
 
@@ -148,6 +135,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 statusDot.classList.add('revealed'); // Ändere den Statuspunkt zu grün
             }
         });
+
+        // Überprüfen, ob alle Spieler revealed haben
+        if (document.querySelectorAll('.revealed').length === totalPlayers) {
+            console.log('Alle Spieler haben revealed!');
+            socket.emit('evaluateAnswers'); // Sende Event zur Auswertung der Antworten
+        }
     });
 
     // Spieler hat ein Wort unrevealed
@@ -202,18 +195,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 hostBadge.classList.add('host-badge');
                 hostBadge.textContent = 'Host';
                 playerElement.appendChild(hostBadge); // Füge den Host-Badge hinzu
-            } else {
-                // Kick-Button nur für den Host anzeigen
-                const isHost = playersList.some(p => p.id === socket.id && p.isHost);
-                if (isHost) {
-                    const kickButton = document.createElement('button');
-                    kickButton.classList.add('kick-button');
-                    kickButton.innerHTML = '<img src="kick-icon.png" alt="Kick" class="kick-icon" />';
-                    kickButton.onclick = () => {
-                        socket.emit('kickPlayer', player.id);
-                    };
-                    playerElement.appendChild(kickButton); // Füge den Kick-Button hinzu
-                }
+            }
+
+            // Kick-Button nur für den Host anzeigen
+            const isHost = playersList.some(p => p.id === socket.id && p.isHost);
+            if (isHost) {
+                const kickButton = document.createElement('button');
+                kickButton.classList.add('kick-button');
+                kickButton.innerHTML = '<img src="kick-icon.png" alt="Kick" class="kick-icon" />';
+                kickButton.onclick = () => {
+                    socket.emit('kickPlayer', player.id);
+                };
+                playerElement.appendChild(kickButton); // Füge den Kick-Button hinzu
             }
 
             playersDiv.appendChild(playerElement); // Füge das Spieler-Element zur Liste hinzu
@@ -255,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Aktualisiere die Anzahl der revealed Spieler
     socket.on('updateRevealCount', (revealedCount) => {
-        revealCountDisplay.textContent = `Revealed: ${revealedCount} von ${totalPlayers}`; // Aktualisiere die Anzeige
+        revealCountDisplay.textContent = `Reveals: ${revealedCount}/${totalPlayers}`; // Aktualisiere die Anzeige
     });
 
     // Socket.io Ereignis für die Auswertung der Antworten
@@ -329,7 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Funktion zur Aktualisierung der Reveal-Anzeige
     function updateRevealCount() {
-        revealCountDisplay.textContent = `Reveals: ${revealedPlayers.length}/${totalPlayers}`; // Zeige die Anzahl der revealed Spieler an
+        revealCountDisplay.textContent = `Reveals: ${document.querySelectorAll('.revealed').length}/${totalPlayers}`; // Zeige die Anzahl der revealed Spieler an
     }
 
     // Timer für das Stoppen des Spiels
@@ -380,4 +373,3 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-
