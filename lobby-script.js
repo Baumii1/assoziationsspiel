@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Spieler hat ein Wort revealed
-    socket.on('playerRevealed', ({ playerId }) => {
+    socket.on('playerRevealed', ({ playerId, word}) => {
         console.log(`Spieler revealed: ${playerId}`);
         const playerElements = document.querySelectorAll('.player');
         playerElements.forEach(playerElement => {
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(`revealedPlayers.length: ${revealedCount}, totalPlayers: ${totalPlayers}`);
             if (revealedCount === totalPlayers) {
                 console.log('Alle Spieler haben revealed!');
-                socket.emit('evaluateAnswers'); // Sende Event zur Auswertung der Antworten
+                socket.emit('evaluateAnswers', word); // Sende Event zur Auswertung der Antworten
             }
         })
     });
@@ -308,6 +308,7 @@ document.addEventListener('DOMContentLoaded', () => {
         revealedWordsDiv.innerHTML = ''; // Leere vorherige Wörter
         revealedWords.forEach(({ word, name }) => {
             const wordBox = document.createElement('div');
+            wordBox.classList.add('wordBox');
             wordBox.textContent = `${name}: ${word}`; // Setze den Text des Wortes mit Spielernamen
             revealedWordsDiv.appendChild(wordBox); // Füge die Box hinzu
             console.log(`Wort hinzugefügt zur Auswertung: ${word}`);

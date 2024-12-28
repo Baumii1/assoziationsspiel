@@ -46,6 +46,26 @@ html, body {
     justify-content: space-between; /* Platz zwischen den Elementen */
 }
 
+.revealed-words {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Abstand zwischen den Spielern */
+    width: 500px; /* Breite der Spieler-Liste */
+    border: 3px solid #3a3a6a;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.word-box {
+    display: flex;
+    align-items: center; /* Vertikale Zentrierung */
+    padding: 18px; /* Innenabstand für jeden Spieler */
+    background-color: #1a1a4a; /* Hintergrundfarbe für Spieler */
+    border-radius: 8px; /* Abgerundete Ecken */
+    justify-content: space-between; /* Platz zwischen den Elementen */
+    flex-grow: 1;
+}
+
 .status-dot {
     display: inline-block; /* Damit der Punkt nebeneinander angezeigt wird */
     width: 10px; /* Breite des Punktes */
