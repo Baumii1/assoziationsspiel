@@ -120,25 +120,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event-Listener für den Reveal-Button
     revealButton.addEventListener('click', () => {
         if (associationInput.disabled) {
-            // Wenn das Eingabefeld deaktiviert ist, aktiviere es (Unreveal)
+            // Unreveal-Logik
             associationInput.disabled = false; 
             revealButton.textContent = 'Reveal'; // Button-Text ändern
-
-            // Entferne den Spieler aus dem revealedPlayers Array
             revealedPlayers = revealedPlayers.filter(id => id !== socket.id);
             updateRevealCount(); // Aktualisiere die Anzeige der Reveals
             socket.emit('playerUnrevealed', { playerId: socket.id }); // Sende Unreveal an den Server
         } else {
-            // Wenn das Eingabefeld aktiviert ist, deaktiviere es (Reveal)
+            // Reveal-Logik
             associationInput.disabled = true; 
             revealButton.textContent = 'Unreveal'; // Button-Text ändern
-
-            // Füge den Spieler zum revealedPlayers Array hinzu
             revealedPlayers.push(socket.id);
             socket.emit('playerRevealed', { playerId: socket.id, word: associationInput.value });
-
-            // Aktualisiere die Anzeige der Reveals
-            updateRevealCount(); 
+            updateRevealCount(); // Aktualisiere die Anzeige der Reveals
         }
     });
 
@@ -151,6 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const statusDot = playerElement.querySelector('.status-dot');
                 statusDot.classList.remove('not-revealed');
                 statusDot.classList.add('revealed'); // Ändere den Statuspunkt zu grün
+                console.log(`Player ${socket.id} revealed: ${associationInput.value}`);
             }
         });
 
