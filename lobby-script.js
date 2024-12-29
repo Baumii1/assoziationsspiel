@@ -181,9 +181,8 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`Spieler revealed: ${playerId}`);
         const playerElements = document.querySelectorAll('.player');
         playerElements.forEach(playerElement => {
-            const playerName = playerElement.querySelector('.player-name').textContent.trim();
-            console.log(playerName + ' + ' + playerId)
-            if (playerName === playerId) {
+            console.log(playerElement.dataset.playerId + ' + ' + playerId)
+            if (playerElement.dataset.playerId === playerId) {
                 const statusDot = playerElement.querySelector('.status-dot');
                 statusDot.classList.remove('not-revealed');
                 statusDot.classList.add('revealed'); // Ändere den Statuspunkt zu grün
@@ -206,8 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`Spieler unrevealed: ${playerId}`);
         const playerElements = document.querySelectorAll('.player');
         playerElements.forEach(playerElement => {
-            const playerName = playerElement.querySelector('.player-name').textContent.trim();
-            if (playerName === playerId) {
+            if (playerElement.dataset.playerId === playerId) {
                 const statusDot = playerElement.querySelector('.status-dot');
                 statusDot.classList.remove('revealed');
                 statusDot.classList.add('not-revealed'); // Ändere den Statuspunkt zurück zu grau
@@ -215,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        updateRevealCount(); // Aktualisiere die Anzeige der Reveals
+        //updateRevealCount(); // Aktualisiere die Anzeige der Reveals
     });
 
     // Socket.io Ereignis für das Stoppen des Spiels
@@ -241,6 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(`Füge Spieler hinzu: ${player.name}, revealed: ${player.revealed}`);
             const playerElement = document.createElement('div');
             playerElement.classList.add('player');
+            playerElement.dataset.playerId = player.id; // Speichere die Spieler-ID im data-Attribut
 
             // Erstelle den Punkt
             const statusDot = document.createElement('span');
