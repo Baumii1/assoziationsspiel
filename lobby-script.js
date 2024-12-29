@@ -140,41 +140,18 @@ document.addEventListener('DOMContentLoaded', () => {
             associationInput.disabled = false; 
             revealButton.textContent = 'Reveal'; // Button-Text ändern
 
-            // Sofortige Aktualisierung des StatusDots
-            updatePlayerStatus(playerId, false); // Spieler als unrevealed markieren
             console.log(`Spieler ${playerId} hat unrevealed.`);
         } else {
             // Reveal-Logik
             associationInput.disabled = true; 
             revealButton.textContent = 'Unreveal'; // Button-Text ändern
 
-            // Sofortige Aktualisierung des StatusDots
-            updatePlayerStatus(playerId, true); // Spieler als revealed markieren
             console.log(`Spieler ${playerId} hat revealed: ${associationInput.value}`);
         }
 
         // Sende das Socket-Event
         socket.emit(associationInput.disabled ? 'playerRevealed' : 'playerUnrevealed', { playerId, word: associationInput.value });
     });
-
-    // Funktion zur Aktualisierung des Spielerstatus
-    function updatePlayerStatus(playerId, isRevealed) {
-        const playerElements = document.querySelectorAll('.player');
-        playerElements.forEach(playerElement => {
-            const playerName = playerElement.querySelector('.player-name').textContent.trim();
-            if (playerName === getCookie('nickname')) { // Hier sicherstellen, dass die ID korrekt ist
-                const statusDot = playerElement.querySelector('.status-dot');
-                if (isRevealed) {
-                    statusDot.classList.remove('not-revealed');
-                    statusDot.classList.add('revealed'); // Ändere den Statuspunkt zu grün
-                } else {
-                    statusDot.classList.remove('revealed');
-                    statusDot.classList.add('not-revealed'); // Ändere den Statuspunkt zurück zu grau
-                }
-                console.log(`Statuspunkt für Spieler ${playerName} auf ${isRevealed ? 'revealed' : 'not-revealed'} gesetzt.`);
-            }
-        });
-    }
 
     // Spieler hat ein Wort revealed
     socket.on('playerRevealed', ({ playerId }) => {
@@ -397,6 +374,10 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Weiter-Button wurde geklickt. Starte das nächste Spiel...');
             socket.emit('startGame', lobbyCode); // Starte das nächste Spiel
             document.getElementById('next-word-button').classList.add('hidden'); // Blende den Button aus
+            document.getElementById('revealed-words').classList.add('hidden');
+            associationInput.textContent = '';
+            revealButton.textContent = 'Reveal'; // Button-Text ändern
+            socket.emit(associationInput.disabled ? 'playerRevealed' : 'playerUnrevealed', { playerId, word: associationInput.value });
         };
     }
 
