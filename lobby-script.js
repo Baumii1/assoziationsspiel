@@ -50,7 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let totalPlayers = 0; // Gesamtanzahl der Spieler
     let gameActive = false; // Flag, um den Spielstatus zu verfolgen
-    let revealedPlayers = []; // Array für revealed Spieler
     let countdownTimer; // Timer für den Countdown
     let streak = 0; // Streak-Zähler
 
@@ -134,20 +133,48 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event-Listener für den Reveal-Button
     revealButton.addEventListener('click', () => {
         console.log('Reveal-Button wurde geklickt.');
+        const playerId = socket.id; // Aktueller Spieler
+
         if (associationInput.disabled) {
             // Unreveal-Logik
             associationInput.disabled = false; 
             revealButton.textContent = 'Reveal'; // Button-Text ändern
-            console.log(`Spieler ${socket.id} hat unrevealed.`);
-            socket.emit('playerUnrevealed', { playerId: socket.id }); // Sende Unreveal an den Server
+
+            // Sofortige Aktualisierung des StatusDots
+            updatePlayerStatus(playerId, false); // Spieler als unrevealed markieren
+            console.log(`Spieler ${playerId} hat unrevealed.`);
         } else {
             // Reveal-Logik
             associationInput.disabled = true; 
             revealButton.textContent = 'Unreveal'; // Button-Text ändern
-            console.log(`Spieler ${socket.id} hat revealed: ${associationInput.value}`);
-            socket.emit('playerRevealed', { playerId: socket.id, word: associationInput.value });
+
+            // Sofortige Aktualisierung des StatusDots
+            updatePlayerStatus(playerId, true); // Spieler als revealed markieren
+            console.log(`Spieler ${playerId} hat revealed: ${associationInput.value}`);
         }
+
+        // Sende das Socket-Event
+        socket.emit(associationInput.disabled ? 'playerRevealed' : 'playerUnrevealed', { playerId, word: associationInput.value });
     });
+
+    // Funktion zur Aktualisierung des Spielerstatus
+    function updatePlayerStatus(playerId, isRevealed) {
+        const playerElements = document.querySelectorAll('.player');
+        playerElements.forEach(playerElement => {
+            const playerName = playerElement.querySelector('.player-name').textContent.trim();
+            if (playerName === playerId) {
+                const statusDot = playerElement.querySelector('.status-dot');
+                if (isRevealed) {
+                    statusDot.classList.remove('not-revealed');
+                    statusDot.classList.add('revealed'); // Ändere den Statuspunkt zu grün
+                } else {
+                    statusDot.classList.remove('revealed');
+                    statusDot.classList.add('not-revealed'); // Ändere den Statuspunkt zurück zu grau
+                }
+                console.log(`Statuspunkt für Spieler ${playerName} auf ${isRevealed ? 'revealed' : 'not-revealed'} gesetzt.`);
+            }
+        });
+    }
 
     // Spieler hat ein Wort revealed
     socket.on('playerRevealed', ({ playerId }) => {
