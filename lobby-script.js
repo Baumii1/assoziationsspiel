@@ -162,7 +162,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const playerElements = document.querySelectorAll('.player');
         playerElements.forEach(playerElement => {
             const playerName = playerElement.querySelector('.player-name').textContent.trim();
-            if (playerName === playerId) {
+            console.log('playerElement.dataset.playerId: ' + playerElement.dataset.playerId + ' playerId: ' + playerId);
+            if (playerElement.dataset.playerId === playerId) { // Verwende data-Attribute für die ID
                 const statusDot = playerElement.querySelector('.status-dot');
                 if (isRevealed) {
                     statusDot.classList.remove('not-revealed');
