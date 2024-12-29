@@ -361,20 +361,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Funktion für den nächsten Begriff
     function nextWord() {
         console.log('Gehe zum nächsten Wort...');
-        
         // Blende die Antwort-Buttons aus und zeige den Weiter-Button an
         document.getElementById('answer-buttons').style.display = 'none';
         document.getElementById('next-word-button').classList.remove('hidden');
-
-        // Blende das Eingabefeld und den Reveal-Button aus
-        associationInput.classList.remove('hidden'); // Blende das Eingabefeld wieder ein
-        revealButton.classList.remove('hidden'); // Blende den Reveal-Button wieder ein
-        revealCountDisplay.classList.remove('hidden'); // Blende die Anzahl der Reveals wieder ein
-
-        document.getElementById('revealed-words').classList.add('hidden');
-
-        // Setze den aktuellen Begriff zurück
-        currentWordDisplay.textContent = ''; // Leere den aktuellen Begriff
 
         // Event-Listener für den Weiter-Button
         document.getElementById('next-word-button').onclick = () => {
