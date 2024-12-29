@@ -181,12 +181,12 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`Spieler revealed: ${playerId}`);
         const playerElements = document.querySelectorAll('.player');
         playerElements.forEach(playerElement => {
-            console.log(playerElement.dataset.playerId + ' + ' + playerId)
+            // Vergleiche die gespeicherte Spieler-ID im data-Attribut
             if (playerElement.dataset.playerId === playerId) {
                 const statusDot = playerElement.querySelector('.status-dot');
                 statusDot.classList.remove('not-revealed');
                 statusDot.classList.add('revealed'); // Ändere den Statuspunkt zu grün
-                console.log(`Statuspunkt für Spieler ${playerName} auf revealed gesetzt.`);
+                console.log(`Statuspunkt für Spieler mit ID ${playerId} auf revealed gesetzt.`);
             }
         });
 
@@ -205,11 +205,12 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`Spieler unrevealed: ${playerId}`);
         const playerElements = document.querySelectorAll('.player');
         playerElements.forEach(playerElement => {
+            // Vergleiche die gespeicherte Spieler-ID im data-Attribut
             if (playerElement.dataset.playerId === playerId) {
                 const statusDot = playerElement.querySelector('.status-dot');
                 statusDot.classList.remove('revealed');
                 statusDot.classList.add('not-revealed'); // Ändere den Statuspunkt zurück zu grau
-                console.log(`Statuspunkt für Spieler ${playerName} auf not-revealed gesetzt.`);
+                console.log(`Statuspunkt für Spieler mit ID ${playerId} auf not-revealed gesetzt.`);
             }
         });
 
