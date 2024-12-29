@@ -162,8 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const playerElements = document.querySelectorAll('.player');
         playerElements.forEach(playerElement => {
             const playerName = playerElement.querySelector('.player-name').textContent.trim();
-            console.log('playerElement.dataset.playerId: ' + playerElement.dataset.playerId + ' playerId: ' + playerId);
-            if (playerElement.dataset.playerId === playerId) { // Verwende data-Attribute für die ID
+            if (playerName === getCookie('nickname')) { // Hier sicherstellen, dass die ID korrekt ist
                 const statusDot = playerElement.querySelector('.status-dot');
                 if (isRevealed) {
                     statusDot.classList.remove('not-revealed');
