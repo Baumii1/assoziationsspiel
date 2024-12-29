@@ -377,7 +377,9 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('revealed-words').classList.add('hidden');
             associationInput.textContent = '';
             revealButton.textContent = 'Reveal'; // Button-Text ändern
-            socket.emit(associationInput.disabled ? 'playerRevealed' : 'playerUnrevealed', { playerId, word: associationInput.value });
+            lobbies[lobbyCode].players.forEach(player => {
+                socket.emit(associationInput.disabled ? 'playerRevealed' : 'playerUnrevealed', { playerId: player.id, word: associationInput.value });
+            });
         };
     }
 
