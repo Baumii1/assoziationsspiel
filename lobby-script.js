@@ -158,7 +158,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`Spieler revealed: ${playerId}`);
         const playerElements = document.querySelectorAll('.player');
         playerElements.forEach(playerElement => {
-            // Vergleiche die gespeicherte Spieler-ID im data-Attribut
             if (playerElement.dataset.playerId === playerId) {
                 const statusDot = playerElement.querySelector('.status-dot');
                 statusDot.classList.remove('not-revealed');
@@ -168,13 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Überprüfen, ob alle Spieler revealed haben
-        socket.on('updateRevealCount', (revealedCount) => {
-            console.log(`revealedPlayers.length: ${revealedCount}, totalPlayers: ${totalPlayers}`);
-            if (revealedCount === totalPlayers) {
-                console.log('Alle Spieler haben revealed!');
-                socket.emit('evaluateAnswers'); // Sende Event zur Auswertung der Antworten
-            }
-        })
+        socket.emit('updateRevealCount', lobbies[lobbyCode].revealedPlayers.length);
     });
 
     // Spieler hat ein Wort unrevealed
@@ -182,7 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`Spieler unrevealed: ${playerId}`);
         const playerElements = document.querySelectorAll('.player');
         playerElements.forEach(playerElement => {
-            // Vergleiche die gespeicherte Spieler-ID im data-Attribut
             if (playerElement.dataset.playerId === playerId) {
                 const statusDot = playerElement.querySelector('.status-dot');
                 statusDot.classList.remove('revealed');
@@ -191,7 +183,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        //updateRevealCount(); // Aktualisiere die Anzeige der Reveals
+        // Überprüfen, ob die Anzahl der revealed Spieler aktualisiert werden muss
+        socket.emit('updateRevealCount', lobbies[lobbyCode].revealedPlayers.length);
     });
 
     // Socket.io Ereignis für das Stoppen des Spiels
@@ -309,6 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('evaluation-screen').classList.remove('hidden');
 
         const revealedWordsDiv = document.getElementById('revealed-words');
+        revealedWordsDiv.classList.remove('hidden');
         revealedWordsDiv.innerHTML = ''; // Leere vorherige Wörter
         revealedWords.forEach(({ word, name }) => {
             const wordBox = document.createElement('div');
@@ -356,12 +350,6 @@ document.addEventListener('DOMContentLoaded', () => {
         nextWord(); // Gehe zum nächsten Wort
     }
 
-    // Funktion zur Aktualisierung der Streak-Anzeige
-    function updateStreakDisplay() {
-        document.getElementById('streak').textContent = `Streak: ${streak}`;
-        console.log(`Streak aktualisiert: ${streak}`);
-    }
-
     // Funktion für den nächsten Begriff
     function nextWord() {
         console.log('Gehe zum nächsten Wort...');
@@ -372,16 +360,19 @@ document.addEventListener('DOMContentLoaded', () => {
         // Event-Listener für den Weiter-Button
         document.getElementById('next-word-button').onclick = () => {
             console.log('Weiter-Button wurde geklickt. Starte das nächste Spiel...');
-            socket.emit('startGame', lobbyCode); // Starte das nächste Spiel
+            socket.emit('nextWord', lobbyCode); // Sende Event an alle Spieler
             document.getElementById('next-word-button').classList.add('hidden'); // Blende den Button aus
             document.getElementById('revealed-words').classList.add('hidden');
-            associationInput.textContent = '';
-            revealButton.textContent = 'Reveal'; // Button-Text ändern
-            lobbies[lobbyCode].players.forEach(player => {
-                socket.emit(associationInput.disabled ? 'playerRevealed' : 'playerUnrevealed', { playerId: player.id, word: associationInput.value });
-            });
+            associationInput.value = ''; // Leere das Eingabefeld
+            revealButton.textContent = 'Reveal'; // Button-Text zurücksetzen
         };
     }
+
+    // Socket.io Ereignis für das nächste Wort
+    socket.on('nextWord', () => {
+        // Logik zum Starten des nächsten Spiels
+        startNextGame(); // Diese Funktion muss definiert werden, um das nächste Wort zu starten
+    });
 
     // Funktion zur Aktualisierung der Reveal-Anzeige
     function updateRevealCount(revealedCount) {
