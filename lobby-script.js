@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Überprüfen, ob alle Spieler revealed haben
-        socket.emit('updateRevealCount', lobbies[lobbyCode].revealedPlayers.length);
+        socket.emit('updateRevealCount', playerId); // Sende die ID des Spielers, der revealed hat
     });
 
     // Spieler hat ein Wort unrevealed
@@ -184,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Überprüfen, ob die Anzahl der revealed Spieler aktualisiert werden muss
-        socket.emit('updateRevealCount', lobbies[lobbyCode].revealedPlayers.length);
+        socket.emit('updateRevealCount', playerId); // Sende die ID des Spielers, der unrevealed hat
     });
 
     // Socket.io Ereignis für das Stoppen des Spiels
@@ -289,7 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     });
 
-    // Aktualisiere die Anzahl der revealed Spieler
+    // Socket.io Ereignis für die Aktualisierung der Anzahl der revealed Spieler
     socket.on('updateRevealCount', (revealedCount) => {
         console.log(`Aktualisiere die Anzahl der revealed Spieler: ${revealedCount}`);
         updateRevealCount(revealedCount); // Rufe die aktualisierte Funktion auf
