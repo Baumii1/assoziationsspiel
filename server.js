@@ -150,6 +150,26 @@ io.on('connection', (socket) => {
         }
     });
 
+    // Socket.io Ereignis für das nächste Wort
+    socket.on('nextWord', (lobbyCode) => {
+        const lobby = lobbies[lobbyCode];
+        if (lobby && lobby.players.length >= MIN_PLAYERS) {
+            getRandomWord().then(word => {
+                lobby.currentWord = word; // Speichere den aktuellen Begriff
+                io.to(lobbyCode).emit('gameStarted', word, lobby.players.map(player => ({
+                    id: player.id,
+                    name: player.name,
+                    isHost: player.id === lobby.hostId,
+                    revealed: player.revealed // Füge den Reveal-Status hinzu
+                }))); // Sende den Begriff und die Spieler an alle Spieler
+            }).catch(error => {
+                socket.emit('error', 'Fehler beim Abrufen des Begriffs: ' + error);
+            });
+        } else {
+            socket.emit('error', 'Nicht genügend Spieler, um das Spiel zu starten.');
+        }
+    });
+
     // Spieler trennt die Verbindung
     socket.on('disconnect', () => {
         console.log('Ein Spieler hat sich getrennt:', socket.id);
