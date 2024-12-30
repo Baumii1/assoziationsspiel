@@ -327,33 +327,24 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('answer-buttons').style.display = isHost ? 'flex' : 'none';
         console.log('Antwort-Buttons sichtbar für Host:', isHost);
 
-        // Event-Listener für die Antwort-Buttons
-        const correctButton = document.getElementById('correct-button');
-        const wrongButton = document.getElementById('wrong-button');
-
-        // Entferne vorherige Event-Listener, um Duplikate zu vermeiden
-        correctButton.removeEventListener('click', handleCorrect);
-        wrongButton.removeEventListener('click', handleWrong);
-
-        // Hinzufügen der neuen Event-Listener
-        correctButton.addEventListener('click', handleCorrect(lobbyCode));
-        wrongButton.addEventListener('click', handleWrong(lobbyCode));
+        // Zeige den Weiter-Button nur für den Host an
+        document.getElementById('next-word-button').style.display = isHost ? 'block' : 'none';
     });
 
     // Funktion für den korrekten Button
-    function handleCorrect(lobby) {
+    function handleCorrect() {
         console.log('Korrekt-Button wurde geklickt.');
         streak++; // Erhöhe den Streak
         updateStreakDisplay(); // Aktualisiere die Streak-Anzeige
-        nextWord(lobby); // Gehe zum nächsten Wort
+        nextWord(); // Gehe zum nächsten Wort
     }
 
     // Funktion für den falschen Button
-    function handleWrong(lobby) {
+    function handleWrong() {
         console.log('Falsch-Button wurde geklickt.');
         streak = 0; // Setze den Streak zurück
         updateStreakDisplay(); // Aktualisiere die Streak-Anzeige
-        nextWord(lobby); // Gehe zum nächsten Wort
+        nextWord(); // Gehe zum nächsten Wort
     }
 
     // Funktion zur Aktualisierung der Streak-Anzeige
@@ -363,7 +354,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Funktion für den nächsten Begriff
-    function nextWord(lobby) {
+    function nextWord() {
         console.log('Gehe zum nächsten Wort...');
         // Blende die Antwort-Buttons aus und zeige den Weiter-Button an
         document.getElementById('answer-buttons').style.display = 'none';
@@ -377,8 +368,13 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('revealed-words').classList.add('hidden');
             associationInput.value = '';
             revealButton.textContent = 'Reveal'; // Button-Text ändern
-            lobby.players.forEach(player => {
-                socket.emit('playerUnrevealed', { playerId: player.id });
+
+            // Setze den Status der Spieler zurück
+            const playerElements = document.querySelectorAll('.player');
+            playerElements.forEach(playerElement => {
+                const statusDot = playerElement.querySelector('.status-dot');
+                statusDot.classList.remove('revealed');
+                statusDot.classList.add('not-revealed'); // Setze den Statuspunkt zurück
             });
         };
     }
