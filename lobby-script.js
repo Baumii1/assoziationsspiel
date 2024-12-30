@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Spieler hat ein Wort revealed
-    socket.on('playerRevealed', ({ playerId }) => {
+    socket.on('playerRevealed', ({ playerId, word }) => {
         console.log(`Spieler revealed: ${playerId}`);
         const playerElements = document.querySelectorAll('.player');
         playerElements.forEach(playerElement => {
@@ -165,9 +165,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log(`Statuspunkt für Spieler mit ID ${playerId} auf revealed gesetzt.`);
             }
         });
-
-        // Überprüfen, ob alle Spieler revealed haben
-        socket.emit('updateRevealCount', playerId); // Sende die ID des Spielers, der revealed hat
+        console.log(`revealedCount: ${revealedCount}, totalPlayers: ${totalPlayers}`);
+        if (revealedCount === totalPlayers) {
+            console.log('Alle Spieler haben revealed!');
+            socket.emit('evaluateAnswers'); // Sende Event zur Auswertung der Antworten
+        }
     });
 
     // Spieler hat ein Wort unrevealed
@@ -182,9 +184,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log(`Statuspunkt für Spieler mit ID ${playerId} auf not-revealed gesetzt.`);
             }
         });
-
-        // Überprüfen, ob die Anzahl der revealed Spieler aktualisiert werden muss
-        socket.emit('updateRevealCount', playerId); // Sende die ID des Spielers, der unrevealed hat
     });
 
     // Socket.io Ereignis für das Stoppen des Spiels
