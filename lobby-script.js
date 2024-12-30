@@ -375,10 +375,10 @@ document.addEventListener('DOMContentLoaded', () => {
             socket.emit('startGame', lobbyCode); // Starte das nächste Spiel
             document.getElementById('next-word-button').classList.add('hidden'); // Blende den Button aus
             document.getElementById('revealed-words').classList.add('hidden');
-            associationInput.value() = '';
+            associationInput.value = '';
             revealButton.textContent = 'Reveal'; // Button-Text ändern
             lobby.players.forEach(player => {
-                socket.emit(associationInput.disabled ? 'playerRevealed' : 'playerUnrevealed', { playerId: player.id, word: associationInput.value });
+                socket.emit('playerUnrevealed', { playerId: player.id });
             });
         };
     }

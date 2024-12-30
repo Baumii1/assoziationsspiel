@@ -110,7 +110,6 @@ io.on('connection', (socket) => {
         }
     });
 
-
     // Spieler hat ein Wort aufgedeckt
     socket.on('playerRevealed', ({ playerId, word }) => {
         const lobbyCode = Object.keys(lobbies).find(code => lobbies[code].players.some(player => player.id === playerId));
