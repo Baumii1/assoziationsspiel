@@ -165,11 +165,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log(`Statuspunkt für Spieler mit ID ${playerId} auf revealed gesetzt.`);
             }
         });
-        console.log(`revealedCount: ${revealedCount}, totalPlayers: ${totalPlayers}`);
-        if (revealedCount === totalPlayers) {
-            console.log('Alle Spieler haben revealed!');
-            socket.emit('evaluateAnswers'); // Sende Event zur Auswertung der Antworten
-        }
+        // Überprüfen, ob alle Spieler revealed haben
+        socket.on('updateRevealCount', (revealedCount) => {
+            console.log(`revealedCount: ${revealedCount}, totalPlayers: ${totalPlayers}`);
+            if (revealedCount === totalPlayers) {
+                console.log('Alle Spieler haben revealed!');
+                socket.emit('evaluateAnswers'); // Sende Event zur Auswertung der Antworten
+            }
+        })
     });
 
     // Spieler hat ein Wort unrevealed
