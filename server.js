@@ -110,6 +110,7 @@ io.on('connection', (socket) => {
         }
     });
 
+
     // Spieler hat ein Wort aufgedeckt
     socket.on('playerRevealed', ({ playerId, word }) => {
         const lobbyCode = Object.keys(lobbies).find(code => lobbies[code].players.some(player => player.id === playerId));
@@ -120,11 +121,8 @@ io.on('connection', (socket) => {
                 player.word = word; // Speichere das Wort, das der Spieler revealed hat
                 lobbies[lobbyCode].revealedPlayers.push(playerId); // Füge den Spieler zu revealedPlayers hinzu
                 const revealedCount = lobbies[lobbyCode].revealedPlayers.length; // Zähle die revealed Spieler
-                
-                // Sende die aktualisierte Anzahl der revealed Spieler an alle Spieler in der Lobby
-                io.to(lobbyCode).emit('updateRevealCount', revealedCount); 
-                // Informiere alle Spieler über den revealed Status
-                io.to(lobbyCode).emit('playerRevealed', { playerId, word }); 
+                io.to(lobbyCode).emit('updateRevealCount', revealedCount); // Sende die aktualisierte Anzahl der revealed Spieler
+                io.to(lobbyCode).emit('playerRevealed', { playerId, word }); // Informiere alle Spieler über den revealed Status
                 console.log(`Spieler ${playerId} hat revealed: ${word}. Aktuelle revealedPlayers: ${lobbies[lobbyCode].revealedPlayers}`);
             }
         }
@@ -139,11 +137,8 @@ io.on('connection', (socket) => {
                 player.revealed = false; // Markiere den Spieler als nicht revealed
                 lobbies[lobbyCode].revealedPlayers = lobbies[lobbyCode].revealedPlayers.filter(id => id !== playerId); // Entferne den Spieler aus revealedPlayers
                 const revealedCount = lobbies[lobbyCode].revealedPlayers.length; // Zähle die revealed Spieler
-                
-                // Sende die aktualisierte Anzahl der revealed Spieler an alle Spieler in der Lobby
-                io.to(lobbyCode).emit('updateRevealCount', revealedCount); 
-                // Informiere alle Spieler über den unrevealed Status
-                io.to(lobbyCode).emit('playerUnrevealed', { playerId }); 
+                io.to(lobbyCode).emit('updateRevealCount', revealedCount); // Sende die aktualisierte Anzahl der revealed Spieler
+                io.to(lobbyCode).emit('playerUnrevealed', { playerId }); // Informiere alle Spieler über den unrevealed Status
                 console.log(`Spieler ${playerId} hat unrevealed. Aktuelle revealedPlayers: ${lobbies[lobbyCode].revealedPlayers}`);
             }
         }
@@ -255,7 +250,7 @@ io.on('connection', (socket) => {
         const lobbyCode = Object.keys(lobbies).find(code => lobbies[code].players.some(player => player.id === socket.id));
         if (lobbyCode) {
             const revealedWords = lobbies[lobbyCode].players.map(player => player.revealed ? { word: player.word, name: player.name } : null).filter(Boolean);
-            io.to(lobbyCode).emit('evaluateAnswers', revealedWords, lobbies[lobbyCode]); // Sende die Wörter zur Auswertung
+            io.to(lobbyCode).emit('evaluateAnswers', revealedWords); // Sende die Wörter zur Auswertung
         }
     });
 

@@ -140,12 +140,16 @@ document.addEventListener('DOMContentLoaded', () => {
             associationInput.disabled = false; 
             revealButton.textContent = 'Reveal'; // Button-Text ändern
 
+            // Sofortige Aktualisierung des StatusDots
+            updatePlayerStatus(playerId, false); // Spieler als unrevealed markieren
             console.log(`Spieler ${playerId} hat unrevealed.`);
         } else {
             // Reveal-Logik
             associationInput.disabled = true; 
             revealButton.textContent = 'Unreveal'; // Button-Text ändern
 
+            // Sofortige Aktualisierung des StatusDots
+            updatePlayerStatus(playerId, true); // Spieler als revealed markieren
             console.log(`Spieler ${playerId} hat revealed: ${associationInput.value}`);
         }
 
@@ -153,17 +157,36 @@ document.addEventListener('DOMContentLoaded', () => {
         socket.emit(associationInput.disabled ? 'playerRevealed' : 'playerUnrevealed', { playerId, word: associationInput.value });
     });
 
+    // Funktion zur Aktualisierung des Spielerstatus
+    function updatePlayerStatus(playerId, isRevealed) {
+        const playerElements = document.querySelectorAll('.player');
+        playerElements.forEach(playerElement => {
+            const playerName = playerElement.querySelector('.player-name').textContent.trim();
+            if (playerName === getCookie('nickname')) { // Hier sicherstellen, dass die ID korrekt ist
+                const statusDot = playerElement.querySelector('.status-dot');
+                if (isRevealed) {
+                    statusDot.classList.remove('not-revealed');
+                    statusDot.classList.add('revealed'); // Ändere den Statuspunkt zu grün
+                } else {
+                    statusDot.classList.remove('revealed');
+                    statusDot.classList.add('not-revealed'); // Ändere den Statuspunkt zurück zu grau
+                }
+                console.log(`Statuspunkt für Spieler ${playerName} auf ${isRevealed ? 'revealed' : 'not-revealed'} gesetzt.`);
+            }
+        });
+    }
+
     // Spieler hat ein Wort revealed
     socket.on('playerRevealed', ({ playerId }) => {
         console.log(`Spieler revealed: ${playerId}`);
         const playerElements = document.querySelectorAll('.player');
         playerElements.forEach(playerElement => {
-            // Vergleiche die gespeicherte Spieler-ID im data-Attribut
+            console.log(playerElement.dataset.playerId + ' + ' + playerId)
             if (playerElement.dataset.playerId === playerId) {
                 const statusDot = playerElement.querySelector('.status-dot');
                 statusDot.classList.remove('not-revealed');
                 statusDot.classList.add('revealed'); // Ändere den Statuspunkt zu grün
-                console.log(`Statuspunkt für Spieler mit ID ${playerId} auf revealed gesetzt.`);
+                console.log(`Statuspunkt für Spieler ${playerName} auf revealed gesetzt.`);
             }
         });
 
@@ -182,12 +205,11 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`Spieler unrevealed: ${playerId}`);
         const playerElements = document.querySelectorAll('.player');
         playerElements.forEach(playerElement => {
-            // Vergleiche die gespeicherte Spieler-ID im data-Attribut
             if (playerElement.dataset.playerId === playerId) {
                 const statusDot = playerElement.querySelector('.status-dot');
                 statusDot.classList.remove('revealed');
                 statusDot.classList.add('not-revealed'); // Ändere den Statuspunkt zurück zu grau
-                console.log(`Statuspunkt für Spieler mit ID ${playerId} auf not-revealed gesetzt.`);
+                console.log(`Statuspunkt für Spieler ${playerName} auf not-revealed gesetzt.`);
             }
         });
 
@@ -327,8 +349,17 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('answer-buttons').style.display = isHost ? 'flex' : 'none';
         console.log('Antwort-Buttons sichtbar für Host:', isHost);
 
-        // Zeige den Weiter-Button nur für den Host an
-        document.getElementById('next-word-button').style.display = isHost ? 'block' : 'none';
+        // Event-Listener für die Antwort-Buttons
+        const correctButton = document.getElementById('correct-button');
+        const wrongButton = document.getElementById('wrong-button');
+
+        // Entferne vorherige Event-Listener, um Duplikate zu vermeiden
+        correctButton.removeEventListener('click', handleCorrect);
+        wrongButton.removeEventListener('click', handleWrong);
+
+        // Hinzufügen der neuen Event-Listener
+        correctButton.addEventListener('click', handleCorrect);
+        wrongButton.addEventListener('click', handleWrong);
     });
 
     // Funktion für den korrekten Button
@@ -365,17 +396,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Weiter-Button wurde geklickt. Starte das nächste Spiel...');
             socket.emit('startGame', lobbyCode); // Starte das nächste Spiel
             document.getElementById('next-word-button').classList.add('hidden'); // Blende den Button aus
-            document.getElementById('revealed-words').classList.add('hidden');
-            associationInput.value = '';
-            revealButton.textContent = 'Reveal'; // Button-Text ändern
-
-            // Setze den Status der Spieler zurück
-            const playerElements = document.querySelectorAll('.player');
-            playerElements.forEach(playerElement => {
-                const statusDot = playerElement.querySelector('.status-dot');
-                statusDot.classList.remove('revealed');
-                statusDot.classList.add('not-revealed'); // Setze den Statuspunkt zurück
-            });
         };
     }
 
