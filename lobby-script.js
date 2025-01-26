@@ -177,27 +177,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Spieler hat ein Wort revealed
-    socket.on('playerRevealed', ({ playerId }) => {
+    socket.on('playerRevealed', ({ playerId, word }) => {
         console.log(`Spieler revealed: ${playerId}`);
         const playerElements = document.querySelectorAll('.player');
         playerElements.forEach(playerElement => {
-            console.log(playerElement.dataset.playerId + ' + ' + playerId)
             if (playerElement.dataset.playerId === playerId) {
                 const statusDot = playerElement.querySelector('.status-dot');
                 statusDot.classList.remove('not-revealed');
                 statusDot.classList.add('revealed'); // Ändere den Statuspunkt zu grün
-                console.log(`Statuspunkt für Spieler ${playerName} auf revealed gesetzt.`);
+                console.log(`Statuspunkt für Spieler ${playerId} auf revealed gesetzt.`);
             }
         });
-
-        // Überprüfen, ob alle Spieler revealed haben
-        socket.on('updateRevealCount', (revealedCount) => {
-            console.log(`revealedPlayers.length: ${revealedCount}, totalPlayers: ${totalPlayers}`);
-            if (revealedCount === totalPlayers) {
-                console.log('Alle Spieler haben revealed!');
-                socket.emit('evaluateAnswers'); // Sende Event zur Auswertung der Antworten
-            }
-        })
     });
 
     // Spieler hat ein Wort unrevealed
@@ -209,11 +199,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const statusDot = playerElement.querySelector('.status-dot');
                 statusDot.classList.remove('revealed');
                 statusDot.classList.add('not-revealed'); // Ändere den Statuspunkt zurück zu grau
-                console.log(`Statuspunkt für Spieler ${playerName} auf not-revealed gesetzt.`);
+                console.log(`Statuspunkt für Spieler ${playerId} auf not-revealed gesetzt.`);
             }
         });
-
-        //updateRevealCount(); // Aktualisiere die Anzeige der Reveals
     });
 
     // Socket.io Ereignis für das Stoppen des Spiels
@@ -391,15 +379,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('answer-buttons').style.display = 'none';
         document.getElementById('next-word-button').classList.remove('hidden');
 
-        // Setze die Eingabefelder zurück
-        associationInput.value = ''; // Leere die Eingabebox
-        const playerElements = document.querySelectorAll('.player');
-        playerElements.forEach(playerElement => {
-            const statusDot = playerElement.querySelector('.status-dot');
-            statusDot.classList.remove('revealed');
-            statusDot.classList.add('not-revealed'); // Setze den Statuspunkt zurück
-        });
-
         // Event-Listener für den Weiter-Button
         document.getElementById('next-word-button').onclick = () => {
             console.log('Weiter-Button wurde geklickt. Starte das nächste Spiel...');
@@ -434,6 +413,36 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }, 1000);
     }
+
+    function resetGame() {
+        console.log('Setze das Spiel zurück...');
+        // Setze den Status der Spieler zurück
+        const playerElements = document.querySelectorAll('.player');
+        playerElements.forEach(playerElement => {
+            const statusDot = playerElement.querySelector('.status-dot');
+            statusDot.classList.remove('revealed');
+            statusDot.classList.add('not-revealed'); // Ändere den Statuspunkt zurück zu grau
+        });
+    
+        // Leere die Eingabefelder
+        document.getElementById('association-word').value = '';
+        document.getElementById('reveal-button').textContent = 'Reveal';
+        document.getElementById('reveal-button').classList.remove('hidden');
+        document.getElementById('association-word').classList.remove('hidden');
+        document.getElementById('reveal-count').classList.remove('hidden');
+    
+        // Leere die Spielerliste aus dem Evaluation-Screen
+        document.getElementById('revealed-words').innerHTML = '';
+    
+        // Blende die Antwort-Buttons aus
+        document.getElementById('answer-buttons').style.display = 'none';
+    }
+    
+    // Rufe die resetGame Funktion nach der Auswertung auf
+    socket.on('evaluationComplete', () => {
+        console.log('Auswertung abgeschlossen. Setze das Spiel zurück...');
+        resetGame();
+    });
 
     // Beispiel für die Fehlerbehandlung
     function showErrorMessage(message) {
