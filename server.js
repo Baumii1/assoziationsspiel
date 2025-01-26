@@ -122,8 +122,7 @@ io.on('connection', (socket) => {
                 lobbies[lobbyCode].revealedPlayers.push(playerId); // Füge den Spieler zu revealedPlayers hinzu
                 const revealedCount = lobbies[lobbyCode].revealedPlayers.length; // Zähle die revealed Spieler
                 io.to(lobbyCode).emit('updateRevealCount', revealedCount); // Sende die aktualisierte Anzahl der revealed Spieler
-                io.to(lobbyCode).emit('playerRevealed', { playerId, word }); // Informiere alle Spieler über den revealed Status
-                console.log(`Spieler ${playerId} hat revealed: ${word}. Aktuelle revealedPlayers: ${lobbies[lobbyCode].revealedPlayers}`);
+                io.to(lobbyCode).emit('playerRevealed', { playerId }); // Informiere alle Spieler über den revealed Status
             }
         }
     });
@@ -139,7 +138,6 @@ io.on('connection', (socket) => {
                 const revealedCount = lobbies[lobbyCode].revealedPlayers.length; // Zähle die revealed Spieler
                 io.to(lobbyCode).emit('updateRevealCount', revealedCount); // Sende die aktualisierte Anzahl der revealed Spieler
                 io.to(lobbyCode).emit('playerUnrevealed', { playerId }); // Informiere alle Spieler über den unrevealed Status
-                console.log(`Spieler ${playerId} hat unrevealed. Aktuelle revealedPlayers: ${lobbies[lobbyCode].revealedPlayers}`);
             }
         }
     });
@@ -245,12 +243,22 @@ io.on('connection', (socket) => {
         }
     });
 
-    // Spieler hat das Spiel gestartet
+    // Socket.io Ereignis für die Auswertung der Antworten
     socket.on('evaluateAnswers', () => {
         const lobbyCode = Object.keys(lobbies).find(code => lobbies[code].players.some(player => player.id === socket.id));
         if (lobbyCode) {
             const revealedWords = lobbies[lobbyCode].players.map(player => player.revealed ? { word: player.word, name: player.name } : null).filter(Boolean);
             io.to(lobbyCode).emit('evaluateAnswers', revealedWords); // Sende die Wörter zur Auswertung
+
+            // Setze die Spieler zurück
+            lobbies[lobbyCode].players.forEach(player => {
+                player.revealed = false; // Setze den Reveal-Status zurück
+                player.word = null; // Setze das Wort zurück
+            });
+
+            // Setze andere Spielvariablen zurück
+            lobbies[lobbyCode].currentWord = null; // Aktuellen Begriff zurücksetzen
+            lobbies[lobbyCode].revealedPlayers = []; // Leere die Liste der revealed Spieler
         }
     });
 

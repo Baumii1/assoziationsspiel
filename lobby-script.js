@@ -391,6 +391,15 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('answer-buttons').style.display = 'none';
         document.getElementById('next-word-button').classList.remove('hidden');
 
+        // Setze die Eingabefelder zurück
+        associationInput.value = ''; // Leere die Eingabebox
+        const playerElements = document.querySelectorAll('.player');
+        playerElements.forEach(playerElement => {
+            const statusDot = playerElement.querySelector('.status-dot');
+            statusDot.classList.remove('revealed');
+            statusDot.classList.add('not-revealed'); // Setze den Statuspunkt zurück
+        });
+
         // Event-Listener für den Weiter-Button
         document.getElementById('next-word-button').onclick = () => {
             console.log('Weiter-Button wurde geklickt. Starte das nächste Spiel...');
