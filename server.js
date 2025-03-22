@@ -161,6 +161,11 @@ io.on('connection', (socket) => {
         });
     });
 
+    // Socket.io Ereignis zum Aktualisieren des Streaks
+    socket.on('updateStreak', (newStreak) => {
+        io.to(lobbyCode).emit('updateStreak', newStreak); // Sende die aktualisierte Streak an alle Spieler
+    });
+
     // Spieler trennt die Verbindung
     socket.on('disconnect', () => {
         console.log('Ein Spieler hat sich getrennt:', socket.id);
