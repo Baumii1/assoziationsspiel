@@ -402,10 +402,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('evaluation-screen').classList.add('hidden');
         // Leere die Tabelle mit den revealed words
         document.getElementById('revealed-words').innerHTML = '';
-        // Resetiere die Variable der revealed players
-        if (lobbies && lobbies[lobbyCode]) {
-            lobbies[lobbyCode].revealedPlayers = [];
-        }
+        // Sende eine Nachricht an den Server, um revealedPlayers zu leeren
+        socket.emit('resetRevealedPlayers', lobbyCode);
         // Resetiere den Button bei jedem Spieler
         const playerElements = document.querySelectorAll('.player');
         playerElements.forEach(playerElement => {
