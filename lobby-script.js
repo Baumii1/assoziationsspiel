@@ -408,13 +408,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const playerElements = document.querySelectorAll('.player');
         playerElements.forEach(playerElement => {
             const revealButton = playerElement.querySelector('.reveal-button');
-            revealButton.textContent = 'Reveal';
-            revealButton.classList.remove('revealed');
-            revealButton.classList.add('not-revealed');
+            if (revealButton) {
+                revealButton.textContent = 'Reveal';
+                revealButton.classList.remove('revealed');
+                revealButton.classList.add('not-revealed');
+            }
             // Leere das Textfeld bei jedem Spieler
             const associationInput = playerElement.querySelector('.association-input');
-            associationInput.value = '';
-            associationInput.disabled = false;
+            if (associationInput) {
+                associationInput.value = '';
+                associationInput.disabled = false;
+            }
         });
     }
 
