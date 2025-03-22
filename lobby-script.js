@@ -177,21 +177,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Spieler hat ein Wort revealed
-socket.on('playerRevealed', ({ playerId }) => {
-    console.log(`Spieler revealed: ${playerId}`);
-    const playerElements = document.querySelectorAll('.player');
-    playerElements.forEach(playerElement => {
-        if (playerElement.dataset.playerId === playerId) {
-            const statusDot = playerElement.querySelector('.status-dot');
-            statusDot.classList.remove('not-revealed');
-            statusDot.classList.add('revealed'); // Ändere den Statuspunkt zu grün
-            console.log(`Statuspunkt für Spieler ${playerName} auf revealed gesetzt.`);
-        }
-    });
+    socket.on('playerRevealed', ({ playerId }) => {
+        console.log(`Spieler revealed: ${playerId}`);
+        const playerElements = document.querySelectorAll('.player');
+        playerElements.forEach(playerElement => {
+            if (playerElement.dataset.playerId === playerId) {
+                const statusDot = playerElement.querySelector('.status-dot');
+                statusDot.classList.remove('not-revealed');
+                statusDot.classList.add('revealed'); // Ändere den Statuspunkt zu grün
+                console.log(`Statuspunkt für Spieler ${playerName} auf revealed gesetzt.`);
+            }
+        });
 
-    // Aktualisiere die Anzahl der revealed Spieler
-    updateRevealCount(totalPlayers); // Rufe die aktualisierte Funktion auf
-});
+        // Aktualisiere die Anzahl der revealed Spieler
+        updateRevealCount(totalPlayers); // Rufe die aktualisierte Funktion auf
+    });
 
     // Spieler hat ein Wort unrevealed
     socket.on('playerUnrevealed', ({ playerId }) => {
@@ -398,7 +398,7 @@ socket.on('playerRevealed', ({ playerId }) => {
         revealCountDisplay.textContent = `Reveals: ${revealedCount}/${totalPlayers}`; // Zeige die Anzahl der revealed Spieler an
 
         // Überprüfen, ob alle Spieler revealed haben
-        if (revealedCount === totalPlayers) {
+        if (revealedCount === totalPlayers && totalPlayers > 1) {
             console.log('Alle Spieler haben revealed!');
             socket.emit('evaluateAnswers'); // Sende Event zur Auswertung der Antworten
         }
