@@ -368,6 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
     socket.on('updateStreak', (newStreak) => {
         streak = newStreak; // Aktualisiere den Streak
         updateStreakDisplay(); // Aktualisiere die Streak-Anzeige
+        nextWord();
     });
 
     // Funktion zur Aktualisierung der Streak-Anzeige
