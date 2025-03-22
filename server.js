@@ -162,7 +162,7 @@ io.on('connection', (socket) => {
     });
 
     // Socket.io Ereignis zum Aktualisieren des Streaks
-    socket.on('updateStreak', (newStreak) => {
+    socket.on('updateStreak', (newStreak, lobbyCode) => {
         io.to(lobbyCode).emit('updateStreak', newStreak); // Sende die aktualisierte Streak an alle Spieler
     });
 
