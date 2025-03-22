@@ -190,7 +190,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Aktualisiere die Anzahl der revealed Spieler
-        updateRevealCount(totalPlayers); // Rufe die aktualisierte Funktion auf
+        const revealedCount = document.querySelectorAll('.revealed').length;
+        updateRevealCount(revealedCount); // Rufe die aktualisierte Funktion auf
     });
 
     // Spieler hat ein Wort unrevealed
@@ -398,7 +399,7 @@ document.addEventListener('DOMContentLoaded', () => {
         revealCountDisplay.textContent = `Reveals: ${revealedCount}/${totalPlayers}`; // Zeige die Anzahl der revealed Spieler an
 
         // Überprüfen, ob alle Spieler revealed haben
-        if (revealedCount === totalPlayers && totalPlayers > 1) {
+        if (revealedCount === totalPlayers && totalPlayers > 1 && revealedCount > 0) {
             console.log('Alle Spieler haben revealed!');
             socket.emit('evaluateAnswers'); // Sende Event zur Auswertung der Antworten
         }
