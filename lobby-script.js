@@ -407,14 +407,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Resetiere den Button bei jedem Spieler
         const playerElements = document.querySelectorAll('.player');
         playerElements.forEach(playerElement => {
-            const revealButton = playerElement.querySelector('.reveal-button');
             if (revealButton) {
                 revealButton.textContent = 'Reveal';
                 revealButton.classList.remove('revealed');
                 revealButton.classList.add('not-revealed');
             }
             // Leere das Textfeld bei jedem Spieler
-            const associationInput = playerElement.querySelector('.association-input');
             if (associationInput) {
                 associationInput.value = '';
                 associationInput.disabled = false;
