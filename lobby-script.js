@@ -429,10 +429,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 statusDot.classList.add('not-revealed');
             }
         });
-
-        // Aktualisiere die Anzahl der revealed Spieler
-        const revealedCount = document.querySelectorAll('.revealed').length;
-        updateRevealCount(revealedCount); // Rufe die aktualisierte Funktion auf
     });
 
     // Aktualisiere die Anzahl der revealed Spieler
