@@ -388,9 +388,34 @@ document.addEventListener('DOMContentLoaded', () => {
         // Event-Listener für den Weiter-Button
         document.getElementById('next-word-button').onclick = () => {
             console.log('Weiter-Button wurde geklickt. Starte das nächste Spiel...');
+            // Resetiere alles
+            resetEverything();
             socket.emit('startGame', lobbyCode); // Starte das nächste Spiel
             document.getElementById('next-word-button').classList.add('hidden'); // Blende den Button aus
         };
+    }
+
+    // Funktion zum Resetieren alles
+    function resetEverything() {
+        console.log('Resetiere alles...');
+        // Blende den Auswertungsbildschirm aus
+        document.getElementById('evaluation-screen').classList.add('hidden');
+        // Leere die Tabelle mit den revealed words
+        document.getElementById('revealed-words').innerHTML = '';
+        // Resetiere die Variable der revealed players
+        lobbies[lobbyCode].revealedPlayers = [];
+        // Resetiere den Button bei jedem Spieler
+        const playerElements = document.querySelectorAll('.player');
+        playerElements.forEach(playerElement => {
+            const revealButton = playerElement.querySelector('.reveal-button');
+            revealButton.textContent = 'Reveal';
+            revealButton.classList.remove('revealed');
+            revealButton.classList.add('not-revealed');
+            // Leere das Textfeld bei jedem Spieler
+            const associationInput = playerElement.querySelector('.association-input');
+            associationInput.value = '';
+            associationInput.disabled = false;
+        });
     }
 
     // Aktualisiere die Anzahl der revealed Spieler
