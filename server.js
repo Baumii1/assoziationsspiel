@@ -245,13 +245,12 @@ io.on('connection', (socket) => {
         }
     });
 
-    // Beispiel für das Senden des evaluationComplete Ereignisses
+    // Spieler hat das Spiel gestartet
     socket.on('evaluateAnswers', () => {
         const lobbyCode = Object.keys(lobbies).find(code => lobbies[code].players.some(player => player.id === socket.id));
         if (lobbyCode) {
             const revealedWords = lobbies[lobbyCode].players.map(player => player.revealed ? { word: player.word, name: player.name } : null).filter(Boolean);
             io.to(lobbyCode).emit('evaluateAnswers', revealedWords); // Sende die Wörter zur Auswertung
-            io.to(lobbyCode).emit('evaluationComplete'); // Sende das Ereignis zur Vervollständigung der Auswertung
         }
     });
 
