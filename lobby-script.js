@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
         playersDiv.style.position = 'absolute';
         playersDiv.style.top = '50px';
         playersDiv.style.right = '20px';
-        playersDiv.style.width = '200px';
+        playersDiv.style.width = '250px';
 
         associationInput.classList.remove('hidden');
         revealButton.classList.remove('hidden');
