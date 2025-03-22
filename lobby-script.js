@@ -315,10 +315,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Aktualisiere die Anzahl der revealed Spieler
-    socket.on('updateRevealCount', (revealedCount) => {
+    /*socket.on('updateRevealCount', (revealedCount) => {
         console.log(`Aktualisiere die Anzahl der revealed Spieler: ${revealedCount}`);
         updateRevealCount(revealedCount); // Rufe die aktualisierte Funktion auf
-    });
+    });*/
 
     // Socket.io Ereignis für die Auswertung der Antworten
     socket.on('evaluateAnswers', (revealedWords) => {
