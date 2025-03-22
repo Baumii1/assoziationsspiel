@@ -354,21 +354,25 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleCorrect() {
         console.log('Korrekt-Button wurde geklickt.');
         streak++; // Erhöhe den Streak
-        updateStreakDisplay(); // Aktualisiere die Streak-Anzeige
-        nextWord(); // Gehe zum nächsten Wort
+        socket.emit('updateStreak', streak); // Sende die aktualisierte Streak an den Server
     }
 
     // Funktion für den falschen Button
     function handleWrong() {
         console.log('Falsch-Button wurde geklickt.');
         streak = 0; // Setze den Streak zurück
-        updateStreakDisplay(); // Aktualisiere die Streak-Anzeige
-        nextWord(); // Gehe zum nächsten Wort
+        socket.emit('updateStreak', streak); // Sende die aktualisierte Streak an den Server
     }
+
+    // Socket.io Ereignis zum Aktualisieren des Streaks
+    socket.on('updateStreak', (newStreak) => {
+        streak = newStreak; // Aktualisiere den Streak
+        updateStreakDisplay(); // Aktualisiere die Streak-Anzeige
+    });
 
     // Funktion zur Aktualisierung der Streak-Anzeige
     function updateStreakDisplay() {
-        document.getElementById('streak').textContent = `Streak: ${streak}`;
+        document.getElementById('streak').textContent = `Streak: ${streak}`; // Aktualisiere die Streak-Anzeige
         console.log(`Streak aktualisiert: ${streak}`);
     }
 
