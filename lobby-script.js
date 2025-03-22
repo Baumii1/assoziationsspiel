@@ -423,6 +423,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 associationInput.value = '';
                 associationInput.disabled = false;
             }
+            // Setze den Spieler auf unrevealed
+            const statusDot = playerElement.querySelector('.status-dot');
+            if (statusDot) {
+                statusDot.classList.remove('revealed');
+                statusDot.classList.add('not-revealed');
+            }
         });
     });
 
