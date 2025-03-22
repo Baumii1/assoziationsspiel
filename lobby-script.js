@@ -207,7 +207,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        //updateRevealCount(); // Aktualisiere die Anzeige der Reveals
+        // Aktualisiere die Anzahl der revealed Spieler
+        const revealedCount = document.querySelectorAll('.revealed').length;
+        updateRevealCount(revealedCount); // Rufe die aktualisierte Funktion auf
     });
 
     // Socket.io Ereignis für das Stoppen des Spiels
@@ -430,6 +432,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 statusDot.classList.add('not-revealed');
             }
         });
+
+        // Aktualisiere die Anzahl der revealed Spieler
+        const revealedCount = document.querySelectorAll('.revealed').length;
+        updateRevealCount(revealedCount); // Rufe die aktualisierte Funktion auf
     });
 
     // Aktualisiere die Anzahl der revealed Spieler
