@@ -403,7 +403,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Leere die Tabelle mit den revealed words
         document.getElementById('revealed-words').innerHTML = '';
         // Resetiere die Variable der revealed players
-        lobbies[lobbyCode].revealedPlayers = [];
+        if (lobbies && lobbies[lobbyCode]) {
+            lobbies[lobbyCode].revealedPlayers = [];
+        }
         // Resetiere den Button bei jedem Spieler
         const playerElements = document.querySelectorAll('.player');
         playerElements.forEach(playerElement => {

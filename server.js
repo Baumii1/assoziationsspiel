@@ -144,6 +144,13 @@ io.on('connection', (socket) => {
         }
     });
 
+    // Socket.io Ereignis zum Resetieren von revealedPlayers
+    socket.on('resetRevealedPlayers', (lobbyCode) => {
+        if (lobbies[lobbyCode]) {
+            lobbies[lobbyCode].revealedPlayers = [];
+        }
+    });
+
     // Spieler trennt die Verbindung
     socket.on('disconnect', () => {
         console.log('Ein Spieler hat sich getrennt:', socket.id);
