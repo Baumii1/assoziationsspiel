@@ -155,6 +155,10 @@ io.on('connection', (socket) => {
     socket.on('resetGame', (lobbyCode) => {
         // Resetiere den Spielzustand für alle Spieler
         io.to(lobbyCode).emit('resetGame');
+        // Setze die Spieler auf unrevealed
+        lobbies[lobbyCode].players.forEach(player => {
+            player.revealed = false;
+        });
     });
 
     // Spieler trennt die Verbindung
