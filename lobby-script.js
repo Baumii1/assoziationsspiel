@@ -398,27 +398,33 @@ document.addEventListener('DOMContentLoaded', () => {
     // Funktion zum Resetieren alles
     function resetEverything() {
         console.log('Resetiere alles...');
+        // Sende eine Nachricht an den Server, um den Reset für alle Spieler auszulösen
+        socket.emit('resetGame', lobbyCode);
+    }
+
+    // Socket.io Ereignis zum Resetieren des Spiels
+    socket.on('resetGame', () => {
         // Blende den Auswertungsbildschirm aus
         document.getElementById('evaluation-screen').classList.add('hidden');
         // Leere die Tabelle mit den revealed words
         document.getElementById('revealed-words').innerHTML = '';
-        // Sende eine Nachricht an den Server, um revealedPlayers zu leeren
-        socket.emit('resetRevealedPlayers', lobbyCode);
         // Resetiere den Button bei jedem Spieler
         const playerElements = document.querySelectorAll('.player');
         playerElements.forEach(playerElement => {
+            const revealButton = playerElement.querySelector('.reveal-button');
             if (revealButton) {
                 revealButton.textContent = 'Reveal';
                 revealButton.classList.remove('revealed');
                 revealButton.classList.add('not-revealed');
             }
             // Leere das Textfeld bei jedem Spieler
+            const associationInput = playerElement.querySelector('.association-input');
             if (associationInput) {
                 associationInput.value = '';
                 associationInput.disabled = false;
             }
         });
-    }
+    });
 
     // Aktualisiere die Anzahl der revealed Spieler
     function updateRevealCount(revealedCount) {
