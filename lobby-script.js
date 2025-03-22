@@ -354,14 +354,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleCorrect() {
         console.log('Korrekt-Button wurde geklickt.');
         streak++; // Erhöhe den Streak
-        socket.emit('updateStreak', streak); // Sende die aktualisierte Streak an den Server
+        socket.emit('updateStreak', streak, lobbyCode); // Sende die aktualisierte Streak an den Server
     }
 
     // Funktion für den falschen Button
     function handleWrong() {
         console.log('Falsch-Button wurde geklickt.');
         streak = 0; // Setze den Streak zurück
-        socket.emit('updateStreak', streak); // Sende die aktualisierte Streak an den Server
+        socket.emit('updateStreak', streak, lobbyCode); // Sende die aktualisierte Streak an den Server
     }
 
     // Socket.io Ereignis zum Aktualisieren des Streaks
