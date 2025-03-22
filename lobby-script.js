@@ -352,6 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Funktion für den korrekten Button
     function handleCorrect() {
+        nextWord();
         console.log('Korrekt-Button wurde geklickt.');
         streak++; // Erhöhe den Streak
         socket.emit('updateStreak', streak, lobbyCode); // Sende die aktualisierte Streak an den Server
@@ -359,6 +360,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Funktion für den falschen Button
     function handleWrong() {
+        nextWord();
         console.log('Falsch-Button wurde geklickt.');
         streak = 0; // Setze den Streak zurück
         socket.emit('updateStreak', streak, lobbyCode); // Sende die aktualisierte Streak an den Server
@@ -368,7 +370,6 @@ document.addEventListener('DOMContentLoaded', () => {
     socket.on('updateStreak', (newStreak) => {
         streak = newStreak; // Aktualisiere den Streak
         updateStreakDisplay(); // Aktualisiere die Streak-Anzeige
-        nextWord();
     });
 
     // Funktion zur Aktualisierung der Streak-Anzeige
