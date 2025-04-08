@@ -392,6 +392,9 @@ document.addEventListener('DOMContentLoaded', () => {
             resetEverything();
             socket.emit('startGame', lobbyCode); // Starte das nächste Spiel
             document.getElementById('next-word-button').classList.add('hidden'); // Blende den Button aus
+
+            // Initialisiere die Variable associationInput neu
+            associationInput = document.getElementById('association-word');
         };
     }
 
