@@ -144,13 +144,6 @@ io.on('connection', (socket) => {
         }
     });
 
-    // Socket.io Ereignis zum Resetieren von revealedPlayers
-    socket.on('resetRevealedPlayers', (lobbyCode) => {
-        if (lobbies[lobbyCode]) {
-            lobbies[lobbyCode].revealedPlayers = [];
-        }
-    });
-
     // Socket.io Ereignis zum Resetieren des Spiels
     socket.on('resetGame', (lobbyCode) => {
         // Resetiere den Spielzustand für alle Spieler
@@ -158,7 +151,11 @@ io.on('connection', (socket) => {
         // Setze die Spieler auf unrevealed
         lobbies[lobbyCode].players.forEach(player => {
             player.revealed = false;
+            player.word = null; // Setze das Wort zurück
         });
+        // Setze andere Spielvariablen zurück
+        lobbies[lobbyCode].currentWord = null; // Aktuellen Begriff zurücksetzen
+        lobbies[lobbyCode].revealedPlayers = []; // Revealed-Liste zurücksetzen
     });
 
     // Socket.io Ereignis zum Aktualisieren des Streaks
