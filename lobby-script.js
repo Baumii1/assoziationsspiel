@@ -430,6 +430,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 statusDot.classList.add('not-revealed');
             }
         });
+        // Leere das Textfeld für die Assoziation
+        associationInput.value = '';
+        associationInput.disabled = false;
+        // Setze den Spieler auf unrevealed
+        const statusDot = document.querySelector('.status-dot');
+        if (statusDot) {
+            statusDot.classList.remove('revealed');
+            statusDot.classList.add('not-revealed');
+        }
     });
 
     // Aktualisiere die Anzahl der revealed Spieler
