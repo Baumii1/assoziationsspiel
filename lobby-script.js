@@ -393,6 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
             socket.emit('startGame', lobbyCode); // Starte das nächste Spiel
             document.getElementById('next-word-button').classList.add('hidden'); // Blende den Button aus
         };
+        socket.emit('resetRevealedPlayers', lobbyCode); // Resetiere die revealed Spieler
     }
 
     // Funktion zum Resetieren alles
@@ -409,32 +410,20 @@ document.addEventListener('DOMContentLoaded', () => {
         // Leere die Tabelle mit den revealed words
         document.getElementById('revealed-words').innerHTML = '';
         // Resetiere den Button bei jedem Spieler
-        const playerElements = document.querySelectorAll('.player');
-        playerElements.forEach(playerElement => {
-            const revealButton = playerElement.querySelector('.reveal-button');
-            if (revealButton) {
-                revealButton.textContent = 'Reveal';
-                revealButton.classList.remove('revealed');
-                revealButton.classList.add('not-revealed');
-            }
-            // Leere das Textfeld bei jedem Spieler
-            const associationInput = playerElement.querySelector('.association-input');
-            if (associationInput) {
-                associationInput.value = '';
-                associationInput.disabled = false;
-            }
-            // Setze den Spieler auf unrevealed
-            const statusDot = playerElement.querySelector('.status-dot');
-            if (statusDot) {
-                statusDot.classList.remove('revealed');
-                statusDot.classList.add('not-revealed');
-            }
-        });
-        // Leere das Textfeld für die Assoziation
-        associationInput.value = '';
-        associationInput.disabled = false;
+        const revealButton = playerElement.querySelector('.reveal-button');
+        if (revealButton) {
+            revealButton.textContent = 'Reveal';
+            revealButton.classList.remove('revealed');
+            revealButton.classList.add('not-revealed');
+        }
+        // Leere das Textfeld bei jedem Spieler
+        const associationInput = playerElement.querySelector('.association-input');
+        if (associationInput) {
+            associationInput.value = '';
+            associationInput.disabled = false;
+        }
         // Setze den Spieler auf unrevealed
-        const statusDot = document.querySelector('.status-dot');
+        const statusDot = playerElement.querySelector('.status-dot');
         if (statusDot) {
             statusDot.classList.remove('revealed');
             statusDot.classList.add('not-revealed');
